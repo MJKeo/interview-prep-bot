@@ -40,7 +40,7 @@ the interviewer ("interviewer"). Messages appear in the order they were sent, ol
 
 Return a list of feedback points. Each feedback point should include:
 - If this feedback is pointing out good response that should be continued, or giving constructive criticism for how to improve a flawed response.
-- Relevant quotes from the question and answer
+- Relevant quotes from the candidate (NOT the interviewer)
 - Why this answer is good or bad (based on the evaluation criteria)
 - Relevant information from the job listing context
 - Additional context related to best practices for answering questions like this
