@@ -1,0 +1,93 @@
+Job-specific
+- What: Questions that test the exact skills, tools, and domain knowledge used in the job.
+- Why companies ask: To verify you can do the day-to-day work with minimal ramp-up.
+- How to prepare: Study the job description; review core concepts, systems, and tools; practice realistic tasks (e.g., coding, mock tickets, sample deliverables); bring concise, concrete examples from your past work.
+- Examples:
+  - What are the advantages and disadvantages of the accounting software you used in your last job?
+    - Assesses familiarity with industry tools and ability to evaluate technology trade-offs; common in accounting, finance, or bookkeeping roles.
+  - Are you comfortable using a telephone with several lines and handling high call volume?
+    - Tests multitasking and communication under pressure; typical for receptionists, administrative assistants, and call center representatives.
+  - What do you like and dislike about working in advertising?
+    - Explores motivation and cultural fit within a creative, fast-paced environment; common for marketing and advertising positions.
+  - What's your favorite coffee to make and drink?
+    - Evaluates enthusiasm and product knowledge; typical for barista or café service roles.
+  - What's your process for remembering a large order?
+    - Checks working memory, organization, and customer service skills; often asked in food service or hospitality jobs.
+  - Why are you interested in working at this restaurant?
+    - Determines motivation and understanding of the establishment’s brand or reputation; standard in restaurant and hospitality interviews.
+  - How do you suggest new treatments and skin therapies to clients?
+    - Measures consultative selling and client communication skills; relevant for estheticians and spa professionals.
+  - What's your preferred programming language and why?
+    - Tests technical proficiency and reasoning about design choices; common for software developers and engineers.
+  - What steps do you take when approaching a new project?
+    - Evaluates planning, prioritization, and problem-solving; often asked in project management or creative roles.
+  - Can you work flexible hours?
+    - Assesses scheduling flexibility and reliability; typical for service, retail, or shift-based work.
+
+Behavioral
+- What: Questions about a person’s professional experiences; their past actions and results.
+- Why companies ask: Past behavior predicts future behavior; they’re gauging teamwork, ownership, and resilience.
+- How to prepare: Build a small bank of STAR stories (Situation-Task-Action-Result) covering impact, conflict, failure, leadership, and learning; quantify outcomes; practice crisp delivery.
+- Examples:
+  - What are you most proud of in your career?
+    - Reveals values, motivation, and what the candidate considers success; asked across most professional fields.
+  - What was the most important goal you reached in your career? How did you achieve this?
+    - Shows goal-setting and persistence; common in sales, management, and performance-driven roles.
+  - Can you tell me about the best manager you worked for?
+    - Uncovers leadership preferences and fit with management styles; often used in corporate and team-based environments.
+  - What has your biggest professional challenge been?
+    - Assesses resilience and growth mindset; relevant to virtually all roles.
+  - Can you describe a time you identified a problem in your department and how you resolved it?
+    - Evaluates initiative and problem-solving; common in operations, engineering, and administrative jobs.
+  - Do you remember a time you made a mistake at work? How did you handle it?
+    - Tests accountability and honesty; asked broadly in service and corporate settings alike.
+  - Can you tell me about a time you did not agree with a coworker? How did you handle the situation?
+    - Examines conflict resolution and communication; relevant for team-based work in any industry.
+  - What has been your most rewarding experience working as part of a team?
+    - Highlights collaboration and interpersonal strengths; common in healthcare, education, and project environments.
+  - Can you tell me about a time it was crucial for you to make a good impression on a client? What did you do to achieve this?
+    - Evaluates client relationship management and professionalism; typical in sales and consulting roles.
+  - Can you tell me about a time when your department or company was undergoing some changes? How did you adapt to those changes?
+    - Measures adaptability and resilience; common in startups, tech, and fast-changing organizations.
+
+
+Situational
+- What: Hypothetical “What would you do if…?” scenarios.
+- Why companies ask: To assess judgment, prioritization, and how you operate with limited info.
+- How to prepare: Use a clear structure (clarify goals/constraints → options/trade-offs → decision → risks/mitigations → next steps); tie choices to business impact and stakeholders.
+- Examples:
+  - How would you handle a customer unhappy with the service they received?
+    - Tests empathy and de-escalation; standard in customer service and hospitality roles.
+  - How would you pitch our new lipstick to customers?
+    - Assesses sales ability and product communication; common in retail and cosmetics sales.
+  - How would you prioritize multiple assignments from different clients?
+    - Evaluates time management and judgment; relevant for consultants, designers, and account managers.
+  - How would you manage an unmotivated employee?
+    - Explores leadership and coaching skills; typical for supervisory or management positions.
+  - What changes would you make if you operated our business?
+    - Tests business acumen and creativity; often asked in entrepreneurial or leadership interviews.
+  - How would you handle things if you had almost finished a project but the scope changed?
+    - Measures flexibility and client responsiveness; common in project-based or technical roles.
+  - How would you respond to criticism from your line manager?
+    - Evaluates maturity and openness to feedback; applicable across all job levels.
+  - How would you handle things if you could not complete a project on time because you were awaiting information from coworkers?
+    - Assesses communication and accountability; relevant for collaborative office or technical environments.
+  - What steps would you take to make an important decision at work?
+    - Shows decision-making structure and risk awareness; common in leadership and analytical roles.
+  - What would you do if you had to work with a difficult client?
+    - Tests patience and customer relationship management; typical in consulting, sales, and service positions.
+
+
+Culture / Values & Motivation
+- What: “Why us/this role?”, values alignment, ways of working, and how you’ll add to the team.
+- Why companies ask: To reduce risk of misfit and improve engagement, retention, and collaboration.
+- How to prepare: Research mission, products, and values; map your stories to those values; articulate your “spikes” (strengths) and how they help the team; prepare thoughtful questions that show genuine interest.
+- Examples:
+  - “Tell us three things you saw on our website that jumped out at you about our company and our products/services.”
+    - Gauges preparation, interest, and cultural fit; common in marketing, sales, or customer-facing roles.
+  - “Which of our company’s core values do you most (and least) identify with?”
+    - Explores alignment with company ethos and self-awareness; typical for mid-level to senior roles.
+  - “What do you value most in a workplace, and how do you maintain a positive work environment?”
+    - Assesses collaboration style and contribution to culture; asked broadly in HR, operations, and team-based roles.
+  - “What does work-life balance mean to you, and how do you maintain it in a demanding role?”
+    - Checks alignment with company expectations around workload and wellbeing; common in management or high-stress jobs.
