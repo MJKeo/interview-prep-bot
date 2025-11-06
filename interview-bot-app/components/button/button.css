@@ -1,0 +1,32 @@
+/* Styles for the generic button component */
+
+/* Base button styles - padding, colors, rounded corners, and transitions */
+.button {
+  padding: 0.5rem 1rem; /* px-4 py-2 */
+  background-color: rgb(37 99 235); /* bg-blue-600 */
+  color: white;
+  border-radius: 0.375rem; /* rounded */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out; /* transition-colors */
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Hover state - darker blue background */
+.button:hover:not(:disabled) {
+  background-color: rgb(29 78 216); /* hover:bg-blue-700 */
+}
+
+/* Focus state - outline for accessibility */
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(59 130 246); /* focus ring */
+}
+
+/* Disabled state - reduced opacity and no pointer events */
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
