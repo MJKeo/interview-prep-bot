@@ -9,3 +9,4 @@ export {
     teamCultureQuery,
     domainKnowledgeQuery
 } from "./deep-research-prompts";
+export { DISTILLATION_SYSTEM_PROMPT_V1 } from "./interview-guide-prompts";

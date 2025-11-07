@@ -1,5 +1,5 @@
 import { JobListingResearchResponseSchema, type JobListingResearchResponse, type DeepResearchReports } from "@/types";
-import { JOB_LISTING_PARSING_PROMPT_V1 } from "@/prompts";
+import { JOB_LISTING_PARSING_PROMPT_V1, DISTILLATION_SYSTEM_PROMPT_V1 } from "@/prompts";
 import {
   openai,
   companyStrategyAgent,
@@ -32,18 +32,12 @@ import { zodTextFormat } from "openai/helpers/zod";
 export async function parseJobListingAttributes(
   jobListingScrapeContent: string
 ): Promise<JobListingResearchResponse> {
-  // Get API key from environment variable
-  const apiKey = process.env.OPENAI_API_KEY;
-
-  if (!apiKey) {
-    throw new Error("OPENAI_API_KEY environment variable is not set");
-  }
-
   try {
     // Call OpenAI's chat completions API
     const response = await openai.responses.parse({
-        model: "gpt-4.1-mini",
+        model: "gpt-4.1-nano",
         instructions: JOB_LISTING_PARSING_PROMPT_V1,
+        temperature: 0.3,
         input: jobListingScrapeContent,
         text: { format: zodTextFormat(JobListingResearchResponseSchema, "job_listing_research_response") },
       });
@@ -133,6 +127,86 @@ export async function performDeepResearch(
       throw new Error(`Failed to perform deep research: ${error.message}`);
     }
     throw new Error(`Failed to perform deep research: ${String(error)}`);
+  }
+}
+
+/**
+ * Combines deep research reports into a formatted string with section headers.
+ * 
+ * Each report section is prefixed with a descriptive header to create a
+ * consolidated deep research results document.
+ * 
+ * @param deepResearchReports - The aggregated research reports from all deep-research agents
+ * @returns A formatted string combining all research sections with headers
+ */
+function combineDeepResearchReports(deepResearchReports: DeepResearchReports): string {
+  return `Company Strategy Report:
+
+${deepResearchReports.companyStrategyReport}
+
+Role Success Report:
+
+${deepResearchReports.roleSuccessReport}
+
+Team Culture Report:
+
+${deepResearchReports.teamCultureReport}
+
+Domain Knowledge Report:
+
+${deepResearchReports.domainKnowledgeReport}`;
+}
+
+/**
+ * Generates a compact, job-specific Mock Interview Guide in Markdown format.
+ * 
+ * This function takes job listing data, deep research reports, and interview question
+ * taxonomy to create a tailored interview guide. The guide equips an interview chatbot
+ * with the right context and targeted prompts based on the provided research.
+ * 
+ * @param jobListingResearchResponse - Parsed job listing metadata including title, description, and company
+ * @param deepResearchReports - Aggregated research reports from all deep-research agents
+ * @param interviewQuestions - Taxonomy of question types (e.g., Job-Specific, Behavioral, Situational, Culture/Values)
+ * @returns A promise that resolves to a Markdown interview guide string
+ * @throws Error if the API call fails or returns invalid data
+ */
+export async function createInterviewGuide(
+  jobListingResearchResponse: JobListingResearchResponse,
+  deepResearchReports: DeepResearchReports,
+  interviewQuestions: string
+): Promise<string> {
+  try {
+
+    // Create the JSON input matching the distillation prompt's expected format
+    const input = JSON.stringify({
+      job_title: jobListingResearchResponse.job_title,
+      job_description: jobListingResearchResponse.job_description,
+      company_name: jobListingResearchResponse.company_name,
+      deep_research_results: combineDeepResearchReports(deepResearchReports),
+      interview_questions: interviewQuestions,
+    });
+
+    // Call OpenAI's responses API with the distillation system prompt
+    const response = await openai.responses.create({
+      model: "gpt-4o-mini",
+      temperature: 0.6,
+      instructions: DISTILLATION_SYSTEM_PROMPT_V1,
+      input: input,
+    });
+
+    // Extract the generated interview guide from the response
+    const result = response.output_text;
+    if (!result) {
+      throw new Error("OpenAI Response gave an empty result");
+    }
+
+    return result;
+  } catch (error) {
+    // Re-throw with more context if it's not already an Error
+    if (error instanceof Error) {
+      throw new Error(`Failed to create interview guide: ${error.message}`);
+    }
+    throw new Error(`Failed to create interview guide: ${String(error)}`);
   }
 }
 

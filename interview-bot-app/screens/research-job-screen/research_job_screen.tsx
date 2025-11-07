@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import "./research_job_screen.css";
-import { parseJobListingAttributesAction, performDeepResearchAction } from "@/app/actions";
+import { parseJobListingAttributesAction, performDeepResearchAction, createInterviewGuideAction } from "@/app/actions";
 import type { JobListingResearchResponse, DeepResearchReports } from "@/types";
 
 /**
@@ -30,6 +30,8 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
   const [parsedData, setParsedData] = useState<JobListingResearchResponse | null>(null);
   // State for deep research reports
   const [deepResearchReports, setDeepResearchReports] = useState<DeepResearchReports | null>(null);
+  // State for the interview guide
+  const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
 
   /**
    * Effect hook that runs when the component mounts or when jobListingScrapeContent changes.
@@ -95,6 +97,8 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
         if (deepResearchResult.success && deepResearchResult.reports) {
           // Store the deep research reports
           setDeepResearchReports(deepResearchResult.reports);
+          // Update loading stage to reflect next step
+          setLoadingStage("Creating interview guide...");
         } else {
           // Handle error from deep research action
           throw new Error(deepResearchResult.error || "Failed to perform deep research");
@@ -106,7 +110,6 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
           : "Failed to perform deep research";
         setError(deepResearchErrorMessage);
         setDeepResearchReports(null);
-      } finally {
         setLoadingStage(null);
       }
     };
@@ -114,6 +117,49 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
     // Call the deep research function when parsedData is available
     runDeepResearch();
   }, [parsedData]);
+
+  /**
+   * Effect hook that runs when deepResearchReports changes.
+   * Calls the server action to create an interview guide if both parsedData and deepResearchReports exist.
+   */
+  useEffect(() => {
+    // Only create interview guide if both parsedData and deepResearchReports exist
+    if (!parsedData || !deepResearchReports) {
+      return;
+    }
+
+    /**
+     * Async function to create an interview guide from the job listing research and deep research reports.
+     * Called automatically when deepResearchReports is available.
+     */
+    const createGuide = async () => {
+      try {
+        // Call the server action to create the interview guide
+        const guideResult = await createInterviewGuideAction(parsedData, deepResearchReports);
+
+        // Check if the guide creation was successful
+        if (guideResult.success && guideResult.guide) {
+          // Store the interview guide
+          setInterviewGuide(guideResult.guide);
+        } else {
+          // Handle error from guide creation action
+          throw new Error(guideResult.error || "Failed to create interview guide");
+        }
+      } catch (guideErr) {
+        // Handle exceptions from guide creation and display error message
+        const guideErrorMessage = guideErr instanceof Error 
+          ? guideErr.message 
+          : "Failed to create interview guide";
+        setError(guideErrorMessage);
+        setInterviewGuide(null);
+      } finally {
+        setLoadingStage(null);
+      }
+    };
+
+    // Call the guide creation function when deepResearchReports is available
+    createGuide();
+  }, [deepResearchReports, parsedData]);
 
   return (
     <div className="research-job-container">
@@ -133,45 +179,17 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
         {/* Display error message if parsing failed */}
         {error && <div className="error-message">{error}</div>}
         
-        {/* Display deep research reports in separate textboxes when loading is complete */}
-        {deepResearchReports && !loadingStage && (
-          <div className="deep-research-reports">
-            <div className="research-report-section">
-              <h2 className="research-report-title">Company Strategy Report</h2>
-              <textarea
-                className="parsed-data-textbox"
-                value={deepResearchReports.companyStrategyReport}
-                readOnly
-                rows={30}
-              />
-            </div>
-            <div className="research-report-section">
-              <h2 className="research-report-title">Role Success Report</h2>
-              <textarea
-                className="parsed-data-textbox"
-                value={deepResearchReports.roleSuccessReport}
-                readOnly
-                rows={30}
-              />
-            </div>
-            <div className="research-report-section">
-              <h2 className="research-report-title">Team Culture Report</h2>
-              <textarea
-                className="parsed-data-textbox"
-                value={deepResearchReports.teamCultureReport}
-                readOnly
-                rows={30}
-              />
-            </div>
-            <div className="research-report-section">
-              <h2 className="research-report-title">Domain Knowledge Report</h2>
-              <textarea
-                className="parsed-data-textbox"
-                value={deepResearchReports.domainKnowledgeReport}
-                readOnly
-                rows={30}
-              />
-            </div>
+
+        {/* Display interview guide in a textbox when it's ready */}
+        {interviewGuide && !loadingStage && (
+          <div className="interview-guide-section">
+            <h2 className="research-report-title">Interview Guide</h2>
+            <textarea
+              className="parsed-data-textbox"
+              value={interviewGuide}
+              readOnly
+              rows={30}
+            />
           </div>
         )}
       </div>

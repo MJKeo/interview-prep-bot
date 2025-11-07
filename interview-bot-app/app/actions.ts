@@ -1,8 +1,12 @@
 'use server';
 
 import { scrapeJobListing } from '@/utils/scrape-job-listing';
-import { parseJobListingAttributes, performDeepResearch } from '@/utils/generate-llm-response';
-import type { JobListingResearchResponse } from '@/types';
+import { parseJobListingAttributes, performDeepResearch, createInterviewGuide } from '@/utils/generate-llm-response';
+import type { JobListingResearchResponse, DeepResearchReports } from '@/types';
+import CONFIG from "@/app/config";
+import { savedJobParseResponse, savedDeepResearchReports, savedInterviewGuide } from "@/app/saved-responses";
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 /**
  * Server action to scrape a job listing URL and parse its attributes.
@@ -17,6 +21,9 @@ import type { JobListingResearchResponse } from '@/types';
  */
 export async function scrapeJobListingAction(url: string) {
   try {
+    if (CONFIG.useCachedData) {
+      return { success: true, content: "Cached data" };
+    }
     // Call the scrape function - this runs on the server where process.env is available
     const content = await scrapeJobListing(url);
     return { success: true, content: content };
@@ -40,6 +47,9 @@ export async function scrapeJobListingAction(url: string) {
  */
 export async function parseJobListingAttributesAction(jobListingScrapeContent: string) {
   try {
+    if (CONFIG.useCachedData) {
+      return { success: true, data: savedJobParseResponse };
+    }
     // Call the parse function - this runs on the server where process.env is available
     const data = await parseJobListingAttributes(jobListingScrapeContent);
     return { success: true, data: data };
@@ -62,12 +72,56 @@ export async function parseJobListingAttributesAction(jobListingScrapeContent: s
  */
 export async function performDeepResearchAction(jobListingResearchResponse: JobListingResearchResponse) {
   try {
+    if (CONFIG.useCachedData) {
+      return { success: true, reports: savedDeepResearchReports };
+    }
     // Call the performDeepResearch function - this runs on the server where process.env is available
     const reports = await performDeepResearch(jobListingResearchResponse);
     return { success: true, reports: reports };
   } catch (error) {
     // Handle errors and return error message
     const message = error instanceof Error ? error.message : 'Failed to perform deep research';
+    return { success: false, error: message };
+  }
+}
+
+/**
+ * Server action to create an interview guide from job listing research and deep research reports.
+ * 
+ * This function runs on the server, keeping the API key secure.
+ * It reads the interview questions taxonomy from the markdown file, then generates
+ * a tailored interview guide using the job listing data and deep research reports.
+ * Returns a result object with either success and the guide or an error.
+ * 
+ * @param jobListingResearchResponse - Parsed job listing metadata including title, description, and company
+ * @param deepResearchReports - Aggregated research reports from all deep-research agents
+ * @returns An object with either { success: true, guide: string } or { success: false, error: string }
+ */
+export async function createInterviewGuideAction(
+  jobListingResearchResponse: JobListingResearchResponse,
+  deepResearchReports: DeepResearchReports
+) {
+  try {
+    if (CONFIG.useCachedData) {
+      return { success: true, guide: savedInterviewGuide };
+    }
+
+    // Read the interview questions markdown file
+    // The file is located in the utils directory relative to the app root
+    const filePath = join(process.cwd(), 'utils', 'interview-questions.md');
+    const interviewQuestions = await readFile(filePath, 'utf-8');
+    
+    // Call the createInterviewGuide function - this runs on the server where process.env is available
+    const guide = await createInterviewGuide(
+      jobListingResearchResponse,
+      deepResearchReports,
+      interviewQuestions
+    );
+    
+    return { success: true, guide: guide };
+  } catch (error) {
+    // Handle errors and return error message
+    const message = error instanceof Error ? error.message : 'Failed to create interview guide';
     return { success: false, error: message };
   }
 }
