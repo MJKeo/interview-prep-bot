@@ -4,14 +4,26 @@ import { useState } from "react";
 import "./enter-job-listing-url-screen.css";
 import Button from "@/components/button";
 import { scrapeJobListingAction } from "@/app/actions";
+import { isValidURL } from "@/utils/utils";
+
+/**
+ * Props for the EnterJobListingUrlScreen component.
+ */
+interface EnterJobListingUrlScreenProps {
+  /**
+   * Callback function called when job listing scraping is successful.
+   * Receives the scraped content as a parameter.
+   */
+  onScrapeSuccess: (scrapedContent: string) => void;
+}
 
 /**
  * Screen component for entering a job listing URL.
  * Displays a single input textbox for users to enter the URL of their job listing.
- * When the user clicks the button or presses Enter, it scrapes the URL and displays
- * the results in a textbox below the button.
+ * When the user clicks the button or presses Enter, it scrapes the URL and calls
+ * the onNext callback with the scraped content.
  */
-export default function EnterJobListingUrlScreen() {
+export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobListingUrlScreenProps) {
   // State for the URL input value
   const [url, setUrl] = useState("");
   // State for the scraped content
@@ -27,18 +39,33 @@ export default function EnterJobListingUrlScreen() {
    * Uses a server action to keep the API key secure on the server.
    */
   const handleScrape = async () => {
+    // Capture a trimmed version of the URL to prevent whitespace-related validation failures.
+    var cleanedUrl = url.trim();
+    // Edge case: If the user enters "www.<website>" it should still work
+    if (cleanedUrl.startsWith("www.")) {
+      cleanedUrl = "https://" + cleanedUrl;
+    }
+
+    // Validate URL syntax before attempting to scrape
+    if (!isValidURL(cleanedUrl)) {
+      setError("Please enter a valid URL");
+      return;
+    }
+
     // Reset error and set loading state
     setError(null);
     setIsLoading(true);
 
     try {
       // Call the server action to scrape the URL
-      const result = await scrapeJobListingAction(url.trim());
+      console.log("Scraping URL")
+      const result = await scrapeJobListingAction(cleanedUrl);
       
       // Check if the action was successful
-      if (result.success && result.data) {
-        // Convert the parsed job listing attributes to a formatted JSON string for display
-        setScrapedContent(JSON.stringify(result.data, null, 2));
+      if (result.success && result.content) {
+        console.log("Scraped content: ", result.content);
+        // Call the onNext callback with the scraped content to navigate to research screen
+        onScrapeSuccess(result.content);
       } else {
         // Handle error from server action
         throw new Error(result.error || "Failed to scrape job listing");
