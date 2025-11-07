@@ -11,13 +11,13 @@ import { zodTextFormat } from "openai/helpers/zod";
  * using a system prompt to extract structured information matching the
  * JobListingResearchResponse schema.
  * 
- * @param jobListingSiteScrape - The scraped content from the job listing website (typically markdown format)
+ * @param jobListingScrapeContent - The scraped content from the job listing website (typically markdown format)
  * @returns A promise that resolves to a JobListingResearchResponse object
  * @throws Error if the OPENAI_API_KEY environment variable is not set
  * @throws Error if the API call fails or returns invalid data
  */
 export async function parseJobListingAttributes(
-  jobListingSiteScrape: string
+  jobListingScrapeContent: string
 ): Promise<JobListingResearchResponse> {
   // Get API key from environment variable
   const apiKey = process.env.OPENAI_API_KEY;
@@ -31,7 +31,7 @@ export async function parseJobListingAttributes(
     const response = await openai.responses.parse({
         model: "gpt-4.1-mini",
         instructions: JOB_LISTING_PARSING_PROMPT_V1,
-        input: jobListingSiteScrape,
+        input: jobListingScrapeContent,
         text: { format: zodTextFormat(JobListingResearchResponseSchema, "job_listing_research_response") },
       });
 

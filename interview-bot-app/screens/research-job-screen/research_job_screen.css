@@ -1,0 +1,61 @@
+/* Styles for the research job screen container */
+.research-job-container {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Styles for the research job content wrapper */
+.research-job-content {
+  width: 100%;
+  max-width: 50rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Styles for the research job title */
+.research-job-title {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700; /* font-bold */
+  color: rgb(17 24 39); /* text-gray-900 */
+  margin-bottom: 0.5rem;
+}
+
+/* Styles for loading message display */
+.loading-message {
+  color: rgb(59 130 246); /* text-blue-600 */
+  font-size: 1rem; /* text-base */
+  padding: 0.5rem;
+}
+
+/* Styles for error message display */
+.error-message {
+  color: rgb(220 38 38); /* text-red-600 */
+  font-size: 0.875rem; /* text-sm */
+  padding: 0.5rem;
+  max-width: 100%;
+  text-align: center;
+}
+
+/* Styles for the parsed data textbox */
+.parsed-data-textbox {
+  width: 100%;
+  padding: 1rem; /* px-4 py-4 */
+  border: 1px solid rgb(209 213 219); /* border-gray-300 */
+  border-radius: 0.375rem; /* rounded-md */
+  font-family: monospace;
+  font-size: 0.875rem; /* text-sm */
+  resize: vertical;
+  background-color: rgb(249 250 251); /* bg-gray-50 */
+  line-height: 1.5;
+}
+
+.parsed-data-textbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(59 130 246); /* focus:ring-2 focus:ring-blue-500 */
+}
+
