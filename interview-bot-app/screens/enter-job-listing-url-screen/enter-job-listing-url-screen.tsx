@@ -58,12 +58,10 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
 
     try {
       // Call the server action to scrape the URL
-      console.log("Scraping URL")
       const result = await scrapeJobListingAction(cleanedUrl);
       
       // Check if the action was successful
       if (result.success && result.content) {
-        console.log("Scraped content: ", result.content);
         // Call the onNext callback with the scraped content to navigate to research screen
         onScrapeSuccess(result.content);
       } else {

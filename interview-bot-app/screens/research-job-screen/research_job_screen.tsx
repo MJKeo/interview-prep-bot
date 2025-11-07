@@ -50,7 +50,6 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
         
         // Check if the action was successful
         if (result.success && result.data) {
-          console.log("Parsed scrape: ", result.data);
           // Update loading stage to reflect next step
           setLoadingStage("Performing deep research...");
           // Store the parsed data
@@ -94,7 +93,6 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
         
         // Check if the deep research was successful
         if (deepResearchResult.success && deepResearchResult.reports) {
-          console.log("Deep research reports: ", deepResearchResult.reports);
           // Store the deep research reports
           setDeepResearchReports(deepResearchResult.reports);
         } else {

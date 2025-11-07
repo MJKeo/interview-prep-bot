@@ -2,8 +2,6 @@ import OpenAI from "openai";
 import { Agent, webSearchTool } from "@openai/agents";
 import { COMPANY_STRATEGY_SYSTEM_PROMPT_V1, ROLE_SUCCESS_SYSTEM_PROMPT_V1, TEAM_CULTURE_SYSTEM_PROMPT_V1, DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V1 } from "@/prompts";
 
-console.log("OPENAI_API_KEY: ", process.env.OPENAI_API_KEY);
-
 export const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
