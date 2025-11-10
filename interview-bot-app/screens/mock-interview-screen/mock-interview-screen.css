@@ -45,6 +45,56 @@
   align-self: flex-start;
 }
 
+/* Styles for the typing indicator bubble */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  padding: 0.75rem 1rem;
+}
+
+/* Container for the typing dots */
+.typing-dots {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+/* Individual typing dot */
+.typing-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: rgb(107 114 128); /* gray-500 */
+  animation: typing-dot-bounce 1.4s ease-in-out infinite;
+}
+
+/* Animation delay for each dot to create wave effect */
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Keyframe animation for bouncing dots */
+@keyframes typing-dot-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-0.5rem);
+    opacity: 1;
+  }
+}
+
 /* Styles for the fixed input section at the bottom */
 .mock-interview-input-section {
   display: flex;
@@ -53,6 +103,13 @@
   padding: 1rem;
   background-color: rgb(255 255 255);
   border-top: 1px solid rgb(229 231 235); /* border-gray-200 */
+}
+
+/* Styles for the input and Send button row */
+.mock-interview-input-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
 }
 
 /* Styles for the input field */
@@ -71,11 +128,19 @@
   box-shadow: 0 0 0 2px rgb(59 130 246); /* focus:ring-2 focus:ring-blue-500 */
 }
 
+/* Styles for error message display */
+.mock-interview-error-message {
+  color: rgb(220 38 38); /* red-600 */
+  font-size: 0.875rem; /* text-sm */
+  padding: 0.5rem 0;
+  line-height: 1.5;
+}
+
 /* Styles for the button row */
 .mock-interview-buttons {
   display: flex;
   gap: 0.75rem;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 /* Styles for the modal overlay - covers the entire screen */

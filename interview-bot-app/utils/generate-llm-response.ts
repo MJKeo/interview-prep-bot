@@ -1,5 +1,5 @@
-import { JobListingResearchResponseSchema, type JobListingResearchResponse, type DeepResearchReports } from "@/types";
-import { JOB_LISTING_PARSING_PROMPT_V1, DISTILLATION_SYSTEM_PROMPT_V1 } from "@/prompts";
+import { JobListingResearchResponseSchema, type JobListingResearchResponse, type DeepResearchReports, MockInterviewMessageResponseSchema, type MockInterviewMessageResponse } from "@/types";
+import { JOB_LISTING_PARSING_PROMPT_V1, DISTILLATION_SYSTEM_PROMPT_V1, mockInterviewSystemPrompt } from "@/prompts";
 import {
   openai,
   companyStrategyAgent,
@@ -19,6 +19,7 @@ import {
 } from "@/prompts";
 import { run } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
+import type { EasyInputMessage } from "openai/resources/responses/responses";
 
 /**
  * Generates a structured response from OpenAI's chat completions API
@@ -165,6 +166,8 @@ export async function createInterviewGuide(
       job_title: jobListingResearchResponse.job_title,
       job_description: jobListingResearchResponse.job_description,
       company_name: jobListingResearchResponse.company_name,
+      expectations_and_responsibilities: jobListingResearchResponse.expectations_and_responsibilities,
+      requirements: jobListingResearchResponse.requirements,
       deep_research_results: combineDeepResearchReports(deepResearchReports),
       interview_questions: interviewQuestions,
     });
@@ -190,6 +193,53 @@ export async function createInterviewGuide(
       throw new Error(`Failed to create interview guide: ${error.message}`);
     }
     throw new Error(`Failed to create interview guide: ${String(error)}`);
+  }
+}
+
+/**
+ * Generates the next message in a mock interview conversation.
+ * 
+ * This function takes the conversation history and current message, then uses OpenAI's
+ * responses.parse API to generate a structured response that includes both reasoning
+ * and the actual message content, conforming to the MockInterviewMessageResponseSchema.
+ * The system prompt is automatically generated from the job listing research response
+ * and interview guide using the mockInterviewSystemPrompt function.
+ * 
+ * @param combinedHistory - Array of previous messages in the conversation (conversation history) PLUS the most recent message
+ * @param jobListingResearchResponse - Parsed job listing metadata used to generate the interview system prompt
+ * @param interviewGuide - The interview guide (markdown format) used to provide context for the interview bot
+ * @returns A promise that resolves to a MockInterviewMessageResponse object containing reasoning and message
+ * @throws Error if the API call fails or returns invalid data
+ */
+export async function generateNextInterviewMessage(
+  combinedHistory: EasyInputMessage[],
+  jobListingResearchResponse: JobListingResearchResponse,
+  interviewGuide: string
+): Promise<MockInterviewMessageResponse> {
+  try {
+    // Call OpenAI's responses.parse API to generate the next message
+    const response = await openai.responses.parse({
+      model: "gpt-4o-mini",
+      instructions: mockInterviewSystemPrompt(jobListingResearchResponse, interviewGuide),
+      input: combinedHistory,
+      text: { 
+        format: zodTextFormat(MockInterviewMessageResponseSchema, "mock_interview_message_response") 
+      },
+    });
+
+    // Extract and validate the parsed response
+    const result = response.output_parsed;
+    if (!result) {
+      throw new Error("OpenAI Response gave an empty result");
+    }
+
+    return result;
+  } catch (error) {
+    // Re-throw with more context if it's not already an Error
+    if (error instanceof Error) {
+      throw new Error(`Failed to generate next interview message: ${error.message}`);
+    }
+    throw new Error(`Failed to generate next interview message: ${String(error)}`);
   }
 }
 

@@ -234,83 +234,84 @@ export const savedDeepResearchReports = {
 
 export const savedInterviewGuide = `### 1) Role Snapshot
 
-The Account Manager at Coca-Cola Northeast is responsible for managing and growing relationships with store owners in a designated territory. Success is defined by meeting sales quotas, ensuring customer satisfaction, and promoting brand loyalty. Key performance indicators (KPIs) include sales revenue, customer retention rates, and execution of promotional campaigns.
+The Account Manager at Coca-Cola Northeast acts as the primary liaison between management and store owners, focusing on developing sales strategies and fostering relationships to drive growth. Success is defined by achieving sales quotas, maintaining customer satisfaction, and executing effective promotional programs, with key performance indicators including sales revenue, customer retention, and market share expansion.
 
 ### 2) Strategic Context — High-Yield Facts
 
-- Coca-Cola Northeast focuses on expanding its market presence in New England and upstate New York.
-- The company emphasizes sustainability, including the introduction of 100% recycled PET bottles.
-- Strong local community ties and partnerships enhance brand loyalty and market share.
-- The beverage industry is increasingly shifting towards healthier and eco-friendly options.
-- Account Managers collaborate closely with various internal teams (Sales, Marketing, Distribution) and external partners (retailers).
-- The role requires physical tasks, including lifting and merchandising, which may pose challenges.
-- Familiarity with sales analytics and CRM tools (e.g., Salesforce) is essential.
-- The company employs a sales-driven approach to customer relationship management.
+- Coca-Cola Northeast operates in New England and upstate New York, focusing on regional expansion and community engagement.
+- The company emphasizes sustainability, introducing 100% recycled PET bottles to reduce plastic waste.
+- Key competitors include PepsiCo and Polar Beverages, highlighting the need for innovative sales strategies.
+- Sales force automation tools and CRM systems are integral for managing accounts and tracking progress.
+- The company values strong relationships with clients, distributors, and internal teams, essential for driving sales growth.
 
 ### 3) High-Impact Topics to Probe
 
-- **Sales Strategy Execution:** *Vital for achieving revenue targets and ensuring market growth.*
-- **Customer Relationship Management:** *Key to maintaining customer satisfaction and loyalty.*
-- **Sustainability Initiatives:** *Aligns with company values and market trends towards eco-friendliness.*
-- **Collaboration with Internal Teams:** *Essential for operational efficiency and effective promotional activities.*
-- **Adaptability to Market Changes:** *Important for responding to consumer preferences and competition.*
+- **Sales Strategy:** *Understanding how to develop and implement effective sales tactics is crucial for meeting revenue targets.*
+- **Customer Relationship Management:** *Building and maintaining strong customer relationships directly impacts satisfaction and retention.*
+- **Inventory Management:** *Ensuring appropriate inventory levels is vital for meeting customer demand and optimizing sales.*
+- **Promotional Programs:** *Effective execution of promotional activities enhances brand visibility and drives sales growth.*
+- **Sustainability Initiatives:** *Aligning with the company’s commitment to sustainability can enhance customer engagement and brand loyalty.*
 
 ### 4) Tailored Question Bank
 
 * **Job-Specific (2-4):**
-  - What sales strategies have you implemented to achieve revenue targets in your previous roles?
-  - How do you utilize CRM tools to manage customer relationships effectively?
+  - How do you utilize sales force automation tools to manage your accounts effectively?
+  - Describe your process for analyzing customer needs to drive sales growth.
   
 * **Behavioral (2-4):**
-  - Can you describe a time when you successfully resolved a conflict with a customer?
-  - What has been your most rewarding experience in building relationships with clients?
+  - Can you share a time when you successfully turned around a dissatisfied customer relationship?
+  - Tell me about a successful promotional campaign you implemented and its impact on sales.
 
 * **Situational (2-4):**
-  - How would you handle a situation where a key account is unhappy with product availability?
-  - What would you do if you had to adjust a promotional strategy mid-campaign due to unexpected market changes?
+  - What would you do if a key account is consistently underperforming?
+  - How would you prioritize multiple promotional activities across different accounts?
 
 * **Culture/Values (1-2):**
-  - Which of Coca-Cola Northeast’s core values resonates with you the most, and why?
-  - How do you contribute to a positive work environment in a sales-driven team?
+  - How do you align your sales strategies with Coca-Cola Northeast's commitment to sustainability?
 
 ### 5) Signals of Strong Answers
 
-* **Sales Strategy Execution — Signals:**
-  - Demonstrates measurable outcomes from implemented strategies.
-  - Shows understanding of market dynamics and customer needs.
+- **Sales Strategy — Signals:**
+  * Evidence of data-driven decision-making.
+  * Clear examples of past sales strategy development and outcomes.
+  * Understanding of market trends and customer demographics.
 
-* **Customer Relationship Management — Signals:**
-  - Provides examples of successful long-term relationships built.
-  - Discusses proactive communication and follow-up practices.
+- **Customer Relationship Management — Signals:**
+  * Demonstrated ability to build rapport and trust with clients.
+  * Specific metrics or feedback indicating customer satisfaction improvements.
+  * Examples of proactive communication and problem resolution.
 
-* **Sustainability Initiatives — Signals:**
-  - Articulates knowledge of eco-friendly practices within the industry.
-  - Shares personal commitment to sustainability in professional settings.
+- **Inventory Management — Signals:**
+  * Understanding of inventory turnover rates and stock management techniques.
+  * Examples of how effective inventory management led to sales success.
+  * Ability to identify and address inventory-related challenges.
 
-* **Collaboration with Internal Teams — Signals:**
-  - Describes effective teamwork and cross-departmental collaboration.
-  - Highlights successful outcomes from collaborative efforts.
+- **Promotional Programs — Signals:**
+  * Specific examples of successful promotions and their results.
+  * Understanding of target demographics for promotional activities.
+  * Ability to adapt strategies based on performance metrics.
 
-* **Adaptability to Market Changes — Signals:**
-  - Shows examples of quick decision-making in response to market shifts.
-  - Discusses the importance of staying informed about industry trends.
+- **Sustainability Initiatives — Signals:**
+  * Knowledge of sustainability trends in the beverage industry.
+  * Examples of how sustainability efforts influenced customer relationships.
+  * Ability to articulate the importance of sustainability in sales strategies.
 
 ### 6) Follow-Up Patterns (Global)
 
-* **Quantify Impact:** “What metric moved, by how much, and over what period?”
-* **Stakeholders & Trade-offs:** “Who owned what? What did you trade off and why?”
-* **Data & Tooling:** “What inputs did you need, and how did you get them?”
-* **Risk & Mitigation:** “What went wrong or could have? How did you prevent/escalate?”
+* **Quantify Impact:** “What sales increase did you achieve after implementing that strategy?”
+* **Stakeholders & Trade-offs:** “Who were the key decision-makers in that situation, and what trade-offs did you consider?”
+* **Data & Tooling:** “What specific data did you analyze to support your sales approach?”
+* **Risk & Mitigation:** “What challenges did you foresee with that strategy, and how did you address them?”
 
 ### 7) Micro-Glossary
 
-* **CRM:** Customer Relationship Management - systems used to manage a company’s interactions with current and potential customers.
-* **PET:** Polyethylene Terephthalate - a type of plastic commonly used for beverage bottles.
-* **SKU:** Stock Keeping Unit - a unique identifier for each distinct product and service that can be purchased.
+* **CRM:** Customer Relationship Management, systems used to manage interactions with customers.
+* **SKU:** Stock Keeping Unit, a unique identifier for each distinct product and service that can be purchased.
+* **PET:** Polyethylene Terephthalate, a type of plastic used for beverage containers.
 
 ### 8) Red Flags to Watch
 
-* Lacks specific examples of successful sales strategies or customer relationships.
-* Fails to demonstrate knowledge of sustainability initiatives or industry trends.
-* Shows difficulty in articulating collaboration with internal teams or conflict resolution.
-* Ignores the physical demands of the role or underestimates its significance.`;
+* Lack of specific examples demonstrating past sales success or customer relationship management.
+* Inability to articulate how they would align with Coca-Cola's sustainability goals.
+* Vague responses regarding inventory management or promotional effectiveness.
+* Ignoring the importance of collaboration with internal teams and external partners.`;

@@ -1,8 +1,9 @@
 'use server';
 
 import { scrapeJobListing } from '@/utils/scrape-job-listing';
-import { parseJobListingAttributes, performDeepResearch, createInterviewGuide } from '@/utils/generate-llm-response';
+import { parseJobListingAttributes, performDeepResearch, createInterviewGuide, generateNextInterviewMessage } from '@/utils/generate-llm-response';
 import type { JobListingResearchResponse, DeepResearchReports } from '@/types';
+import type { EasyInputMessage } from "openai/resources/responses/responses";
 import CONFIG from "@/app/config";
 import { savedJobParseResponse, savedDeepResearchReports, savedInterviewGuide } from "@/app/saved-responses";
 import { readFile } from 'fs/promises';
@@ -126,6 +127,41 @@ export async function createInterviewGuideAction(
   } catch (error) {
     // Handle errors and return error message
     const message = error instanceof Error ? error.message : 'Failed to create interview guide';
+    return { success: false, error: message };
+  }
+}
+
+/**
+ * Server action to generate the next message in a mock interview conversation.
+ * 
+ * This function runs on the server, keeping the API key secure.
+ * It takes the conversation history and current message, then generates a structured
+ * response using OpenAI's responses.parse API. Returns only the message content
+ * (not the reasoning) from the response.
+ * 
+ * @param combinedHistory - Array of previous messages in the conversation (conversation history) PLUS the most recent message
+ * @param jobListingResearchResponse - Parsed job listing metadata used to generate the interview system prompt
+ * @param interviewGuide - The interview guide (markdown format) used to provide context for the interview bot
+ * @returns An object with either { success: true, nextMessage: string } or { success: false, error: string }
+ */
+export async function generateNextInterviewMessageAction(
+  combinedHistory: EasyInputMessage[], // includes most recent message
+  jobListingResearchResponse: JobListingResearchResponse,
+  interviewGuide: string
+) {
+  try {
+    // Call the generateNextInterviewMessage function - this runs on the server where process.env is available
+    const response = await generateNextInterviewMessage(
+      combinedHistory,
+      jobListingResearchResponse,
+      interviewGuide
+    );
+    
+    // Extract only the message content (not the reasoning) from the response
+    return { success: true, nextMessage: response.message };
+  } catch (error) {
+    // Handle errors and return error message
+    const message = error instanceof Error ? error.message : 'Failed to generate next interview message';
     return { success: false, error: message };
   }
 }

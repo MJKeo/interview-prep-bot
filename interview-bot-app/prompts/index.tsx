@@ -1,4 +1,6 @@
 export { JOB_LISTING_PARSING_PROMPT_V1 } from "./job-parsing-prompts";
+export { DISTILLATION_SYSTEM_PROMPT_V1 } from "./interview-guide-prompts";
+export { mockInterviewSystemPrompt } from "./interview-prompts";
 export { 
     COMPANY_STRATEGY_SYSTEM_PROMPT_V1,
     COMPANY_STRATEGY_SYSTEM_PROMPT_V2, 
@@ -17,4 +19,3 @@ export {
     domainKnowledgeQuery,
     domainKnowledgeInputPrompt,
 } from "./deep-research-prompts";
-export { DISTILLATION_SYSTEM_PROMPT_V1 } from "./interview-guide-prompts";

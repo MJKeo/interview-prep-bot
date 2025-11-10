@@ -1,20 +1,7 @@
 "use client";
 
 import "./perform-analysis-screen.css";
-
-/**
- * Type definition for a chat message.
- */
-interface Message {
-  /**
-   * The role of the message sender - either "user" or "assistant".
-   */
-  role: "user" | "assistant";
-  /**
-   * The content/text of the message.
-   */
-  content: string;
-}
+import type { EasyInputMessage } from "openai/resources/responses/responses";
 
 /**
  * Props for the PerformAnalysisScreen component.
@@ -22,9 +9,9 @@ interface Message {
 interface PerformAnalysisScreenProps {
   /**
    * The conversation history from the mock interview.
-   * Array of messages with role and content.
+   * Array of messages with role and content in EasyInputMessage format.
    */
-  messages: Message[];
+  messages: EasyInputMessage[];
 }
 
 /**

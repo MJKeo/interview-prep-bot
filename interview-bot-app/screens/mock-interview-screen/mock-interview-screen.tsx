@@ -3,93 +3,131 @@
 import { useState, useRef, useEffect } from "react";
 import "./mock-interview-screen.css";
 import Button from "@/components/button";
-
-/**
- * Type definition for a chat message.
- */
-interface Message {
-  /**
-   * The role of the message sender - either "user" or "assistant".
-   */
-  role: "user" | "assistant";
-  /**
-   * The content/text of the message.
-   */
-  content: string;
-}
+import { generateNextInterviewMessageAction } from "@/app/actions";
+import type { JobListingResearchResponse } from "@/types";
+import type { EasyInputMessage } from "openai/resources/responses/responses";
 
 /**
  * Props for the MockInterviewScreen component.
  */
 interface MockInterviewScreenProps {
   /**
+   * Parsed job listing metadata used to generate the interview system prompt.
+   */
+  jobListingResearchResponse: JobListingResearchResponse;
+  /**
+   * The interview guide (markdown format) used to provide context for the interview bot.
+   */
+  interviewGuide: string;
+  /**
    * Callback function to navigate to the perform analysis screen.
    * Called when the user confirms the final review warning.
    * 
-   * @param messages - The conversation history to pass to the analysis screen
+   * @param messages - The conversation history to pass to the analysis screen (in EasyInputMessage format)
    */
-  onPerformFinalReview: (messages: Message[]) => void;
+  onPerformFinalReview: (messages: EasyInputMessage[]) => void;
 }
 
 /**
  * Screen component for the mock interview.
- * Displays a chatbot interface with message bubbles, scrollable chat history,
- * and testing controls to send messages as either user or assistant.
+ * Displays a chatbot interface with message bubbles, scrollable chat history.
  */
-export default function MockInterviewScreen({ onPerformFinalReview }: MockInterviewScreenProps) {
+export default function MockInterviewScreen({ 
+  jobListingResearchResponse, 
+  interviewGuide, 
+  onPerformFinalReview 
+}: MockInterviewScreenProps) {
   // State to store the array of messages in the conversation
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<EasyInputMessage[]>([]);
   // State to store the current input field value
   const [inputValue, setInputValue] = useState<string>("");
   // State to control the visibility of the warning modal
   const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
+  // State to track if a message is being generated (to prevent multiple simultaneous requests)
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  // State to store error messages to display to the user
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // Ref to the messages container for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   /**
    * Effect hook that scrolls to the bottom of the messages container
-   * whenever a new message is added.
+   * whenever a new message is added or when the typing indicator appears.
    */
   useEffect(() => {
-    // Scroll to the bottom when messages change
+    // Scroll to the bottom when messages change or when generating state changes
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isGenerating]);
 
   /**
-   * Handler function to send a message as the user.
-   * Adds a new message with role "user" to the messages array.
+   * Handler function to send a message as the user and generate an assistant response.
+   * Adds the user message to the display immediately, then calls the API to generate
+   * the assistant's response. Updates both the conversation history and display when complete.
    */
-  const handleSendAsUser = () => {
-    // Only add message if input is not empty
-    if (inputValue.trim()) {
-      // Add new user message to the messages array
-      setMessages((prev) => [...prev, { role: "user", content: inputValue }]);
-      // Clear the input field
-      setInputValue("");
+  const handleSendUserMessage = async () => {
+    // Only proceed if input is not empty and not already generating a response
+    if (!inputValue.trim() || isGenerating) {
+      return;
     }
-  };
 
-  /**
-   * Handler function to send a message as the assistant.
-   * Adds a new message with role "assistant" to the messages array.
-   */
-  const handleSendAsAssistant = () => {
-    // Only add message if input is not empty
-    if (inputValue.trim()) {
-      // Add new assistant message to the messages array
-      setMessages((prev) => [...prev, { role: "assistant", content: inputValue }]);
-      // Clear the input field
-      setInputValue("");
+    console.log("Message length before sending: ", messages.length);
+
+    // Store the user's message content before clearing the input
+    const userMessageContent = inputValue.trim();
+    // Clear the input field immediately for better UX
+    setInputValue("");
+    // Clear any previous error messages when sending a new message
+    setErrorMessage(null);
+
+    // Create the user message object in EasyInputMessage format
+    const userMessage: EasyInputMessage = { role: "user", content: userMessageContent };
+
+    const combinedMessages = [...messages, userMessage];
+    
+    // Add user message to the display immediately
+    setMessages(combinedMessages);
+    
+    // Set generating state to prevent multiple simultaneous requests
+    setIsGenerating(true);
+
+    try {
+      // Call the server action to generate the next interview message
+      console.log("Generating next interview message...");
+      const result = await generateNextInterviewMessageAction(
+        combinedMessages,
+        jobListingResearchResponse,
+        interviewGuide
+      );
+
+      // Check if the action was successful
+      if (result.success && result.nextMessage) {
+        // Add the assistant's response to the conversation
+        const assistantMessage: EasyInputMessage = { role: "assistant", content: result.nextMessage };
+        setMessages((prev) => [...prev, assistantMessage]);
+      } else {
+        // Handle error from server action - show error message to user
+        const errorMsg = result.error || "Failed to generate response";
+        setErrorMessage(errorMsg);
+      }
+    } catch (error) {
+      // Handle exceptions and display error message
+      const errorMsg = error instanceof Error ? error.message : "Failed to generate response";
+      setErrorMessage(errorMsg);
+    } finally {
+      // Reset generating state to allow new requests
+      setIsGenerating(false);
     }
   };
 
   /**
    * Handler function to start over and clear the entire conversation history.
-   * Resets the messages array to empty.
+   * Resets the messages array to empty and clears any error messages.
    */
   const handleStartOver = () => {
     // Clear all messages from the conversation
     setMessages([]);
+    // Clear any error messages
+    setErrorMessage(null);
   };
 
   /**
@@ -145,40 +183,58 @@ export default function MockInterviewScreen({ onPerformFinalReview }: MockInterv
               message.role === "user" ? "message-user" : "message-assistant"
             }`}
           >
-            {message.content}
+            {String(message.content)}
           </div>
         ))}
+        {/* Typing indicator bubble - shows while generating assistant response */}
+        {isGenerating && (
+          <div className="message-bubble message-assistant typing-indicator">
+            <div className="typing-dots">
+              <span className="typing-dot"></span>
+              <span className="typing-dot"></span>
+              <span className="typing-dot"></span>
+            </div>
+          </div>
+        )}
         {/* Invisible element at the bottom for auto-scrolling */}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Fixed input section at the bottom */}
       <div className="mock-interview-input-section">
-        <input
-          type="text"
-          className="mock-interview-input"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => {
-            // Allow Enter key to send as user for quick testing
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSendAsUser();
-            }
-          }}
-        />
+        {/* Error message display */}
+        {errorMessage && (
+          <div className="mock-interview-error-message">
+            {errorMessage}
+          </div>
+        )}
+        {/* Input and Send button inline */}
+        <div className="mock-interview-input-row">
+          <input
+            type="text"
+            className="mock-interview-input"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            disabled={isGenerating}
+            onKeyDown={(e) => {
+              // Allow Enter key to send as user, but only if not already generating
+              if (e.key === "Enter" && !e.shiftKey && !isGenerating) {
+                e.preventDefault();
+                handleSendUserMessage();
+              }
+            }}
+          />
+          <Button type="button" onClick={handleSendUserMessage} disabled={isGenerating}>
+            {isGenerating ? "Generating response..." : "Send"}
+          </Button>
+        </div>
+        {/* Other buttons centered below */}
         <div className="mock-interview-buttons">
-          <Button type="button" onClick={handleSendAsUser}>
-            send as user
+          <Button type="button" onClick={handleStartOver} disabled={isGenerating || messages.length === 0}>
+            Start Over
           </Button>
-          <Button type="button" onClick={handleSendAsAssistant}>
-            send as assistant
-          </Button>
-          <Button type="button" onClick={handleStartOver}>
-            start over
-          </Button>
-          <Button type="button" onClick={handlePerformFinalReview}>
-            perform final review
+          <Button type="button" onClick={handlePerformFinalReview} disabled={isGenerating || messages.length <= 3}>
+            Perform Final Review
           </Button>
         </div>
       </div>

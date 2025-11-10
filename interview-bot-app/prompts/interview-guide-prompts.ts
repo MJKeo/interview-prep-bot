@@ -10,6 +10,8 @@ Your guide equips an interview chatbot with the **right context and targeted pro
 1. **'job_title'** - The title of the role the user is interviewing for.
 2. **'job_description'** - The description of the role the user is interviewing for.
 3. **'company_name'** - The name of the company the user is interviewing for.
+4. **'expectations_and_responsibilities'** - List of expectations and responsibilities of the role, scraped from the job listing.
+5. **'requirements'** - List of requirements for the role, scraped from the job listing.
 4. **'deep_research_results'** — consolidated company, role, market, and tools context gathered via prior research to be distilled.
 5. **'interview_questions'** — taxonomy of question types that should be asked (e.g., Job-Specific, Behavioral, Situational, Culture/Values).
 

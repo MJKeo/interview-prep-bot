@@ -5,21 +5,8 @@ import EnterJobListingUrlScreen from "@/screens/enter-job-listing-url-screen";
 import ResearchJobScreen from "@/screens/research-job-screen";
 import MockInterviewScreen from "@/screens/mock-interview-screen";
 import PerformAnalysisScreen from "@/screens/perform-analysis-screen";
-import { ScreenName } from "@/types";
-
-/**
- * Type definition for a chat message.
- */
-interface Message {
-  /**
-   * The role of the message sender - either "user" or "assistant".
-   */
-  role: "user" | "assistant";
-  /**
-   * The content/text of the message.
-   */
-  content: string;
-}
+import { ScreenName, type JobListingResearchResponse } from "@/types";
+import type { EasyInputMessage } from "openai/resources/responses/responses";
 
 /**
  * Main page component that manages screen navigation using state.
@@ -30,8 +17,12 @@ export default function Home() {
   const [screen, setScreen] = useState<ScreenName>(ScreenName.EnterJobListingUrl);
   // State to store the scraped job listing content when transitioning to research screen
   const [jobListingScrapeContent, setJobListingScrapeContent] = useState<string | null>(null);
+  // State to store the job listing research response when transitioning to mock interview screen
+  const [jobListingResearchResponse, setJobListingResearchResponse] = useState<JobListingResearchResponse | null>(null);
+  // State to store the interview guide when transitioning to mock interview screen
+  const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
   // State to store the conversation messages when transitioning to perform analysis screen
-  const [conversationMessages, setConversationMessages] = useState<Message[] | null>(null);
+  const [conversationMessages, setConversationMessages] = useState<EasyInputMessage[] | null>(null);
 
   /**
    * Callback function to handle navigation to the research screen.
@@ -48,8 +39,17 @@ export default function Home() {
   /**
    * Callback function to handle navigation to the mock interview screen.
    * Called when the "start mock interview" button is pressed.
+   * 
+   * @param jobListingResearchResponse - Parsed job listing metadata to pass to the interview screen
+   * @param interviewGuide - The interview guide to pass to the interview screen
    */
-  const handleNavigateToMockInterview = () => {
+  const handleNavigateToMockInterview = (
+    jobListingResearchResponse: JobListingResearchResponse,
+    interviewGuide: string
+  ) => {
+    // Store the job listing research response and interview guide
+    setJobListingResearchResponse(jobListingResearchResponse);
+    setInterviewGuide(interviewGuide);
     // Navigate to mock interview screen
     setScreen(ScreenName.MockInterview);
   };
@@ -58,9 +58,9 @@ export default function Home() {
    * Callback function to handle navigation to the perform analysis screen.
    * Called when the user confirms the final review warning.
    * 
-   * @param messages - The conversation history to pass to the analysis screen
+   * @param messages - The conversation history to pass to the analysis screen (in EasyInputMessage format)
    */
-  const handleNavigateToPerformAnalysis = (messages: Message[]) => {
+  const handleNavigateToPerformAnalysis = (messages: EasyInputMessage[]) => {
     // Store the conversation messages and navigate to perform analysis screen
     setConversationMessages(messages);
     setScreen(ScreenName.PerformAnalysis);
@@ -82,7 +82,13 @@ export default function Home() {
           />
         ) : null;
       case ScreenName.MockInterview:
-        return <MockInterviewScreen onPerformFinalReview={handleNavigateToPerformAnalysis} />;
+        return jobListingResearchResponse && interviewGuide ? (
+          <MockInterviewScreen 
+            jobListingResearchResponse={jobListingResearchResponse}
+            interviewGuide={interviewGuide}
+            onPerformFinalReview={handleNavigateToPerformAnalysis} 
+          />
+        ) : null;
       case ScreenName.PerformAnalysis:
         return conversationMessages ? (
           <PerformAnalysisScreen messages={conversationMessages} />
