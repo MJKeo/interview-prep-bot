@@ -1,5 +1,8 @@
 const CONFIG = {
-    useCachedData: true,
+    useCachedScrape: true,
+    useCachedListingAttributes: true,
+    useCachedDeepResearch: true,
+    useCachedInterviewGuide: true,
 };
 
 export default CONFIG;

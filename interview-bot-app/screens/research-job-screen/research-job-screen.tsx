@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import "./research-job-screen.css";
 import { parseJobListingAttributesAction, performDeepResearchAction, createInterviewGuideAction } from "@/app/actions";
 import type { JobListingResearchResponse, DeepResearchReports } from "@/types";
@@ -172,41 +174,76 @@ export default function ResearchJobScreen({ jobListingScrapeContent, onStartMock
     createGuide();
   }, [deepResearchReports, parsedData]);
 
+  const markdown = `
+# Hello World 👋
+This is **Markdown** rendered in React.
+- Supports *lists*
+- [Links](https://example.com)
+- Tables | too | 🍀
+`;
+
   return (
     <div className="research-job-container">
+      {/* Display loading state in top left corner with shimmer animation */}
+      {loadingStage && (
+        <div className="loading-state">
+          <div className="loading-text shimmer">{loadingStage}</div>
+        </div>
+      )}
+      
       <div className="research-job-content">
         <h1 className="research-job-title">Job Listing Research</h1>
-        
-        {/* Display loading stage in textbox while loading */}
-        {loadingStage && (
-          <textarea
-            className="parsed-data-textbox"
-            value={loadingStage}
-            readOnly
-            rows={30}
-          />
-        )}
         
         {/* Display error message if parsing failed */}
         {error && <div className="error-message">{error}</div>}
         
-
-        {/* Display interview guide in a textbox when it's ready */}
-        {interviewGuide && !loadingStage && (
-          <div className="interview-guide-section">
-            <h2 className="research-report-title">Interview Guide</h2>
-            <textarea
-              className="parsed-data-textbox"
-              value={interviewGuide}
-              readOnly
-              rows={30}
-            />
-            {/* Display start mock interview button when research has been completed */}
-            {hasCompletedResearch && (
-              <Button type="button" onClick={onStartMockInterview}>
-                start mock interview
-              </Button>
-            )}
+        {/* Display parsed job listing data as text labels */}
+        {parsedData && (
+          <div className="parsed-data-section">
+            <div className="data-label">
+              <span className="label-text">Role Title:</span>
+              <span className="label-value">{parsedData.job_title}</span>
+            </div>
+            <div className="data-label">
+              <span className="label-text">Company Name:</span>
+              <span className="label-value">{parsedData.company_name}</span>
+            </div>
+            <div className="data-label">
+              <span className="label-text">Job Location:</span>
+              <span className="label-value">{parsedData.job_location}</span>
+            </div>
+            <div className="data-label">
+              <span className="label-text">Job Description:</span>
+              <span className="label-value">{parsedData.job_description}</span>
+            </div>
+          </div>
+        )}
+        
+        {/* Display deep research reports as rendered markdown */}
+        {deepResearchReports && (
+          <div className="deep-research-section">
+            <h2 className="research-report-title">Deep Research Reports</h2>
+            <div className="markdown">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.companyStrategyReport}</ReactMarkdown>
+            </div>
+            <div className="markdown">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.roleSuccessReport}</ReactMarkdown>
+            </div>
+            <div className="markdown">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.teamCultureReport}</ReactMarkdown>
+            </div>
+            <div className="markdown">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.domainKnowledgeReport}</ReactMarkdown>
+            </div>
+          </div>
+        )}
+        
+        {/* Display start mock interview button when research has been completed */}
+        {hasCompletedResearch && (
+          <div className="button-section">
+            <Button type="button" onClick={onStartMockInterview}>
+              start mock interview
+            </Button>
           </div>
         )}
       </div>

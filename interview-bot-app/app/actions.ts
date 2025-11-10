@@ -21,8 +21,8 @@ import { join } from 'path';
  */
 export async function scrapeJobListingAction(url: string) {
   try {
-    if (CONFIG.useCachedData) {
-      await new Promise(r => setTimeout(r, 500));
+    if (CONFIG.useCachedScrape) {
+      await new Promise(r => setTimeout(r, 1500));
       return { success: true, content: "Cached data" };
     }
     // Call the scrape function - this runs on the server where process.env is available
@@ -48,8 +48,8 @@ export async function scrapeJobListingAction(url: string) {
  */
 export async function parseJobListingAttributesAction(jobListingScrapeContent: string) {
   try {
-    if (CONFIG.useCachedData) {
-      await new Promise(r => setTimeout(r, 500));
+    if (CONFIG.useCachedListingAttributes) {
+      await new Promise(r => setTimeout(r, 1500));
       return { success: true, data: savedJobParseResponse };
     }
     // Call the parse function - this runs on the server where process.env is available
@@ -74,8 +74,8 @@ export async function parseJobListingAttributesAction(jobListingScrapeContent: s
  */
 export async function performDeepResearchAction(jobListingResearchResponse: JobListingResearchResponse) {
   try {
-    if (CONFIG.useCachedData) {
-      await new Promise(r => setTimeout(r, 500));
+    if (CONFIG.useCachedDeepResearch) {
+      await new Promise(r => setTimeout(r, 1500));
       return { success: true, reports: savedDeepResearchReports };
     }
     // Call the performDeepResearch function - this runs on the server where process.env is available
@@ -105,8 +105,8 @@ export async function createInterviewGuideAction(
   deepResearchReports: DeepResearchReports
 ) {
   try {
-    if (CONFIG.useCachedData) {
-      await new Promise(r => setTimeout(r, 500));
+    if (CONFIG.useCachedInterviewGuide) {
+      await new Promise(r => setTimeout(r, 1500));
       return { success: true, guide: savedInterviewGuide };
     }
 

@@ -9,9 +9,13 @@ import {
 } from "@/app/openai";
 import {
   companyStrategyQuery,
+  companyStrategyInputPrompt,
   roleSuccessQuery,
+  roleSuccessInputPrompt,
   teamCultureQuery,
+  teamCultureInputPrompt,
   domainKnowledgeQuery,
+  domainKnowledgeInputPrompt,
 } from "@/prompts";
 import { run } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
@@ -58,27 +62,6 @@ export async function parseJobListingAttributes(
 }
 
 /**
- * Creates a JSON input string for research agents in the format specified by the prompts.
- * 
- * @param jobTitle - The title of the role being interviewed for
- * @param jobLocation - The location of the job (city, state, zip code, or "remote")
- * @param companyName - The name of the company that is hiring
- * @param webSearchQuery - The web search query string to execute
- * @returns A JSON string matching the agent input format specification
- */
-function createAgentInput(
-  researchResponse: JobListingResearchResponse,
-  webSearchQuery: string,
-): string {
-  return JSON.stringify({
-    job_title: researchResponse.job_title,
-    job_location: researchResponse.job_location,
-    company: researchResponse.company_name,
-    web_search_query: webSearchQuery,
-  });
-}
-
-/**
  * Executes all deep-research agents concurrently and collates their outputs.
  *
  * @param jobListingResearchResponse - Parsed job listing metadata that seeds each agent query.
@@ -98,10 +81,10 @@ export async function performDeepResearch(
   // Launch all agent runs immediately so they can execute in parallel.
   // Each agent receives a JSON string matching the format specified in the prompts.
   const researchTasks = [
-    run(companyStrategyAgent, createAgentInput(jobListingResearchResponse, companyStrategyQuery(companyName))),
-    run(roleSuccessAgent, createAgentInput(jobListingResearchResponse, roleSuccessQuery(companyName, jobTitle))),
-    run(teamCultureAgent, createAgentInput(jobListingResearchResponse, teamCultureQuery(companyName, jobTitle))),
-    run(domainKnowledgeAgent, createAgentInput(jobListingResearchResponse, domainKnowledgeQuery(companyName, jobTitle))),
+    run(companyStrategyAgent, companyStrategyInputPrompt(companyName)),
+    run(roleSuccessAgent, roleSuccessInputPrompt(companyName, jobTitle)),
+    run(teamCultureAgent, teamCultureInputPrompt(companyName, jobTitle)),
+    run(domainKnowledgeAgent, domainKnowledgeInputPrompt(companyName, jobTitle)),
   ] as const;
 
   try {

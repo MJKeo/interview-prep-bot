@@ -17,10 +17,29 @@
   gap: 1.5rem;
 }
 
-/* Styles for the perform analysis label */
-.perform-analysis-label {
-  font-size: 1.5rem; /* text-2xl */
-  font-weight: 500; /* font-medium */
+/* Styles for the perform analysis title */
+.perform-analysis-title {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700; /* font-bold */
   color: rgb(17 24 39); /* text-gray-900 */
+  margin-bottom: 0.5rem;
+}
+
+/* Styles for the perform analysis textbox */
+.perform-analysis-textbox {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid rgb(209 213 219); /* border-gray-300 */
+  border-radius: 0.375rem; /* rounded-md */
+  font-family: monospace;
+  font-size: 0.875rem; /* text-sm */
+  resize: vertical;
+  background-color: rgb(249 250 251); /* bg-gray-50 */
+  line-height: 1.5;
+}
+
+.perform-analysis-textbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(59 130 246); /* focus:ring-2 focus:ring-blue-500 */
 }
 
