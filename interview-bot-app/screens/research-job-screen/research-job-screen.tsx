@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import "./research_job_screen.css";
+import "./research-job-screen.css";
 import { parseJobListingAttributesAction, performDeepResearchAction, createInterviewGuideAction } from "@/app/actions";
 import type { JobListingResearchResponse, DeepResearchReports } from "@/types";
+import Button from "@/components/button";
 
 /**
  * Props for the ResearchJobScreen component.
@@ -14,6 +15,11 @@ interface ResearchJobScreenProps {
    * This is required and will be parsed to extract structured attributes.
    */
   jobListingScrapeContent: string;
+  /**
+   * Callback function to navigate to the mock interview screen.
+   * Called when the "start mock interview" button is clicked.
+   */
+  onStartMockInterview: () => void;
 }
 
 /**
@@ -21,9 +27,11 @@ interface ResearchJobScreenProps {
  * Accepts scraped job listing content, parses it to extract structured attributes,
  * and displays the results in a textbox.
  */
-export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJobScreenProps) {
+export default function ResearchJobScreen({ jobListingScrapeContent, onStartMockInterview }: ResearchJobScreenProps) {
    // State for the current loading stage message
    const [loadingStage, setLoadingStage] = useState<string | null>(null);
+   // State to track if research has been completed successfully
+   const [hasCompletedResearch, setHasCompletedResearch] = useState<boolean>(false);
    // State for error messages
    const [error, setError] = useState<string | null>(null);
   // State for the parsed job listing attributes
@@ -141,6 +149,8 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
         if (guideResult.success && guideResult.guide) {
           // Store the interview guide
           setInterviewGuide(guideResult.guide);
+          // Mark research as completed
+          setHasCompletedResearch(true);
         } else {
           // Handle error from guide creation action
           throw new Error(guideResult.error || "Failed to create interview guide");
@@ -152,6 +162,7 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
           : "Failed to create interview guide";
         setError(guideErrorMessage);
         setInterviewGuide(null);
+        setHasCompletedResearch(false);
       } finally {
         setLoadingStage(null);
       }
@@ -190,6 +201,12 @@ export default function ResearchJobScreen({ jobListingScrapeContent }: ResearchJ
               readOnly
               rows={30}
             />
+            {/* Display start mock interview button when research has been completed */}
+            {hasCompletedResearch && (
+              <Button type="button" onClick={onStartMockInterview}>
+                start mock interview
+              </Button>
+            )}
           </div>
         )}
       </div>
