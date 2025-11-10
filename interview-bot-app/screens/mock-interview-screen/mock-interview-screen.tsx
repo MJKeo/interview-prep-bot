@@ -49,6 +49,60 @@ export default function MockInterviewScreen({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // Ref to the messages container for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Ref to track if initial message has been sent (prevents duplicate sends on mount)
+  const hasInitialMessageSentRef = useRef<boolean>(false);
+
+  /**
+   * Helper function to send a preliminary "Hello" message and generate the bot's first response.
+   * This message is not displayed in the UI - only the assistant's response is shown.
+   * Used on component mount and when starting over.
+   */
+  const sendInitialMessage = async () => {
+    // Set generating state to disable input and show typing indicator
+    setIsGenerating(true);
+
+    try {
+      // Create the preliminary "Hello" message (not added to display)
+      // Send only the preliminary message to the API (messages array is empty at this point)
+      const messagesToSend: EasyInputMessage[] = [{ role: "user", content: "Hello" }];
+
+      // Call the server action to generate the first interview message
+      const result = await generateNextInterviewMessageAction(
+        messagesToSend,
+        jobListingResearchResponse,
+        interviewGuide
+      );
+
+      // Check if the action was successful
+      if (result.success && result.nextMessage) {
+        // Add only the assistant's response to the conversation (preliminary message is not added)
+        const assistantMessage: EasyInputMessage = { role: "assistant", content: result.nextMessage };
+        setMessages([assistantMessage]);
+      } else {
+        // Handle error from server action - show error message to user
+        const errorMsg = result.error || "Failed to generate initial response";
+        setErrorMessage(errorMsg);
+      }
+    } catch (error) {
+      // Handle exceptions and display error message
+      const errorMsg = error instanceof Error ? error.message : "Failed to generate initial response";
+      setErrorMessage(errorMsg);
+    } finally {
+      // Reset generating state to allow new requests
+      setIsGenerating(false);
+    }
+  };
+
+  /**
+   * Effect hook that sends the initial "Hello" message when the component first mounts.
+   * This triggers the bot to make the first message in the conversation.
+   */
+  useEffect(() => {
+    // Only send initial message once on mount
+    if (messages.length === 0 && !isGenerating) {
+      sendInitialMessage();
+    }
+  }, []); // Empty dependency array - only run on mount
 
   /**
    * Effect hook that scrolls to the bottom of the messages container
@@ -121,13 +175,16 @@ export default function MockInterviewScreen({
 
   /**
    * Handler function to start over and clear the entire conversation history.
-   * Resets the messages array to empty and clears any error messages.
+   * Resets the messages array to empty, clears any error messages, and sends
+   * a new initial "Hello" message to trigger the bot's first response.
    */
   const handleStartOver = () => {
     // Clear all messages from the conversation
     setMessages([]);
     // Clear any error messages
     setErrorMessage(null);
+    // Send the initial "Hello" message to get the bot's first response
+    sendInitialMessage();
   };
 
   /**
