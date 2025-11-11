@@ -1,3 +1,5 @@
+import type { EasyInputMessage } from "openai/resources/responses/responses";
+
 /**
  * Validates if a string is a syntactically valid URL.
  * Checks that the URL has proper syntax (protocol, domain, etc.)
@@ -26,5 +28,30 @@ export function isValidURL(urlString: string): boolean {
     // If URL constructor throws an error, the URL is invalid
     return false;
   }
+}
+
+/**
+ * Converts a list of EasyInputMessage objects into a formatted transcript string.
+ * Renames "user" to "Candidate" and "assistant" to "Interviewer".
+ * 
+ * @param messages - Array of messages from the conversation
+ * @returns Formatted transcript string with speaker labels
+ */
+export function convertMessagesToTranscript(messages: EasyInputMessage[]): string {
+  // Map to rename entity roles to more readable names
+  const entityRenameMap: Record<string, string> = {
+    user: "Candidate",
+    assistant: "Interviewer",
+  };
+
+  let interviewTranscript = "";
+
+  // Iterate through each message and format it
+  for (const message of messages) {
+    const entityName = entityRenameMap[message.role] || "Unknown";
+    interviewTranscript += `${entityName}:\n${message.content}\n\n`;
+  }
+
+  return interviewTranscript;
 }
 

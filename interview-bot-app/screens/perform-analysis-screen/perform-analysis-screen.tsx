@@ -2,6 +2,7 @@
 
 import "./perform-analysis-screen.css";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
+import { convertMessagesToTranscript } from "@/utils/utils";
 
 /**
  * Props for the PerformAnalysisScreen component.
@@ -20,8 +21,10 @@ interface PerformAnalysisScreenProps {
  * Receives the conversation history from the mock interview.
  */
 export default function PerformAnalysisScreen({ messages }: PerformAnalysisScreenProps) {
-  // Convert messages array to JSON string for display
-  const messagesText = JSON.stringify(messages, null, 2);
+  // Convert messages array to formatted transcript string
+  const messagesText = convertMessagesToTranscript(messages);
+
+  console.log(messagesText);
 
   return (
     <div className="perform-analysis-container">

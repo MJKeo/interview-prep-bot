@@ -315,3 +315,90 @@ The Account Manager at Coca-Cola Northeast acts as the primary liaison between m
 * Inability to articulate how they would align with Coca-Cola's sustainability goals.
 * Vague responses regarding inventory management or promotional effectiveness.
 * Ignoring the importance of collaboration with internal teams and external partners.`;
+
+export const savedChatTranscript = `Interviewer:
+Hi there! Thank you for joining me today. What's your name?
+
+Candidate:
+Hey how's it going? My name's Mike what's yours?
+
+Interviewer:
+Hi Mike, I'm Kris. I'm doing well, thank you! Are you ready to dive into our conversation about the Account Manager role?
+
+Candidate:
+Let's do it
+
+Interviewer:
+Great! To start, can you give me a brief overview of your background and what motivated you to apply for the Account Manager position with Coca-Cola Northeast?
+
+Candidate:
+I have been working at Pepsi Co for the past 3 years after studying business management at Harvard. I've enjoyed working within the beverage sector but the career trajectory at Pepsi is a bit restrictive and I felt as if I would best advance my learnings and my career elsewhere
+
+Interviewer:
+That sounds like a solid background, Mike! What specific experience at PepsiCo involved analyzing customer needs to drive sales growth?
+
+Candidate:
+Right around the time I first started we were dealing with a problem: consumers were becoming more health conscious. We noticed consumer purchasing habits, especially in the suburbs, were shifting towards diet beverages (pepsi zero and diet pepsi). This meant we were oversupplying our vendors in terms of traditional drinks and undersupplying in terms of diet alternatives. To remedy this we could try manipulating consumer wants through marketing, but since this change is good for their health we instead opted to meet their new demands with our supply. This involved deep data dives into exact proportions that fit the current market and how we could automatically monitor this as it progresses / reverts (which it inevitably will)
+
+Interviewer:
+What actions did you take to communicate these changes with your vendors, and how did you measure the success of this supply adjustment?
+
+Candidate:
+In terms of vendor communications we updated the marketing in-store. More displays promoting our diet selection, showing how our products can contribute to the healthy lifestyle our consumers are pursuing. Anything related to the actual beverages they would sell was handled in communication with suppliers
+
+Interviewer:
+Can you share any specific metrics or outcomes that resulted from these changes? For example, did you see an increase in sales for the diet beverages or any improvement in vendor satisfaction?
+
+Candidate:
+I'm not sure of the specific numbers but the outcome was good!
+
+Interviewer:
+It's great to hear the outcome was positive! Moving on, can you recall a time when you turned around a dissatisfied customer relationship? What steps did you take to address their concerns?
+
+Candidate:
+I had one store out in Woburn that called with a complaint. They claimed they weren't getting their expected shipments of our products, or at least not in a timely manner. This meant they were understocked and missing out on potential revenue. It seemed strange to me that we'd mess up this process, but rather than dismissing their claims I dove into our distribution logs to see just what was going on
+
+Interviewer:
+What did you discover in the distribution logs, and how did you resolve the issue with the store?
+
+Candidate:
+It turns out that while we were distributing our intended quantity to that store, the numbers we were using were based on old data and were currently far underserving in the up-to-date landscape. I worked with the owner to calculate a more accurate supply count and updated our system to distribute this new amount
+
+Interviewer:
+What was the final result of this resolution? Did it lead to improved sales or a stronger relationship with the store owner?
+
+Candidate:
+I never heard a formal thank you but he didn't call again with a complaint, which to me is always a good sign
+
+Interviewer:
+Let’s shift gears a bit. How do you generally prioritize multiple promotional activities across different accounts, especially when resources are limited?
+
+Candidate:
+Usually I look at which promotional activities are likely to have the biggest impact for each account and which ones have deadlines coming up soon. I might start with the largest accounts or those that have been quieter, but also consider any seasonal opportunities. When resources are thin I try to focus on campaigns that align well with our overall goals, though sometimes I may miss a smaller but promising opportunity.
+
+Interviewer:
+How do you incorporate sustainability initiatives into your sales strategies?
+
+Candidate:
+I work to incorporate sustainability by highlighting any environmentally friendly aspects of our products in sales pitches and encouraging stores to use materials that reduce waste. Sometimes we'll run promotions on recyclable packaging or partner with environmental groups for joint events. Admittedly, we can't always control every aspect of the supply chain, but I try to push for greener practices where it's realistic.
+
+Interviewer:
+Thank you for sharing those insights, Mike. It sounds like you have a strong understanding of both sales strategies and customer relationship management. Now, I just have a couple of logistics questions. Are you comfortable with the Monday to Friday, 7:30 am to 4:30 pm work schedule, and are you located in or near Westborough, MA?
+
+Candidate:
+Yes, I'm comfortable with that schedule. I currently live in Cambridge, which is in the Boston area, so it's not too far from Westborough though there might be some commute but I'm used to traveling for work.
+
+Interviewer:
+Thank you for your responses, Mike. Before we finish, do you have any questions about the role or the company?
+
+Candidate:
+Yes, I was wondering what success looks like in the first six months for this role, and maybe a bit about the team culture I'll be joining? I've read some about Coca-Cola Northeast but would love a bit more context.
+
+Interviewer:
+In the first six months as an Account Manager, success would typically involve developing strong relationships with your assigned accounts, implementing effective sales strategies that meet or exceed sales targets, and ensuring that customer satisfaction remains high. As for the team culture, we aim for a collaborative environment where members support each other and share insights to drive collective success, all while aligning with our sustainability goals.
+
+Candidate:
+Thank you for explaining that. I'm excited about the possibility of joining and appreciate your time.
+
+Interviewer:
+Thank you for your time, Mike! I appreciate your interest in the Account Manager role, and we will be in touch soon.`
