@@ -5,8 +5,8 @@ import {
   MockInterviewMessageResponseSchema, 
   type MockInterviewMessageResponse, 
   type EvaluationReports,
-  PerformanceEvaluationResponseSchema,
-  type PerformanceEvaluationResponse,
+  AggregatedEvaluationResponseSchema,
+  type AggregatedEvaluationResponse
 } from "@/types";
 import {
   openai,
@@ -344,7 +344,7 @@ export async function performEvaluations(
 export async function performEvaluationAggregation(
   evaluations: EvaluationReports,
   jobListingData: JobListingResearchResponse
-): Promise<PerformanceEvaluationResponse> {
+): Promise<AggregatedEvaluationResponse> {
   try {
     // Extract all feedback arrays from each evaluation report and combine them into a single array
     // Each evaluation report contains a feedback array, so we flatten all of them together
@@ -366,7 +366,7 @@ export async function performEvaluationAggregation(
       instructions: aggregateEvaluationsPromptV1(jobListingData),
       input: input,
       text: { 
-        format: zodTextFormat(PerformanceEvaluationResponseSchema, "performance_evaluation_response") 
+        format: zodTextFormat(AggregatedEvaluationResponseSchema, "aggregated_evaluation_response") 
       },
     });
 

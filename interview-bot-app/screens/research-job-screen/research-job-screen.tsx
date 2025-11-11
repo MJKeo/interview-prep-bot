@@ -22,9 +22,10 @@ interface ResearchJobScreenProps {
    * Called when the "start mock interview" button is clicked.
    * 
    * @param jobListingResearchResponse - Parsed job listing metadata to pass to the interview screen
+   * @param deepResearchReports - Deep research reports to pass to the interview screen
    * @param interviewGuide - The interview guide to pass to the interview screen
    */
-  onStartMockInterview: (jobListingResearchResponse: JobListingResearchResponse, interviewGuide: string) => void;
+  onStartMockInterview: (jobListingResearchResponse: JobListingResearchResponse, deepResearchReports: DeepResearchReports, interviewGuide: string) => void;
 }
 
 /**
@@ -242,11 +243,11 @@ This is **Markdown** rendered in React.
         )}
         
         {/* Display start mock interview button when research has been completed */}
-        {hasCompletedResearch && parsedData && interviewGuide && (
+        {hasCompletedResearch && parsedData && deepResearchReports && interviewGuide && (
           <div className="button-section">
             <Button 
               type="button" 
-              onClick={() => onStartMockInterview(parsedData, interviewGuide)}
+              onClick={() => onStartMockInterview(parsedData, deepResearchReports, interviewGuide)}
             >
               start mock interview
             </Button>

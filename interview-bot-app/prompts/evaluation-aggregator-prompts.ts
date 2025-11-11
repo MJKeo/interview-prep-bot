@@ -29,22 +29,27 @@ Enable the candidate to improve their responses for the real interview, making t
 # OUTPUT (JSON)
 
 {
-  "summary": <One paragraph (4+ sentences). Addressed directly to candidate. A couple sentences on what they did well and a couple sentences on what they should focus on improving>,
-  "feedback": [
-      {
-      "type": <whether the feedback is highlighting a good response or providing constructive criticism for a bad one>,
-      "title": <Short, action-oriented label (e.g., “Quantify Results with Baseline→Delta→Timeframe”).>
-      "relevant_quotes": <direct transcript quote(s) from candidate's answer that are relevant to the feedback>,
-      "evaluation_explanation": <Why this answer is good or bad (based on the evaluation criteria)>,
-      "context_best_practices": <Why this is important for this job/role and tips and tricks for providing better answers to questions like this>,
-      "improved_example": <if constructive criticism, an example of a better response to the question>,
-      }
-  ]
+  "what_went_well_summary": <3-5 sentences. Addressed directly to candidate. Summary of what they did well in their interview>,
+  "what_went_well_feedback": <list of "good" feedback items dictating what went well>
+  "improvements_summary": <3-5 sentences. Addressed directly to the candidate. Summary of what they should focus on improving>,
+  "improvements_feedback": <list of "bad" feedback items dictating what they can do to improve>
 }
+
+# FEEDBACK SCHEMA ATTRIBUTES
+
+[
+  {
+    "type": <whether the feedback is highlighting a good response or providing constructive criticism for a bad one>,
+    "title": <Short, action-oriented label (e.g., “Quantify Results with Baseline→Delta→Timeframe”).>
+    "relevant_quotes": <direct transcript quote(s) from candidate's answer that are relevant to the feedback>,
+    "evaluation_explanation": <Why this answer is good or bad (based on the evaluation criteria)>,
+    "context_best_practices": <Why this is important for this job/role and tips and tricks for providing better answers to questions like this>,
+    "improved_example": <if constructive criticism, an example of a better response to the question>,
+  }
+]
 
 # ADDITIONAL GUIDELINES
 
-* Include a balance of good and bad feedback.
 * Only synthesize to the evaluations provided, do not make up any information, do not create your own evaluation of the candidate's performance.
 * No JSON, no code blocks, no meta-commentary about your process.
 * If a requested element has no sufficient evidence, omit it rather than guessing.
@@ -53,8 +58,7 @@ Enable the candidate to improve their responses for the real interview, making t
 
 * Similar pieces of feedback have been merged.
 * All feedback that was not explicitly filtered out has been included.
-* Every listed item includes concrete evidence and a coaching tip.
-* The summary balances praise and critique and is directly actionable.
+* Every feedback item includes concrete evidence and a coaching tip.
 
 # JOB DETAILS
 

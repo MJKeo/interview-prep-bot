@@ -5,7 +5,7 @@ import EnterJobListingUrlScreen from "@/screens/enter-job-listing-url-screen";
 import ResearchJobScreen from "@/screens/research-job-screen";
 import MockInterviewScreen from "@/screens/mock-interview-screen";
 import PerformAnalysisScreen from "@/screens/perform-analysis-screen";
-import { ScreenName, type JobListingResearchResponse } from "@/types";
+import { ScreenName, type JobListingResearchResponse, type DeepResearchReports } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 
 /**
@@ -14,11 +14,13 @@ import type { EasyInputMessage } from "openai/resources/responses/responses";
  */
 export default function Home() {
   // State to track the current screen being displayed
-  const [screen, setScreen] = useState<ScreenName>(ScreenName.PerformAnalysis);
+  const [screen, setScreen] = useState<ScreenName>(ScreenName.EnterJobListingUrl);
   // State to store the scraped job listing content when transitioning to research screen
   const [jobListingScrapeContent, setJobListingScrapeContent] = useState<string | null>(null);
   // State to store the job listing research response when transitioning to mock interview screen
   const [jobListingResearchResponse, setJobListingResearchResponse] = useState<JobListingResearchResponse | null>(null);
+  // State to store the deep research reports when transitioning to mock interview screen
+  const [deepResearchReports, setDeepResearchReports] = useState<DeepResearchReports | null>(null);
   // State to store the interview guide when transitioning to mock interview screen
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
   // State to store the conversation messages when transitioning to perform analysis screen
@@ -41,14 +43,17 @@ export default function Home() {
    * Called when the "start mock interview" button is pressed.
    * 
    * @param jobListingResearchResponse - Parsed job listing metadata to pass to the interview screen
+   * @param deepResearchReports - Deep research reports to pass to the interview screen
    * @param interviewGuide - The interview guide to pass to the interview screen
    */
   const handleNavigateToMockInterview = (
     jobListingResearchResponse: JobListingResearchResponse,
+    deepResearchReports: DeepResearchReports,
     interviewGuide: string
   ) => {
-    // Store the job listing research response and interview guide
+    // Store the job listing research response, deep research reports, and interview guide
     setJobListingResearchResponse(jobListingResearchResponse);
+    setDeepResearchReports(deepResearchReports);
     setInterviewGuide(interviewGuide);
     // Navigate to mock interview screen
     setScreen(ScreenName.MockInterview);
@@ -64,6 +69,34 @@ export default function Home() {
     // Store the conversation messages and navigate to perform analysis screen
     setConversationMessages(messages);
     setScreen(ScreenName.PerformAnalysis);
+  };
+
+  /**
+   * Callback function to handle navigation back to the mock interview screen with a fresh conversation.
+   * Called when the user confirms the "new mock interview" warning.
+   * Resets the conversation messages but keeps the job listing research response and interview guide.
+   */
+  const handleNewMockInterview = () => {
+    // Reset conversation messages to start fresh
+    setConversationMessages(null);
+    // Navigate back to mock interview screen (jobListingResearchResponse and interviewGuide are still set)
+    setScreen(ScreenName.MockInterview);
+  };
+
+  /**
+   * Callback function to handle navigation back to the enter job listing URL screen.
+   * Called when the user confirms the "new job listing" warning.
+   * Resets all stored attributes to start completely fresh.
+   */
+  const handleNewJobListing = () => {
+    // Reset all stored state to start fresh
+    setJobListingScrapeContent(null);
+    setJobListingResearchResponse(null);
+    setDeepResearchReports(null);
+    setInterviewGuide(null);
+    setConversationMessages(null);
+    // Navigate back to the starting screen
+    setScreen(ScreenName.EnterJobListingUrl);
   };
 
   /**
@@ -90,10 +123,16 @@ export default function Home() {
           />
         ) : null;
       case ScreenName.PerformAnalysis:
-        return <PerformAnalysisScreen messages={[]} />
-        // return conversationMessages ? (
-        //   <PerformAnalysisScreen messages={[]} />
-        // ) : null;
+        return jobListingResearchResponse && deepResearchReports && interviewGuide ? (
+          <PerformAnalysisScreen 
+            messages={conversationMessages || []}
+            jobListingResearchResponse={jobListingResearchResponse}
+            deepResearchReports={deepResearchReports}
+            interviewGuide={interviewGuide}
+            onNewMockInterview={handleNewMockInterview}
+            onNewJobListing={handleNewJobListing}
+          />
+        ) : null;
       default:
         return null;
     }

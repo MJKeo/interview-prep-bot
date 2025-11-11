@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import "./mock-interview-screen.css";
 import Button from "@/components/button";
 import { generateNextInterviewMessageAction } from "@/app/actions";
+import CONFIG from "@/app/config";
 import type { JobListingResearchResponse } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 
@@ -58,6 +59,11 @@ export default function MockInterviewScreen({
    * Used on component mount and when starting over.
    */
   const sendInitialMessage = async () => {
+    // Skip initial message generation if bypassMockInterview is enabled
+    if (CONFIG.bypassMockInterview) {
+      return;
+    }
+    
     // Set generating state to disable input and show typing indicator
     setIsGenerating(true);
 
@@ -96,6 +102,7 @@ export default function MockInterviewScreen({
   /**
    * Effect hook that sends the initial "Hello" message when the component first mounts.
    * This triggers the bot to make the first message in the conversation.
+   * Skips message generation if bypassMockInterview is enabled in config.
    */
   useEffect(() => {
     // Only send initial message once on mount
@@ -290,7 +297,7 @@ export default function MockInterviewScreen({
           <Button type="button" onClick={handleStartOver} disabled={isGenerating || messages.length === 0}>
             Start Over
           </Button>
-          <Button type="button" onClick={handlePerformFinalReview} disabled={isGenerating || messages.length <= 3}>
+          <Button type="button" onClick={handlePerformFinalReview} disabled={isGenerating || (!CONFIG.bypassMockInterview && messages.length <= 3)}>
             Perform Final Review
           </Button>
         </div>
