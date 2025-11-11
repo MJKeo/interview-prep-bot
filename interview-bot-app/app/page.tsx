@@ -14,7 +14,7 @@ import type { EasyInputMessage } from "openai/resources/responses/responses";
  */
 export default function Home() {
   // State to track the current screen being displayed
-  const [screen, setScreen] = useState<ScreenName>(ScreenName.EnterJobListingUrl);
+  const [screen, setScreen] = useState<ScreenName>(ScreenName.PerformAnalysis);
   // State to store the scraped job listing content when transitioning to research screen
   const [jobListingScrapeContent, setJobListingScrapeContent] = useState<string | null>(null);
   // State to store the job listing research response when transitioning to mock interview screen
@@ -90,9 +90,10 @@ export default function Home() {
           />
         ) : null;
       case ScreenName.PerformAnalysis:
-        return conversationMessages ? (
-          <PerformAnalysisScreen messages={conversationMessages} />
-        ) : null;
+        return <PerformAnalysisScreen messages={[]} />
+        // return conversationMessages ? (
+        //   <PerformAnalysisScreen messages={[]} />
+        // ) : null;
       default:
         return null;
     }

@@ -1,23 +1,37 @@
-import { JobListingResearchResponseSchema, type JobListingResearchResponse, type DeepResearchReports, MockInterviewMessageResponseSchema, type MockInterviewMessageResponse } from "@/types";
-import { JOB_LISTING_PARSING_PROMPT_V1, DISTILLATION_SYSTEM_PROMPT_V1, mockInterviewSystemPrompt } from "@/prompts";
+import { 
+  JobListingResearchResponseSchema, 
+  type JobListingResearchResponse, 
+  type DeepResearchReports, 
+  MockInterviewMessageResponseSchema, 
+  type MockInterviewMessageResponse, 
+  type EvaluationReports,
+  PerformanceEvaluationResponseSchema,
+  type PerformanceEvaluationResponse,
+} from "@/types";
 import {
   openai,
   companyStrategyAgent,
   roleSuccessAgent,
   teamCultureAgent,
   domainKnowledgeAgent,
+  createEvaluationAgent,
 } from "@/app/openai";
 import {
-  companyStrategyQuery,
+  JOB_LISTING_PARSING_PROMPT_V1,
+  DISTILLATION_SYSTEM_PROMPT_V1,
+  mockInterviewSystemPrompt,
   companyStrategyInputPrompt,
-  roleSuccessQuery,
   roleSuccessInputPrompt,
-  teamCultureQuery,
   teamCultureInputPrompt,
-  domainKnowledgeQuery,
   domainKnowledgeInputPrompt,
+  contentJudgeSystemPrompt,
+  structureJudgeSystemPrompt,
+  fitJudgeSystemPrompt,
+  communicationJudgeSystemPrompt,
+  riskJudgeSystemPrompt,
+  aggregateEvaluationsPromptV1,
 } from "@/prompts";
-import { run } from "@openai/agents";
+import { run, withTrace } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 
@@ -79,39 +93,41 @@ export async function performDeepResearch(
     job_location: jobLocation 
   } = jobListingResearchResponse;
 
-  // Launch all agent runs immediately so they can execute in parallel.
-  // Each agent receives a JSON string matching the format specified in the prompts.
-  const researchTasks = [
-    run(companyStrategyAgent, companyStrategyInputPrompt(companyName)),
-    run(roleSuccessAgent, roleSuccessInputPrompt(companyName, jobTitle)),
-    run(teamCultureAgent, teamCultureInputPrompt(companyName, jobTitle)),
-    run(domainKnowledgeAgent, domainKnowledgeInputPrompt(companyName, jobTitle)),
-  ] as const;
+  return await withTrace("DeepResearchWorkflow", async () => {
+    // Launch all agent runs immediately so they can execute in parallel.
+    // Each agent receives a JSON string matching the format specified in the prompts.
+    const researchTasks = [
+      run(companyStrategyAgent, companyStrategyInputPrompt(companyName)),
+      run(roleSuccessAgent, roleSuccessInputPrompt(companyName, jobTitle)),
+      run(teamCultureAgent, teamCultureInputPrompt(companyName, jobTitle)),
+      run(domainKnowledgeAgent, domainKnowledgeInputPrompt(companyName, jobTitle)),
+    ] as const;
 
-  try {
-    // Execute all research tasks concurrently and wait for all to complete
-    // Promise.all will reject immediately if any task fails
-    const[
-      companyStrategy,
-      roleSuccess,
-      teamCulture,
-      domainKnowledge,
-    ] = await Promise.all(researchTasks);
+    try {
+      // Execute all research tasks concurrently and wait for all to complete
+      // Promise.all will reject immediately if any task fails
+      const[
+        companyStrategy,
+        roleSuccess,
+        teamCulture,
+        domainKnowledge,
+      ] = await Promise.all(researchTasks);
 
-    // companyStrategy.finalOutput
-    
-    return {
-      companyStrategyReport: companyStrategy.finalOutput ?? "Unknown",
-      roleSuccessReport: roleSuccess.finalOutput ?? "Unknown",
-      teamCultureReport: teamCulture.finalOutput ?? "Unknown",
-      domainKnowledgeReport: domainKnowledge.finalOutput ?? "Unknown",
-    };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to perform deep research: ${error.message}`);
+      // companyStrategy.finalOutput
+      
+      return {
+        companyStrategyReport: companyStrategy.finalOutput ?? "Unknown",
+        roleSuccessReport: roleSuccess.finalOutput ?? "Unknown",
+        teamCultureReport: teamCulture.finalOutput ?? "Unknown",
+        domainKnowledgeReport: domainKnowledge.finalOutput ?? "Unknown",
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to perform deep research: ${error.message}`);
+      }
+      throw new Error(`Failed to perform deep research: ${String(error)}`);
     }
-    throw new Error(`Failed to perform deep research: ${String(error)}`);
-  }
+  });
 }
 
 /**
@@ -240,6 +256,133 @@ export async function generateNextInterviewMessage(
       throw new Error(`Failed to generate next interview message: ${error.message}`);
     }
     throw new Error(`Failed to generate next interview message: ${String(error)}`);
+  }
+}
+
+/**
+ * Executes all evaluation judge agents concurrently and collates their outputs.
+ *
+ * This function creates evaluation agents for each judge type (content, structure, fit,
+ * communication, and risk) and runs them in parallel to evaluate a candidate's interview
+ * transcript. Each agent assesses the transcript from a different perspective based on
+ * their specific evaluation criteria.
+ *
+ * @param transcript - The interview transcript to evaluate (string format)
+ * @param listing - Parsed job listing metadata used to generate evaluation system prompts
+ * @param deep_research - Deep research results providing context for evaluation
+ * @param interview_guideline - Interview guide providing additional context for evaluation
+ * @returns Aggregated evaluation reports keyed by judge type
+ * @throws Error if any agent execution fails
+ */
+export async function performEvaluations(
+  transcript: string,
+  listing: JobListingResearchResponse,
+  deepResearchReports: DeepResearchReports,
+  interview_guideline: string
+): Promise<EvaluationReports> {
+  const combinedDeepResearch = combineDeepResearchReports(deepResearchReports);
+  // Create evaluation agents for each judge type
+  const contentJudgeAgent = createEvaluationAgent(contentJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Content Judge Agent");
+  const structureJudgeAgent = createEvaluationAgent(structureJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Structure Judge Agent");
+  const fitJudgeAgent = createEvaluationAgent(fitJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Fit Judge Agent");
+  const communicationJudgeAgent = createEvaluationAgent(communicationJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Communication Judge Agent");
+  const riskJudgeAgent = createEvaluationAgent(riskJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Risk Judge Agent");
+
+  return await withTrace("InterviewEvaluationWorkflow", async () => {
+    // Launch all agent runs immediately so they can execute in parallel
+    // Each agent receives the transcript as input
+    const evaluationTasks = [
+      run(contentJudgeAgent, transcript),
+      run(structureJudgeAgent, transcript),
+      run(fitJudgeAgent, transcript),
+      run(communicationJudgeAgent, transcript),
+      run(riskJudgeAgent, transcript),
+    ] as const;
+
+    try {
+      // Execute all evaluation tasks concurrently and wait for all to complete
+      // Promise.all will reject immediately if any task fails
+      const [
+        contentJudge,
+        structureJudge,
+        fitJudge,
+        communicationJudge,
+        riskJudge,
+      ] = await Promise.all(evaluationTasks);
+
+      // Extract final outputs from each agent run, defaulting to "Unknown" if not available
+      return {
+        contentJudgeEvaluation: contentJudge.finalOutput ?? "Unknown",
+        structureJudgeEvaluation: structureJudge.finalOutput ?? "Unknown",
+        fitJudgeEvaluation: fitJudge.finalOutput ?? "Unknown",
+        communicationJudgeEvaluation: communicationJudge.finalOutput ?? "Unknown",
+        riskJudgeEvaluation: riskJudge.finalOutput ?? "Unknown",
+      };
+    } catch (error) {
+      // Re-throw with more context if it's not already an Error
+      if (error instanceof Error) {
+        throw new Error(`Failed to perform evaluations: ${error.message}`);
+      }
+      throw new Error(`Failed to perform evaluations: ${String(error)}`);
+    }
+  });
+}
+
+/**
+ * Aggregates multiple evaluation reports into a single, candidate-facing performance evaluation.
+ * 
+ * This function takes individual evaluation reports from different judge agents (content, structure,
+ * fit, communication, and risk) and combines all their feedback items into a single array. It then
+ * uses an LLM to synthesize these evaluations into a cohesive performance evaluation report that
+ * follows the PerformanceEvaluationResponseSchema structure.
+ * 
+ * @param evaluations - The aggregated evaluation reports from all judge agents
+ * @param jobListingData - Parsed job listing metadata used to generate the aggregation prompt
+ * @returns A promise that resolves to a PerformanceEvaluationResponse object containing aggregated feedback and summary
+ * @throws Error if the API call fails or returns invalid data
+ */
+export async function performEvaluationAggregation(
+  evaluations: EvaluationReports,
+  jobListingData: JobListingResearchResponse
+): Promise<PerformanceEvaluationResponse> {
+  try {
+    // Extract all feedback arrays from each evaluation report and combine them into a single array
+    // Each evaluation report contains a feedback array, so we flatten all of them together
+    const combinedFeedback = [
+      ...evaluations.contentJudgeEvaluation.feedback,
+      ...evaluations.structureJudgeEvaluation.feedback,
+      ...evaluations.fitJudgeEvaluation.feedback,
+      ...evaluations.communicationJudgeEvaluation.feedback,
+      ...evaluations.riskJudgeEvaluation.feedback,
+    ];
+
+    // Stringify the combined feedback array to use as input to the LLM
+    const input = JSON.stringify(combinedFeedback);
+
+    // Call OpenAI's responses.parse API with the aggregation prompt
+    // The prompt guides the LLM to synthesize the feedback into a cohesive evaluation
+    const response = await openai.responses.parse({
+      model: "gpt-4o-mini",
+      instructions: aggregateEvaluationsPromptV1(jobListingData),
+      input: input,
+      text: { 
+        format: zodTextFormat(PerformanceEvaluationResponseSchema, "performance_evaluation_response") 
+      },
+    });
+
+    // Extract and validate the parsed response
+    const result = response.output_parsed;
+    if (!result) {
+      throw new Error("OpenAI Response gave an empty result");
+    }
+
+    return result;
+  } catch (error) {
+    // Re-throw with more context if it's not already an Error
+    if (error instanceof Error) {
+      throw new Error(`Failed to perform evaluation aggregation: ${error.message}`);
+    }
+    throw new Error(`Failed to perform evaluation aggregation: ${String(error)}`);
   }
 }
 

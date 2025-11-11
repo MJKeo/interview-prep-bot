@@ -36,16 +36,21 @@ the interviewer ("interviewer"). Messages appear in the order they were sent, ol
 - Always cite direct evidence from the transcript when providing feedback.
 - Be comprehensive in your feedback, covering all the evaluation criteria.
 
-# OUTPUT
+# OUTPUT (JSON)
 
-Return a list of feedback points. Each feedback point should include:
-- If this feedback is pointing out good response that should be continued, or giving constructive criticism for how to improve a flawed response.
-- Relevant quotes from the candidate (NOT the interviewer)
-- Why this answer is good or bad (based on the evaluation criteria)
-- Relevant information from the job listing context
-- Additional context related to best practices for answering questions like this
-
-Lastly, return a summary of what the candidate did well and what they should work on.
+{
+  "summary": <Concise, high-level summary of what the candidate did well and what they should focus on improving>,
+  "feedback": [
+      {
+      "type": <whether the feedback is highlighting a good response or providing constructive criticism for a bad one>,
+      "title": <Short, action-oriented label utilizing gerunds (e.g., “Quantifying Results with Baseline→Delta→Timeframe”).>
+      "relevant_quotes": <direct transcript quote(s) from candidate's answer that are relevant to the feedback>,
+      "evaluation_explanation": <Why this answer is good or bad (based on the evaluation criteria)>,
+      "context_best_practices": <Why this is important for this job/role and tips and tricks for providing better answers to questions like this>,
+      "improved_example": <if constructive criticism, an example of a better response to the question>,
+      }
+  ]
+}
 
 # INTERVIEW CONTEXT
 
@@ -103,14 +108,19 @@ the interviewer ("interviewer"). Messages appear in the order they were sent, ol
 
 # OUTPUT
 
-Return a list of feedback points. Each feedback point should include:
-- If this feedback is pointing out good response that should be continued, or giving constructive criticism for how to improve a flawed response.
-- Relevant quotes from the question and answer
-- Why this answer is good or bad (based on the evaluation criteria)
-- Relevant information from the job listing context
-- Additional context related to best practices for answering questions like this
-
-Lastly, return a summary of what the candidate did well and what they should work on.
+{
+  "summary": <Concise, high-level summary of what the candidate did well and what they should focus on improving>,
+  "feedback": [
+      {
+      "type": <whether the feedback is highlighting a good response or providing constructive criticism for a bad one>,
+      "title": <Short, action-oriented label utilizing gerunds (e.g., “Quantifying Results with Baseline→Delta→Timeframe”).>
+      "relevant_quotes": <direct transcript quote(s) from candidate's answer that are relevant to the feedback>,
+      "evaluation_explanation": <Why this answer is good or bad (based on the evaluation criteria)>,
+      "context_best_practices": <Why this is important for this job/role and tips and tricks for providing better answers to questions like this>,
+      "improved_example": <if constructive criticism, an example of a better response to the question>,
+      }
+  ]
+}
 
 # INTERVIEW CONTEXT
 
@@ -170,14 +180,19 @@ the interviewer ("interviewer"). Messages appear in the order they were sent, ol
 
 # OUTPUT
 
-Return a list of feedback points. Each feedback point should include:
-- If this feedback is pointing out good response that should be continued, or giving constructive criticism for how to improve a flawed response.
-- Relevant quotes from the question and answer
-- Why this answer is good or bad (based on the evaluation criteria)
-- Relevant information from the job listing context
-- Additional context related to best practices for answering questions like this
-
-Lastly, return a summary of what the candidate did well and what they should work on.
+{
+  "summary": <Concise, high-level summary of what the candidate did well and what they should focus on improving>,
+  "feedback": [
+      {
+      "type": <whether the feedback is highlighting a good response or providing constructive criticism for a bad one>,
+      "title": <Short, action-oriented label utilizing gerunds (e.g., “Quantifying Results with Baseline→Delta→Timeframe”).>
+      "relevant_quotes": <direct transcript quote(s) from candidate's answer that are relevant to the feedback>,
+      "evaluation_explanation": <Why this answer is good or bad (based on the evaluation criteria)>,
+      "context_best_practices": <Why this is important for this job/role and tips and tricks for providing better answers to questions like this>,
+      "improved_example": <if constructive criticism, an example of a better response to the question>,
+      }
+  ]
+}
 
 # INTERVIEW CONTEXT
 
@@ -236,14 +251,19 @@ the interviewer ("interviewer"). Messages appear in the order they were sent, ol
 
 # OUTPUT
 
-Return a list of feedback points. Each feedback point should include:
-- If this feedback is pointing out good response that should be continued, or giving constructive criticism for how to improve a flawed response.
-- Relevant quotes from the question and answer
-- Why this answer is good or bad (based on the evaluation criteria)
-- Relevant information from the job listing context
-- Additional context related to best practices for answering questions like this
-
-Lastly, return a summary of what the candidate did well and what they should work on.
+{
+  "summary": <Concise, high-level summary of what the candidate did well and what they should focus on improving>,
+  "feedback": [
+      {
+      "type": <whether the feedback is highlighting a good response or providing constructive criticism for a bad one>,
+      "title": <Short, action-oriented label utilizing gerunds (e.g., “Quantifying Results with Baseline→Delta→Timeframe”).>
+      "relevant_quotes": <direct transcript quote(s) from candidate's answer that are relevant to the feedback>,
+      "evaluation_explanation": <Why this answer is good or bad (based on the evaluation criteria)>,
+      "context_best_practices": <Why this is important for this job/role and tips and tricks for providing better answers to questions like this>,
+      "improved_example": <if constructive criticism, an example of a better response to the question>,
+      }
+  ]
+}
 
 # INTERVIEW CONTEXT
 
@@ -302,14 +322,19 @@ the interviewer ("interviewer"). Messages appear in the order they were sent, ol
 
 # OUTPUT
 
-Return a list of feedback points. Each feedback point should include:
-- If this feedback is pointing out good response that should be continued, or giving constructive criticism for how to improve a flawed response.
-- Relevant quotes from the question and answer
-- Why this answer is good or bad (based on the evaluation criteria)
-- Relevant information from the job listing context
-- Additional context related to best practices for answering questions like this
-
-Lastly, return a summary of what the candidate did well and what they should work on.
+{
+  "summary": <Concise, high-level summary of what the candidate did well and what they should focus on improving>,
+  "feedback": [
+      {
+      "type": <whether the feedback is highlighting a good response or providing constructive criticism for a bad one>,
+      "title": <Short, action-oriented label utilizing gerunds (e.g., “Quantifying Results with Baseline→Delta→Timeframe”).>
+      "relevant_quotes": <direct transcript quote(s) from candidate's answer that are relevant to the feedback>,
+      "evaluation_explanation": <Why this answer is good or bad (based on the evaluation criteria)>,
+      "context_best_practices": <Why this is important for this job/role and tips and tricks for providing better answers to questions like this>,
+      "improved_example": <if constructive criticism, an example of a better response to the question>,
+      }
+  ]
+}
 
 # INTERVIEW CONTEXT
 

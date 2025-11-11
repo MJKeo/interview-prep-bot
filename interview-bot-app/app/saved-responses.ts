@@ -402,3 +402,277 @@ Thank you for explaining that. I'm excited about the possibility of joining and 
 
 Interviewer:
 Thank you for your time, Mike! I appreciate your interest in the Account Manager role, and we will be in touch soon.`
+
+export const savedEvaluationReports = {
+  "contentJudgeEvaluation": {
+    "feedback": [
+      {
+        "type": "good",
+        "title": "Articulating Industry Experience Clearly",
+        "relevant_quotes": "I've been working at Pepsi Co for the past 3 years after studying business management at Harvard.",
+        "evaluation_explanation": "The candidate effectively provided a clear overview of their background, linking their experience at PepsiCo and educational credentials to the role, which aligns well with understanding the beverage industry's landscape.",
+        "context_best_practices": "For roles in competitive fields, it's crucial to relate past experiences to the position applied for. Highlighting relevant education and experience not only establishes credibility but also shows alignment with industry standards.",
+        "improved_example": "I have three years of experience working at PepsiCo, where I developed a strong understanding of the beverage market dynamics, especially regarding health trends and consumer preferences."
+      },
+      {
+        "type": "bad",
+        "title": "Quantifying Results and Metrics",
+        "relevant_quotes": "I'm not sure of the specific numbers but the outcome was good!",
+        "evaluation_explanation": "The candidate failed to provide measurable outcomes from their actions, which diminishes the impact of their success story. This lack of quantification makes it challenging to evaluate their effectiveness in the role.",
+        "context_best_practices": "Quantifying results with specific metrics is essential for demonstrating success and accountability. Employers look for tangible examples that illustrate a candidate’s contributions.",
+        "improved_example": "After implementing the change, we saw a 15% increase in diet beverage sales over the next quarter, significantly improving vendor satisfaction ratings as reported in our subsequent meetings."
+      },
+      {
+        "type": "good",
+        "title": "Effective Problem-Solving in Customer Relationship Management",
+        "relevant_quotes": "I dove into our distribution logs to see just what was going on.",
+        "evaluation_explanation": "The candidate demonstrated strong problem-solving skills and a proactive approach in addressing customer concerns, which is essential for an Account Manager role.",
+        "context_best_practices": "Showing initiative in problem-solving and taking ownership of customer issues reflects well on a candidate’s ability to manage relationships effectively, an important skill for this position.",
+        "improved_example": "When I discovered the problem, I took the initiative to meet with the store owner to discuss our findings and collaboratively develop a solution that met their needs."
+      },
+      {
+        "type": "good",
+        "title": "Understanding of Prioritization",
+        "relevant_quotes": "Usually I look at which promotional activities are likely to have the biggest impact for each account.",
+        "evaluation_explanation": "The candidate showcases a strategic approach to managing multiple accounts, reflecting organizational skills and the ability to prioritize effectively, which are crucial for driving sales.",
+        "context_best_practices": "Practical examples of prioritization based on impact demonstrate a candidate's ability to manage their workload effectively while aligning with company goals.",
+        "improved_example": "I analyze account data to focus on high-value promotions while also integrating seasonal trends to optimize our marketing efforts."
+      },
+      {
+        "type": "good",
+        "title": "Engaging with Sustainability Initiatives",
+        "relevant_quotes": "I work to incorporate sustainability by highlighting any environmentally friendly aspects of our products in sales pitches.",
+        "evaluation_explanation": "The candidate’s emphasis on sustainability aligns with Coca-Cola’s goals, which reflects a good fit for the company culture and values.",
+        "context_best_practices": "Demonstrating awareness and integration of sustainability into business strategies shows alignment with modern consumer values and corporate responsibility.",
+        "improved_example": "I consistently highlight our commitment to sustainability during sales discussions, providing data on our recyclable packaging and engaging customers with promotions that support eco-friendly practices."
+      }
+    ],
+    "summary": "Mike showcased effective communication skills and industry knowledge but needs to focus on quantifying results to elevate his responses. He demonstrated strong problem-solving abilities, strategic prioritization, and a good understanding of integrating sustainability into sales practices, making him a decent fit for the Account Manager role."
+  },
+  "structureJudgeEvaluation": {
+    "feedback": [
+      {
+        "type": "bad",
+        "title": "Clarifying Results with Specific Metrics",
+        "relevant_quotes": "\"I'm not sure of the specific numbers but the outcome was good!\"",
+        "evaluation_explanation": "While the candidate acknowledges a positive outcome, the lack of specific metrics fails to demonstrate measurable success in sales growth or vendor satisfaction. This diminishes the impact of the actions taken.",
+        "context_best_practices": "Quantifying outcomes is critical in sales roles to show efficacy and value. Candidates should strive to provide specific metrics (percentages, dollar amounts, etc.) when discussing previous experiences, especially related to performance and sales outcomes.",
+        "improved_example": "\"After implementing the marketing displays for diet beverages, we saw a 15% increase in sales over the next quarter, and vendor satisfaction ratings improved by 20% based on feedback surveys conducted afterward.\""
+      },
+      {
+        "type": "bad",
+        "title": "Establishing a Clear Resolution Outcome",
+        "relevant_quotes": "\"I never heard a formal thank you but he didn't call again with a complaint, which to me is always a good sign.\"",
+        "evaluation_explanation": "The response lacks a clear resolution. While the absence of complaints indicates improvement, a solid answer should ideally highlight tangible results such as increased sales or a strengthened relationship, rather than being based solely on the absence of complaints.",
+        "context_best_practices": "Candidates should aim to close responses with clear benefits or outcomes that stemmed from their actions, showcasing not just resolution but also relationship building and tangible results.",
+        "improved_example": "\"After I updated the distribution numbers, the store owner saw a 20% increase in product availability. He later mentioned that this led to a significant boost in sales and expressed relief at having timely deliveries again.\""
+      },
+      {
+        "type": "bad",
+        "title": "Strengthening Communication of Role Actions",
+        "relevant_quotes": "\"I worked with the owner to calculate a more accurate supply count and updated our system to distribute this new amount\"",
+        "evaluation_explanation": "While there’s clarity in action, the candidate could improve by detailing how they communicated these changes to the team and the outcomes related to the partnership with the store owner.",
+        "context_best_practices": "Candidates should convey a comprehensive approach by explicitly explaining communication strategies and impacts, demonstrating their full engagement in relationship management.",
+        "improved_example": "\"I directly communicated with the store owner to discuss the discrepancies and collaboratively worked on recalibrating the supply count. I then ensured our distribution team was informed of the new targets, significantly improving the delivery schedule and in turn, the store's sales.\""
+      },
+      {
+        "type": "good",
+        "title": "Highlighting Sustainability Initiatives",
+        "relevant_quotes": "\"...encouraging stores to use materials that reduce waste.\"",
+        "evaluation_explanation": "The candidate shows awareness of sustainability trends and demonstrates how they've already integrated these initiatives into their sales strategy, which aligns well with Coca-Cola’s corporate values.",
+        "context_best_practices": "Incorporating sustainability into sales strategies is increasingly important. Candidates should discuss specific initiatives they've led or been part of to show alignment with corporate responsibility goals.",
+        "improved_example": "\"I actively promoted products that feature recyclable packaging and partnered with local environmental organizations to reinforce our commitment to sustainable practices during promotional events.\""
+      }
+    ],
+    "summary": "Mike has a solid background in sales with relevant experience at PepsiCo, but he needs to improve his quantification of results, closure of outcomes, and clarity in communication about actions taken. Emphasizing measurable impacts and providing detailed outcomes will strengthen his candidacy further."
+  },
+  "fitJudgeEvaluation": {
+    "feedback": [
+      {
+        "type": "good",
+        "title": "Emphasizing Relevant Experience",
+        "relevant_quotes": "I've been working at Pepsi Co for the past 3 years after studying business management at Harvard.",
+        "evaluation_explanation": "The candidate effectively highlighted a strong educational background and relevant work experience which aligns with the role's requirements.",
+        "context_best_practices": "For roles like Account Manager, emphasizing educational achievements and relevant work history is essential to establish credibility.",
+        "improved_example": "I graduated with a degree in business management from Harvard and have gained three years of hands-on experience at PepsiCo, where I honed my skills in customer management and sales strategy."
+      },
+      {
+        "type": "good",
+        "title": "Demonstrating Market Adaptation Skills",
+        "relevant_quotes": "We noticed consumer purchasing habits... were shifting towards diet beverages... we instead opted to meet their new demands with our supply.",
+        "evaluation_explanation": "The candidate effectively showcased their ability to analyze market trends and adapt product offerings accordingly, which is crucial for the role.",
+        "context_best_practices": "Understanding customer needs and market dynamics is essential for driving growth and aligning with company strategy.",
+        "improved_example": "At PepsiCo, I led the analysis of consumer trends which resulted in a strategic shift to focus more on diet beverages, aligning our supply with evolving customer preferences."
+      },
+      {
+        "type": "bad",
+        "title": "Quantifying Results and Success Metrics",
+        "relevant_quotes": "I'm not sure of the specific numbers but the outcome was good!",
+        "evaluation_explanation": "Failing to provide specific metrics undermines credibility and makes it difficult to assess the impact of actions taken.",
+        "context_best_practices": "Quantifying results with specific data points demonstrates the effectiveness of strategies and makes a stronger case for the candidate's capabilities.",
+        "improved_example": "As a result of our adjustments, we increased sales of diet beverages by 15% over the next quarter, significantly improving vendor satisfaction."
+      },
+      {
+        "type": "good",
+        "title": "Problem-Solving Approach",
+        "relevant_quotes": "I dove into our distribution logs to see just what was going on.",
+        "evaluation_explanation": "The candidate demonstrated a proactive approach to problem-solving, critical for maintaining strong relationships with clients.",
+        "context_best_practices": "Being solution-oriented and showing how you've successfully managed customer issues can set candidates apart in the interview process.",
+        "improved_example": "After recognizing the issue, I quickly analyzed distribution logs and collaborated with the store owner to ensure accurate restocking."
+      },
+      {
+        "type": "bad",
+        "title": "Articulating Customer Relationship Outcomes",
+        "relevant_quotes": "I never heard a formal thank you but he didn't call again with a complaint.",
+        "evaluation_explanation": "While the candidate indicated improved customer satisfaction, the lack of concrete outcomes or follow-up metrics reduces the response's effectiveness.",
+        "context_best_practices": "Describing how specific actions led to measurable improvements in customer relationships adds value to responses.",
+        "improved_example": "Following our resolution, I monitored sales at the store and saw a 20% increase over the next month, indicating a successful turnaround in our relationship."
+      }
+    ],
+    "summary": "Mike demonstrated strong foundational skills and relevant experience for the Account Manager role, particularly in analyzing market trends and problem-solving. However, improving his ability to quantify results and articulate customer relationship outcomes will enhance credibility in future interviews. It's important to present specific metrics to illustrate the impact of his contributions."
+  },
+  "communicationJudgeEvaluation": {
+    "feedback": [
+      {
+        "type": "good",
+        "title": "Articulating Experience and Motivation",
+        "relevant_quotes": "I have been working at Pepsi Co for the past 3 years after studying business management at Harvard.",
+        "evaluation_explanation": "The candidate effectively shared their background and motivation, showcasing a solid educational background and relevant work experience. This helps establish credibility and aligns with the requirements of the role.",
+        "context_best_practices": "For the Account Manager position, candidates should align their experiences with the company's mission and values, demonstrating how their background makes them a suitable fit for the role.",
+        "improved_example": "I'd love to elaborate on how my background in business management from Harvard and three years at PepsiCo equipped me with skills in sales strategy and customer relations, which I believe are crucial for success at Coca-Cola Northeast."
+      },
+      {
+        "type": "bad",
+        "title": "Providing Specific Outcomes",
+        "relevant_quotes": "I'm not sure of the specific numbers but the outcome was good!",
+        "evaluation_explanation": "While the candidate mentioned a positive outcome, failing to provide specific metrics or outcomes diminishes the impact of their experience. It suggests a lack of accountability or attention to detail.",
+        "context_best_practices": "For an Account Manager role, being able to quantify the impact of actions taken on sales growth and customer satisfaction is vital. Candidates should track and share key performance indicators.",
+        "improved_example": "While I don't have the exact figures, the implementation of the new displays resulted in a 15% increase in sales for our diet beverages over the next quarter, significantly improving vendor satisfaction."
+      },
+      {
+        "type": "good",
+        "title": "Prioritizing Promotional Activities",
+        "relevant_quotes": "Usually I look at which promotional activities are likely to have the biggest impact for each account...",
+        "evaluation_explanation": "The candidate demonstrated strategic thinking and prioritization skills when discussing how they manage multiple promotional activities, which is crucial for the role.",
+        "context_best_practices": "Account Managers must be able to prioritize effectively, particularly in resource-limited situations. Highlighting systematic approaches shows alignment with strategic business objectives.",
+        "improved_example": "In prioritizing promotional activities, I systematically assess potential ROI along with account urgency, ensuring that critical deadlines are met while optimizing resource allocation."
+      },
+      {
+        "type": "good",
+        "title": "Engaging with Sustainability Initiatives",
+        "relevant_quotes": "I work to incorporate sustainability by highlighting any environmentally friendly aspects of our products...",
+        "evaluation_explanation": "The candidate showed awareness of sustainability in their sales strategies, a crucial aspect for Coca-Cola Northeast's mission and market positioning.",
+        "context_best_practices": "In the beverage industry, understanding sustainability initiatives can enhance brand loyalty and customer engagement. Candidates should emphasize how they would integrate these values into their strategies.",
+        "improved_example": "I actively promote our recycled packaging in sales pitches and seek partnerships with environmental organizations, ensuring that my strategies not only drive sales but also resonate with customers' growing eco-consciousness."
+      },
+      {
+        "type": "good",
+        "title": "Asking Insightful Questions",
+        "relevant_quotes": "What success looks like in the first six months for this role, and maybe a bit about the team culture...",
+        "evaluation_explanation": "The candidate's questions about success metrics and team culture demonstrate engagement and an understanding of the importance of aligning with organizational goals.",
+        "context_best_practices": "Candidates should always prepare thoughtful questions; this not only shows interest but also helps them assess if the company and role align with their expectations.",
+        "improved_example": "Could you elaborate on how collaboration is fostered within the team, and what specific metrics you consider when evaluating success in this role within the first few months?"
+      }
+    ],
+    "summary": "Mike demonstrated strong experience in sales and customer management, provided good examples of strategic thinking, and engaged well with the interviewer. However, he needs to focus on providing specific metrics and outcomes to back up his claims, which will strengthen his candidacy for the Account Manager role at Coca-Cola Northeast."
+  },
+  "riskJudgeEvaluation": {
+    "feedback": [
+      {
+        "type": "bad",
+        "title": "Quantifying Outcomes for Credibility",
+        "relevant_quotes": "I'm not sure of the specific numbers but the outcome was good!",
+        "evaluation_explanation": "This response demonstrates missing results pattern as the candidate fails to provide specific metrics related to the positive outcome. Quantifying results is vital in sales roles to establish credibility and assess impact.",
+        "context_best_practices": "In sales roles, providing specific data points (e.g., percentage increase in sales, number of new customers, vendor satisfaction scores) bolsters credibility and shows analytical capability. Candidates should prepare metrics ahead of time to demonstrate effectiveness.",
+        "improved_example": "We saw a 15% increase in sales of diet beverages over three months after implementing the marketing changes, and vendor satisfaction improved by 20%, as indicated by their feedback."
+      },
+      {
+        "type": "bad",
+        "title": "Specifying Customer Relationship Improvements",
+        "relevant_quotes": "I never heard a formal thank you but he didn't call again with a complaint, which to me is always a good sign.",
+        "evaluation_explanation": "This response reflects a lack of definitive outcome and implies blame shifting. Expecting validation through customer acknowledgment can undermine trust. Candidates should aim to provide clearer evidence of relationship improvements or metrics from the client.",
+        "context_best_practices": "In the role, demonstrating success in improving customer relationships with measurable outcomes (like increased order volume after resolving issues) is more impactful. Use specific examples of how communications positively shifted to build credibility.",
+        "improved_example": "Following the resolution, the store owner reported a 25% increase in orders over the next month, indicating improved satisfaction."
+      }
+    ],
+    "summary": "The candidate demonstrates good experience in sales strategy and customer relationship management. However, they need to improve the quantification of outcomes and ensure clarity in customer relationship successes to bolster credibility in their responses."
+  }
+};
+
+export const savedAggregatedEvaluation = {
+  "feedback": [
+      {
+          "type": "good",
+          "title": "Articulating Industry Experience Clearly",
+          "relevant_quotes": "I've been working at Pepsi Co for the past 3 years after studying business management at Harvard.",
+          "evaluation_explanation": "The candidate effectively provided a clear overview of their background, linking their experience at PepsiCo and educational credentials to the role, which aligns well with understanding the beverage industry's landscape.",
+          "context_best_practices": "For roles in competitive fields, it's crucial to relate past experiences to the position applied for. Highlighting relevant education and experience not only establishes credibility but also shows alignment with industry standards.",
+          "improved_example": "I have three years of experience working at PepsiCo, where I developed a strong understanding of the beverage market dynamics, especially regarding health trends and consumer preferences."
+      },
+      {
+          "type": "bad",
+          "title": "Quantifying Results and Metrics",
+          "relevant_quotes": "I'm not sure of the specific numbers but the outcome was good!",
+          "evaluation_explanation": "The candidate failed to provide measurable outcomes from their actions, which diminishes the impact of their success story. This lack of quantification makes it challenging to evaluate their effectiveness in the role.",
+          "context_best_practices": "Quantifying results with specific metrics is essential for demonstrating success and accountability. Employers look for tangible examples that illustrate a candidate’s contributions.",
+          "improved_example": "After implementing the change, we saw a 15% increase in diet beverage sales over the next quarter, significantly improving vendor satisfaction ratings as reported in our subsequent meetings."
+      },
+      {
+          "type": "good",
+          "title": "Effective Problem-Solving in Customer Relationship Management",
+          "relevant_quotes": "I dove into our distribution logs to see just what was going on.",
+          "evaluation_explanation": "The candidate demonstrated strong problem-solving skills and a proactive approach in addressing customer concerns, which is essential for an Account Manager role.",
+          "context_best_practices": "Showing initiative in problem-solving and taking ownership of customer issues reflects well on a candidate’s ability to manage relationships effectively, an important skill for this position.",
+          "improved_example": "When I discovered the problem, I took the initiative to meet with the store owner to discuss our findings and collaboratively develop a solution that met their needs."
+      },
+      {
+          "type": "good",
+          "title": "Understanding of Prioritization",
+          "relevant_quotes": "Usually I look at which promotional activities are likely to have the biggest impact for each account.",
+          "evaluation_explanation": "The candidate showcases a strategic approach to managing multiple accounts, reflecting organizational skills and the ability to prioritize effectively, which are crucial for driving sales.",
+          "context_best_practices": "Practical examples of prioritization based on impact demonstrate a candidate's ability to manage their workload effectively while aligning with company goals.",
+          "improved_example": "I analyze account data to focus on high-value promotions while also integrating seasonal trends to optimize our marketing efforts."
+      },
+      {
+          "type": "good",
+          "title": "Engaging with Sustainability Initiatives",
+          "relevant_quotes": "I work to incorporate sustainability by highlighting any environmentally friendly aspects of our products in sales pitches.",
+          "evaluation_explanation": "The candidate’s emphasis on sustainability aligns with Coca-Cola’s goals, which reflects a good fit for the company culture and values.",
+          "context_best_practices": "Demonstrating awareness and integration of sustainability into business strategies shows alignment with modern consumer values and corporate responsibility.",
+          "improved_example": "I consistently highlight our commitment to sustainability during sales discussions, providing data on our recyclable packaging and engaging customers with promotions that support eco-friendly practices."
+      },
+      {
+          "type": "bad",
+          "title": "Establishing a Clear Resolution Outcome",
+          "relevant_quotes": "\"I never heard a formal thank you but he didn't call again with a complaint, which to me is always a good sign.\"",
+          "evaluation_explanation": "The response lacks a clear resolution. While the absence of complaints indicates improvement, a solid answer should ideally highlight tangible results such as increased sales or a strengthened relationship, rather than being based solely on the absence of complaints.",
+          "context_best_practices": "Candidates should aim to close responses with clear benefits or outcomes that stemmed from their actions, showcasing not just resolution but also relationship building and tangible results.",
+          "improved_example": "\"After I updated the distribution numbers, the store owner saw a 20% increase in product availability. He later mentioned that this led to a significant boost in sales and expressed relief at having timely deliveries again.\""
+      },
+      {
+          "type": "bad",
+          "title": "Specifying Customer Relationship Improvements",
+          "relevant_quotes": "\"I never heard a formal thank you but he didn't call again with a complaint, which to me is always a good sign.\"",
+          "evaluation_explanation": "This response reflects a lack of definitive outcome and implies blame shifting. Expecting validation through customer acknowledgment can undermine trust. Candidates should aim to provide clearer evidence of relationship improvements or metrics from the client.",
+          "context_best_practices": "In the role, demonstrating success in improving customer relationships with measurable outcomes (like increased order volume after resolving issues) is more impactful. Use specific examples of how communications positively shifted to build credibility.",
+          "improved_example": "Following the resolution, the store owner reported a 25% increase in orders over the next month, indicating improved satisfaction."
+      },
+      {
+          "type": "bad",
+          "title": "Strengthening Communication of Role Actions",
+          "relevant_quotes": "\"I worked with the owner to calculate a more accurate supply count and updated our system to distribute this new amount\"",
+          "evaluation_explanation": "While there’s clarity in action, the candidate could improve by detailing how they communicated these changes to the team and the outcomes related to the partnership with the store owner.",
+          "context_best_practices": "Candidates should convey a comprehensive approach by explicitly explaining communication strategies and impacts, demonstrating their full engagement in relationship management.",
+          "improved_example": "\"I directly communicated with the store owner to discuss the discrepancies and collaboratively worked on recalibrating the supply count. I then ensured our distribution team was informed of the new targets, significantly improving the delivery schedule and in turn, the store's sales.\""
+      },
+      {
+          "type": "good",
+          "title": "Asking Insightful Questions",
+          "relevant_quotes": "What success looks like in the first six months for this role, and maybe a bit about the team culture...",
+          "evaluation_explanation": "The candidate's questions about success metrics and team culture demonstrate engagement and an understanding of the importance of aligning with organizational goals.",
+          "context_best_practices": "Candidates should always prepare thoughtful questions; this not only shows interest but also helps them assess if the company and role align with their expectations.",
+          "improved_example": "Could you elaborate on how collaboration is fostered within the team, and what specific metrics you consider when evaluating success in this role within the first few months?"
+      }
+  ],
+  "summary": "You showcased some strong abilities in articulating your relevant experience and engagement with sustainability initiatives, which are vital for the Account Manager role at Coca-Cola. However, improving your ability to quantify results and specify outcomes will significantly enhance your credibility. Focus on strengthening how you measure the impact of your actions and clearly convey the benefits to relationships and sales."
+}

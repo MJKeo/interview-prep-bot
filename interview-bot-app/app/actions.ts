@@ -1,8 +1,8 @@
 'use server';
 
 import { scrapeJobListing } from '@/utils/scrape-job-listing';
-import { parseJobListingAttributes, performDeepResearch, createInterviewGuide, generateNextInterviewMessage } from '@/utils/generate-llm-response';
-import type { JobListingResearchResponse, DeepResearchReports } from '@/types';
+import { parseJobListingAttributes, performDeepResearch, createInterviewGuide, generateNextInterviewMessage, performEvaluations, performEvaluationAggregation } from '@/utils/generate-llm-response';
+import type { JobListingResearchResponse, DeepResearchReports, EvaluationReports, PerformanceEvaluationResponse } from '@/types';
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import CONFIG from "@/app/config";
 import { savedJobParseResponse, savedDeepResearchReports, savedInterviewGuide } from "@/app/saved-responses";
@@ -162,6 +162,73 @@ export async function generateNextInterviewMessageAction(
   } catch (error) {
     // Handle errors and return error message
     const message = error instanceof Error ? error.message : 'Failed to generate next interview message';
+    return { success: false, error: message };
+  }
+}
+
+/**
+ * Server action to perform evaluations on an interview transcript.
+ * 
+ * This function runs on the server, keeping the API key secure.
+ * It executes all evaluation judge agents concurrently and collates their outputs.
+ * Returns a result object with either success and evaluation reports or an error.
+ * 
+ * @param transcript - The interview transcript to evaluate (string format)
+ * @param listing - Parsed job listing metadata used to generate evaluation system prompts
+ * @param deep_research - Deep research results providing context for evaluation
+ * @param interview_guideline - Interview guide providing additional context for evaluation
+ * @returns An object with either { success: true, reports: EvaluationReports } or { success: false, error: string }
+ */
+export async function performEvaluationsAction(
+  transcript: string,
+  listing: JobListingResearchResponse,
+  deepResearchReports: DeepResearchReports,
+  interview_guideline: string
+) {
+  try {
+    // Call the performEvaluations function - this runs on the server where process.env is available
+    const evaluations = await performEvaluations(
+      transcript,
+      listing,
+      deepResearchReports,
+      interview_guideline
+    );
+    
+    return { success: true, evaluations: evaluations };
+  } catch (error) {
+    // Handle errors and return error message
+    const message = error instanceof Error ? error.message : 'Failed to perform evaluations';
+    return { success: false, error: message };
+  }
+}
+
+/**
+ * Server action to aggregate multiple evaluation reports into a single performance evaluation.
+ * 
+ * This function runs on the server, keeping the API key secure.
+ * It takes individual evaluation reports from different judge agents and synthesizes them
+ * into a cohesive, candidate-facing performance evaluation report.
+ * Returns a result object with either success and the aggregated evaluation or an error.
+ * 
+ * @param evaluations - The aggregated evaluation reports from all judge agents
+ * @param jobListingData - Parsed job listing metadata used to generate the aggregation prompt
+ * @returns An object with either { success: true, result: PerformanceEvaluationResponse } or { success: false, error: string }
+ */
+export async function performEvaluationAggregationAction(
+  evaluations: EvaluationReports,
+  jobListingData: JobListingResearchResponse
+) {
+  try {
+    // Call the performEvaluationAggregation function - this runs on the server where process.env is available
+    const result = await performEvaluationAggregation(
+      evaluations,
+      jobListingData
+    );
+    
+    return { success: true, result: result };
+  } catch (error) {
+    // Handle errors and return error message
+    const message = error instanceof Error ? error.message : 'Failed to perform evaluation aggregation';
     return { success: false, error: message };
   }
 }

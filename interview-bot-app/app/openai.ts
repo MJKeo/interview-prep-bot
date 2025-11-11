@@ -4,10 +4,15 @@ import { COMPANY_STRATEGY_SYSTEM_PROMPT_V2,
   ROLE_SUCCESS_SYSTEM_PROMPT_V2, 
   TEAM_CULTURE_SYSTEM_PROMPT_V2, 
   DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V2 } from "@/prompts";
+import {
+  PerformanceEvaluationResponseSchema,
+} from "@/types";
 
 export const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
+
+// ============================== DEEP RESEARCH AGENTS ==============================
 
 export const companyStrategyAgent = new Agent({
   name: "Company strategy agent",
@@ -48,3 +53,15 @@ export const domainKnowledgeAgent = new Agent({
     toolChoice: 'required'
   }
 });
+
+// ============================== EVALUATION AGENTS ==============================
+
+export function createEvaluationAgent(systemPrompt: string, name: string) {
+  return new Agent({
+    name: name,
+    instructions: systemPrompt,
+    model: "gpt-4o-mini",
+    outputType: PerformanceEvaluationResponseSchema,
+  });
+}
+
