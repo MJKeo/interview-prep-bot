@@ -8,6 +8,8 @@ import CONFIG from "@/app/config";
 import { savedJobParseResponse, savedDeepResearchReports, savedInterviewGuide } from "@/app/saved-responses";
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { headers } from 'next/headers';
+import { UAParser } from "ua-parser-js";
 
 /**
  * Server action to scrape a job listing URL and parse its attributes.
@@ -231,4 +233,21 @@ export async function performEvaluationAggregationAction(
     const message = error instanceof Error ? error.message : 'Failed to perform evaluation aggregation';
     return { success: false, error: message };
   }
+}
+
+/**
+ * Server action that determines if the user is accessing the application from a mobile device.
+ * 
+ * This function runs on the server where headers() is available.
+ * It retrieves the user-agent header from the request headers, parses it using UAParser,
+ * and checks if the device type is "mobile".
+ * 
+ * @returns A boolean indicating whether the user is on a mobile device (true) or not (false)
+ */
+export async function isUserOnMobile(): Promise<boolean> {
+  // Get the headers - this runs on the server where headers() is available
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent") ?? "";
+  const parser = UAParser(userAgent);
+  return parser.device.type === "mobile";
 }

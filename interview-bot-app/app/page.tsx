@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EnterJobListingUrlScreen from "@/screens/enter-job-listing-url-screen";
 import ResearchJobScreen from "@/screens/research-job-screen";
 import MockInterviewScreen from "@/screens/mock-interview-screen";
 import PerformAnalysisScreen from "@/screens/perform-analysis-screen";
+import MobileNotSupportedScreen from "@/screens/mobile-not-supported-screen";
 import { ScreenName, type JobListingResearchResponse, type DeepResearchReports } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
+import { isUserOnMobile } from "@/app/actions";
 
 /**
  * Main page component that manages screen navigation using state.
@@ -25,6 +27,19 @@ export default function Home() {
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
   // State to store the conversation messages when transitioning to perform analysis screen
   const [conversationMessages, setConversationMessages] = useState<EasyInputMessage[] | null>(null);
+  // State to track if the user is on a mobile device
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+
+  /**
+   * Effect hook that checks if the user is on a mobile device on component mount.
+   * Calls the server action to determine device type and updates state accordingly.
+   */
+  useEffect(() => {
+    // Call the server action to check if user is on mobile
+    isUserOnMobile().then((mobile) => {
+      setIsMobile(mobile);
+    });
+  }, []);
 
   /**
    * Callback function to handle navigation to the research screen.
@@ -101,9 +116,16 @@ export default function Home() {
 
   /**
    * Renders the appropriate screen component based on the current screen state.
-   * Uses a switch statement to handle different screen types.
+   * If the user is on a mobile device, displays the mobile not supported screen.
+   * Otherwise, uses a switch statement to handle different screen types.
    */
   const renderScreen = () => {
+    // If user is on mobile, always show the mobile not supported screen
+    if (isMobile === true) {
+      return <MobileNotSupportedScreen />;
+    }
+
+    // Otherwise, render the normal screens based on current screen state
     switch (screen) {
       case ScreenName.EnterJobListingUrl:
         return <EnterJobListingUrlScreen onScrapeSuccess={handleNavigateToResearch} />;
