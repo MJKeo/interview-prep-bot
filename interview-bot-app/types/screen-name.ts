@@ -6,6 +6,7 @@ enum ScreenName {
   ResearchJob = "research-job",
   MockInterview = "mock-interview",
   PerformAnalysis = "perform-analysis",
+  UploadPersonalContext = "upload-personal-context",
 }
 
 export default ScreenName;

@@ -6,6 +6,7 @@ import ResearchJobScreen from "@/screens/research-job-screen";
 import MockInterviewScreen from "@/screens/mock-interview-screen";
 import PerformAnalysisScreen from "@/screens/perform-analysis-screen";
 import MobileNotSupportedScreen from "@/screens/mobile-not-supported-screen";
+import UploadPersonalContextScreen from "@/screens/upload-personal-context-screen";
 import { ScreenName, type JobListingResearchResponse, type DeepResearchReports } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { isUserOnMobile } from "@/app/actions";
@@ -16,7 +17,7 @@ import { isUserOnMobile } from "@/app/actions";
  */
 export default function Home() {
   // State to track the current screen being displayed
-  const [screen, setScreen] = useState<ScreenName>(ScreenName.EnterJobListingUrl);
+  const [screen, setScreen] = useState<ScreenName>(ScreenName.UploadPersonalContext);
   // State to store the scraped job listing content when transitioning to research screen
   const [jobListingScrapeContent, setJobListingScrapeContent] = useState<string | null>(null);
   // State to store the job listing research response when transitioning to mock interview screen
@@ -136,6 +137,8 @@ export default function Home() {
             onStartMockInterview={handleNavigateToMockInterview}
           />
         ) : null;
+        case ScreenName.UploadPersonalContext:
+          return <UploadPersonalContextScreen />;
       case ScreenName.MockInterview:
         return jobListingResearchResponse && interviewGuide ? (
           <MockInterviewScreen 
