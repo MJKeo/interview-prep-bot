@@ -3,7 +3,7 @@
 import { scrapeJobListing } from '@/utils/scrape-job-listing';
 import { 
   parseJobListingAttributes, 
-  performDeepResearch, 
+  performDeepResearchAndContextDistillation, 
   createInterviewGuide, 
   generateNextInterviewMessage, 
   performEvaluations, 
@@ -66,7 +66,9 @@ export async function scrapeJobListingAction(url: string) {
 export async function parseJobListingAttributesAction(jobListingScrapeContent: string) {
   try {
     if (CONFIG.useCachedListingAttributes) {
+      console.log("SCRAPE START")
       await new Promise(r => setTimeout(r, 1500));
+      console.log("SCRAPE DONE")
       return { success: true, data: savedJobParseResponse };
     }
     // Call the parse function - this runs on the server where process.env is available
@@ -80,24 +82,31 @@ export async function parseJobListingAttributesAction(jobListingScrapeContent: s
 }
 
 /**
- * Server action to perform deep research on a job listing.
+ * Server action to perform deep research on a job listing and user context distillation.
  * 
  * This function runs on the server, keeping the API key secure.
- * It executes all deep-research agents concurrently and collates their outputs.
- * Returns a result object with either success and research reports or an error.
+ * It executes all deep-research agents concurrently and collates their outputs,
+ * while also performing user context distillation from uploaded files in parallel.
+ * Returns a result object with either success and both research reports and user context, or an error.
  * 
  * @param jobListingResearchResponse - Parsed job listing metadata that seeds each agent query
- * @returns An object with either { success: true, reports: DeepResearchReports } or { success: false, error: string }
+ * @param fileItems - Array of FileItem objects containing file metadata and text content for user context distillation
+ * @returns An object with either { success: true, reports: DeepResearchReports, userContext: string | null } or { success: false, error: string }
  */
-export async function performDeepResearchAction(jobListingResearchResponse: JobListingResearchResponse) {
+export async function performDeepResearchAndContextDistillationAction(
+  jobListingResearchResponse: JobListingResearchResponse,
+  fileItems: FileItem[] = []
+) {
   try {
+    // If using cached data, simply return cached reports and null userContext
     if (CONFIG.useCachedDeepResearch) {
       await new Promise(r => setTimeout(r, 1500));
       return { success: true, reports: savedDeepResearchReports };
     }
-    // Call the performDeepResearch function - this runs on the server where process.env is available
-    const reports = await performDeepResearch(jobListingResearchResponse);
-    return { success: true, reports: reports };
+    
+    const reports = await performDeepResearchAndContextDistillation(jobListingResearchResponse, fileItems);
+    
+    return { success: true, reports };
   } catch (error) {
     // Handle errors and return error message
     const message = error instanceof Error ? error.message : 'Failed to perform deep research';
@@ -245,33 +254,6 @@ export async function performEvaluationAggregationAction(
   } catch (error) {
     // Handle errors and return error message
     const message = error instanceof Error ? error.message : 'Failed to perform evaluation aggregation';
-    return { success: false, error: message };
-  }
-}
-
-/**
- * Server action to distill user context from uploaded files into a consolidated candidate profile.
- * 
- * This function runs on the server, keeping the API key secure.
- * It takes an array of FileItem objects, transforms them into a format expected by the
- * distillation prompt, and uses OpenAI's responses.create API to generate a single,
- * clean Markdown profile of the candidate. Returns a result object with either
- * success and the profile or an error.
- * 
- * @param fileItems - Array of FileItem objects containing file metadata and text content
- * @returns An object with either { success: true, result: string } or { success: false, error: string }
- */
-export async function performUserContextDistillationAction(
-  fileItems: FileItem[]
-) {
-  try {
-    // Call the performUserContextDistillation function - this runs on the server where process.env is available
-    const result = await performUserContextDistillation(fileItems);
-    
-    return { success: true, result: result };
-  } catch (error) {
-    // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to perform user context distillation';
     return { success: false, error: message };
   }
 }

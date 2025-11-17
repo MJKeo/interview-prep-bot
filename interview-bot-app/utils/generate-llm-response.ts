@@ -85,8 +85,9 @@ export async function parseJobListingAttributes(
  * @returns Aggregated agent run payloads keyed by research focus area.
  * @throws Error if any agent execution fails.
  */
-export async function performDeepResearch(
-  jobListingResearchResponse: JobListingResearchResponse
+export async function performDeepResearchAndContextDistillation(
+  jobListingResearchResponse: JobListingResearchResponse,
+  fileItems: FileItem[] = []
 ): Promise<DeepResearchReports> {
   // Extract identifiers required to construct each agent's JSON input.
   const { 
@@ -98,12 +99,16 @@ export async function performDeepResearch(
   return await withTrace("DeepResearchWorkflow", async () => {
     // Launch all agent runs immediately so they can execute in parallel.
     // Each agent receives a JSON string matching the format specified in the prompts.
-    const researchTasks = [
+    var researchTasks: Promise<any>[] = [
       run(companyStrategyAgent, companyStrategyInputPrompt(companyName)),
       run(roleSuccessAgent, roleSuccessInputPrompt(companyName, jobTitle)),
       run(teamCultureAgent, teamCultureInputPrompt(companyName, jobTitle)),
       run(domainKnowledgeAgent, domainKnowledgeInputPrompt(companyName, jobTitle)),
-    ] as const;
+    ];
+
+    if (fileItems.length > 0) {
+      researchTasks.push(performUserContextDistillation(fileItems));
+    }
 
     try {
       // Execute all research tasks concurrently and wait for all to complete
@@ -113,15 +118,15 @@ export async function performDeepResearch(
         roleSuccess,
         teamCulture,
         domainKnowledge,
+        userContext,
       ] = await Promise.all(researchTasks);
-
-      // companyStrategy.finalOutput
       
       return {
         companyStrategyReport: companyStrategy.finalOutput ?? "Unknown",
         roleSuccessReport: roleSuccess.finalOutput ?? "Unknown",
         teamCultureReport: teamCulture.finalOutput ?? "Unknown",
         domainKnowledgeReport: domainKnowledge.finalOutput ?? "Unknown",
+        userContextReport: userContext,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -417,7 +422,6 @@ export async function performUserContextDistillation(
 
     // Stringify the file data array to use as input to the LLM
     const input = JSON.stringify(fileData);
-    console.log("Input:\n", input);
 
     // Call OpenAI's responses.create API with the user context distillation prompt
     // The prompt guides the LLM to extract and consolidate candidate information

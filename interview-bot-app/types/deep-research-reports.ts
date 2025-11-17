@@ -7,5 +7,6 @@ export type DeepResearchReports = {
   roleSuccessReport: string;
   teamCultureReport: string;
   domainKnowledgeReport: string;
+  userContextReport: string | null;
 };
 

@@ -225,11 +225,107 @@ const domainKnowledgeReport = `# Function-Specific and Domain Knowledge
   - Leveraging Digital Marketing for Customer Engagement
 - **Why this matters for interviews**: Addressing these challenges and seizing opportunities can lead to significant contributions in the Account Manager role.`;
 
+const userContextReport = `# Consolidated Candidate Profile
+- Candidate Name: Michael Keohane
+
+## Target Roles & Career Interests
+- Software Engineering
+- Mobile Application Development
+- Machine Learning and AI
+
+## Professional Experience
+- Role: Software Engineer Intern
+  - Employer/Organization: Facebook
+  - Time Period: May 2021 - August 2021
+  - Employment Type: Internship
+  - Responsibilities & Achievements:
+    - Created a new unit for events happening now using Native Templates and Objective-C++.
+    - Exposed this unit to nearly 1 million users to track metric changes and make improvements.
+    - Developed and released a dynamic date line text component to display an event’s start time intuitively.
+
+- Role: Software Engineer Intern
+  - Employer/Organization: Home Depot
+  - Time Period: August 2020 - December 2020
+  - Employment Type: Internship
+  - Responsibilities & Achievements:
+    - Reduced in-store waiting times for Pro Customers by developing an iOS app to pre-authorize transactions.
+    - Conducted user interviews following Google’s design sprint framework.
+    - Prototyped in Adobe XD and presented work to executives to ensure product adoption.
+
+- Role: iOS Software Engineer Intern
+  - Employer/Organization: MealMe
+  - Time Period: Summer 2020
+  - Employment Type: Internship
+  - Responsibilities & Achievements:
+    - Increased restaurant selection size by 10x.
+    - Integrated Yelp API to reduce browsing cost by 100%.
+    - Doubled daily active users by creating a customizable filtering system.
+    - Developed a personalized recommendation system analyzing user history.
+
+- Role: IT Intern
+  - Employer/Organization: Digital Credit Union
+  - Time Period: Summer 2019
+  - Employment Type: Internship
+  - Responsibilities & Achievements:
+    - Automated employee profile creation for new hires using PowerShell scripts and Active Directory.
+    - Analyzed employee performance using SQL queries to consolidate Jira ticketing data into Power BI dashboards.
+
+## Education
+- Bachelor of Science in Computer Science — Georgia Institute of Technology
+  - Time Period: Expected Graduation: May 2022
+  - Details:
+    - GPA: 4.0/4.0
+    - Threads: Media & Intelligence
+
+## Certifications & Training
+- No information found
+
+## Projects
+- Tyes
+  - Context: Personal
+  - Description:
+    - Worked on an intelligent physical assessment tool in Electron and a ReactJS website to assist in the recovery process for people suffering from muscular spasticity.
+  - Tools & Technologies:
+    - Electron, ReactJS
+
+- Strength Progress Tracker (ORM)
+  - Context: Personal
+  - Description:
+    - Developed and published a strength progression tracking app to the iOS store, reaching as high as #45 for Health & Fitness apps with over 1000 downloads.
+  - Tools & Technologies:
+    - iOS
+
+## Skills & Technologies
+- Technical Skills:
+  - Swift, JavaScript, Java, Python, Objective-C, SQL, C, HTML/CSS, Hack, Bash
+  - React, XCode, Git, Mercurial, Arduino, Android Studio, Firebase, PowerShell
+- Domain/Functional Skills:
+  - Agile Development, Data Structures and Algorithms, Object-Oriented Programming, Machine Learning, Linear Algebra, AI, Computer Graphics, Robotics & Perception, Automata & Complexity
+- Soft Skills:
+  - No information found
+
+## Languages (Human)
+- No information found
+
+## Relevant Extracurriculars & Activities
+- iOS Club - Member (2019)
+  - Learned to develop applications for iOS in XCode, incorporating Firebase management and internal frameworks such as MapKit.
+
+## Work Preferences & Constraints (Job-Relevant Only)
+- No information found
+
+## Other Job-Relevant Details
+- Recent Awards:
+  - Best User Experience and UI Award - Home Depot Reinforcement Learning Hackathon (2020)
+  - Best Spatial Software Award - HackGT (2019)
+  - People’s Choice Award - Collegiate Cup Hackathon (2019)`
+
 export const savedDeepResearchReports = {
     companyStrategyReport: companyStrategyReport,
     roleSuccessReport: roleSuccessReport,
     teamCultureReport: teamCultureReport,
-    domainKnowledgeReport: domainKnowledgeReport
+    domainKnowledgeReport: domainKnowledgeReport,
+    userContextReport: userContextReport
 };
 
 export const savedInterviewGuide = `### 1) Role Snapshot

@@ -5,7 +5,7 @@ const CONFIG = {
     useCachedInterviewGuide: true,
     useCachedTranscript: true,
     useCachedEvaluations: true,
-    useCachedAggregatedEvaluations: false,
+    useCachedAggregatedEvaluations: true,
     bypassMockInterview: true,
 };
 

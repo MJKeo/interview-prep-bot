@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./research-job-screen.css";
-import { parseJobListingAttributesAction, performDeepResearchAction, createInterviewGuideAction, performUserContextDistillationAction } from "@/app/actions";
+import { parseJobListingAttributesAction, performDeepResearchAndContextDistillationAction, createInterviewGuideAction } from "@/app/actions";
 import type { JobListingResearchResponse, DeepResearchReports, FileItem } from "@/types";
 import Button from "@/components/button";
 
@@ -48,47 +48,9 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
   // State for the parsed job listing attributes
   const [parsedData, setParsedData] = useState<JobListingResearchResponse | null>(null);
   // State for deep research reports
-  const [deepResearchReports, setDeepResearchReports] = useState<DeepResearchReports | null>(null);
+  const [deepResearchAndContextDistillationReports, setDeepResearchAndContextDistillationReports] = useState<DeepResearchReports | null>(null);
   // State for the interview guide
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
-
-  /**
-   * Effect hook that runs when the component mounts.
-   * Calls the server action to perform user context distillation from attached files.
-   */
-  useEffect(() => {
-    /**
-     * Async function to perform user context distillation from attached files.
-     * Called automatically when the component loads if there are attached files.
-     */
-    const distillUserContext = async () => {
-      // Only run distillation if there are attached files
-      if (attachedFiles.length === 0) {
-        return;
-      }
-
-      try {
-        // Call the server action to perform user context distillation
-        const result = await performUserContextDistillationAction(attachedFiles);
-        
-        // Check if the action was successful
-        if (result.success && result.result) {
-          // Console.log the distillation results
-          console.log("User context distillation results:", result.result);
-        } else {
-          // Handle error from server action
-          console.error("Failed to perform user context distillation:", result.error);
-        }
-      } catch (err) {
-        // Handle exceptions and log error
-        const errorMessage = err instanceof Error ? err.message : "Failed to perform user context distillation";
-        console.error("Error during user context distillation:", errorMessage);
-      }
-    };
-
-    // Call the distillation function when component mounts
-    distillUserContext();
-  }, [attachedFiles]);
 
   /**
    * Effect hook that runs when the component mounts or when jobListingScrapeContent changes.
@@ -101,14 +63,18 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
      */
     const parseAttributes = async () => {
 
+      console.log("Test 2")
+
       setLoadingStage("Parsing job listing attributes...");
 
       try {
         // Call the server action to parse the job listing attributes
+        console.log("Test 2.1")
         const result = await parseJobListingAttributesAction(jobListingScrapeContent);
-        
+        console.log("Test 2.2")
         // Check if the action was successful
         if (result.success && result.data) {
+          console.log("Test 2.3")
           // Update loading stage to reflect next step
           setLoadingStage("Performing deep research...");
           // Store the parsed data
@@ -133,7 +99,7 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
 
   /**
    * Effect hook that runs when parsedData changes.
-   * Calls the server action to perform deep research if parsedData exists.
+   * Calls the server action to perform deep research and user context distillation in parallel if parsedData exists.
    */
   useEffect(() => {
     // Only run deep research if parsedData exists
@@ -142,18 +108,20 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
     }
 
     /**
-     * Async function to perform deep research on the parsed job listing.
-     * Called automatically when parsedData is available.
+     * Async function to perform deep research on the parsed job listing and user context distillation.
+     * Both operations run in parallel automatically when parsedData is available.
      */
     const runDeepResearch = async () => {
+      console.log("Test 3")
       try {
-        // Call the server action to perform deep research
-        const deepResearchResult = await performDeepResearchAction(parsedData);
+        // Call the server action to perform deep research and user context distillation in parallel
+        const deepResearchResult = await performDeepResearchAndContextDistillationAction(parsedData, attachedFiles);
         
         // Check if the deep research was successful
         if (deepResearchResult.success && deepResearchResult.reports) {
           // Store the deep research reports
-          setDeepResearchReports(deepResearchResult.reports);
+          setDeepResearchAndContextDistillationReports(deepResearchResult.reports);
+          
           // Update loading stage to reflect next step
           setLoadingStage("Creating interview guide...");
         } else {
@@ -166,7 +134,7 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
           ? deepResearchErr.message 
           : "Failed to perform deep research";
         setError(deepResearchErrorMessage);
-        setDeepResearchReports(null);
+        setDeepResearchAndContextDistillationReports(null);
         setLoadingStage(null);
       }
     };
@@ -181,7 +149,7 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
    */
   useEffect(() => {
     // Only create interview guide if both parsedData and deepResearchReports exist
-    if (!parsedData || !deepResearchReports) {
+    if (!parsedData || !deepResearchAndContextDistillationReports) {
       return;
     }
 
@@ -192,7 +160,7 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
     const createGuide = async () => {
       try {
         // Call the server action to create the interview guide
-        const guideResult = await createInterviewGuideAction(parsedData, deepResearchReports);
+        const guideResult = await createInterviewGuideAction(parsedData, deepResearchAndContextDistillationReports);
 
         // Check if the guide creation was successful
         if (guideResult.success && guideResult.guide) {
@@ -219,7 +187,7 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
 
     // Call the guide creation function when deepResearchReports is available
     createGuide();
-  }, [deepResearchReports, parsedData]);
+  }, [deepResearchAndContextDistillationReports, parsedData]);
 
   const markdown = `
 # Hello World 👋
@@ -267,30 +235,30 @@ This is **Markdown** rendered in React.
         )}
         
         {/* Display deep research reports as rendered markdown */}
-        {deepResearchReports && (
+        {deepResearchAndContextDistillationReports && (
           <div className="deep-research-section">
             <h2 className="research-report-title">Deep Research Reports</h2>
             <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.companyStrategyReport}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.companyStrategyReport}</ReactMarkdown>
             </div>
             <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.roleSuccessReport}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.roleSuccessReport}</ReactMarkdown>
             </div>
             <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.teamCultureReport}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.teamCultureReport}</ReactMarkdown>
             </div>
             <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchReports.domainKnowledgeReport}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.domainKnowledgeReport}</ReactMarkdown>
             </div>
           </div>
         )}
         
         {/* Display start mock interview button when research has been completed */}
-        {hasCompletedResearch && parsedData && deepResearchReports && interviewGuide && (
+        {hasCompletedResearch && parsedData && deepResearchAndContextDistillationReports && interviewGuide && (
           <div className="button-section">
             <Button 
               type="button" 
-              onClick={() => onStartMockInterview(parsedData, deepResearchReports, interviewGuide)}
+              onClick={() => onStartMockInterview(parsedData, deepResearchAndContextDistillationReports, interviewGuide)}
             >
               start mock interview
             </Button>
