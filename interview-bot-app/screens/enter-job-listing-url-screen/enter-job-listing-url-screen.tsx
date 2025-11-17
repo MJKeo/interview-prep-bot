@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./enter-job-listing-url-screen.css";
 import Button from "@/components/button";
 import { scrapeJobListingAction } from "@/app/actions";
 import { isValidURL } from "@/utils/utils";
+import AttachFiles from "@/components/attach-files/attach-files";
+import { FileItem, FileStatus } from "@/types";
 
 /**
  * Props for the EnterJobListingUrlScreen component.
@@ -24,14 +26,28 @@ interface EnterJobListingUrlScreenProps {
  * the onNext callback with the scraped content.
  */
 export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobListingUrlScreenProps) {
+  // Whether we can attempt to proceed to the next page (may need to wait on something)
+  const [canProceed, setCanProceed] = useState(false);
   // State for the URL input value
   const [url, setUrl] = useState("");
-  // State for the scraped content
-  const [scrapedContent, setScrapedContent] = useState("");
   // State for loading status
-  const [isLoading, setIsLoading] = useState(false);
+  const [isScraping, setIsLoading] = useState(false);
   // State for error messages
   const [error, setError] = useState<string | null>(null);
+  // State for tracking if any attached files are still loading (not success or saved)
+  const [areFilesLoading, setAreFilesLoading] = useState(false);
+
+  useEffect(() => {
+    if (url.trim().length === 0) {
+      setCanProceed(false);
+    } else if (isScraping) {
+      setCanProceed(false);
+    } else if (areFilesLoading) {
+      setCanProceed(false);
+    } else {
+      setCanProceed(true);
+    }
+  }, [url, areFilesLoading, isScraping]);
 
   /**
    * Handles the scraping of the job listing URL.
@@ -72,7 +88,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       // Handle exceptions and display error message
       const errorMessage = err instanceof Error ? err.message : "Failed to scrape job listing";
       setError(errorMessage);
-      setScrapedContent("");
     } finally {
       // Always reset loading state when done
       setIsLoading(false);
@@ -84,10 +99,29 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
    * Triggers scraping when Enter is pressed.
    */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !isLoading) {
+    if (e.key === "Enter" && canProceed) {
       handleScrape();
     }
   };
+
+  /**
+   * Handles changes to attached files.
+   * Updates the areFilesLoading state based on whether any files have a status
+   * other than SUCCESS or SAVED (i.e., LOADING or ERROR).
+   * @param fileItems The current array of attached file items
+   */
+  const handleAttachedFilesChange = (fileItems: FileItem[]) => {
+    console.log("Attached files changed:", fileItems);
+    
+    // Check if any files have a status other than SUCCESS or SAVED
+    // This means files are still loading or have errors
+    const hasLoadingFiles = fileItems.some(
+      (item) => item.status !== FileStatus.SUCCESS && item.status !== FileStatus.SAVED
+    );
+    
+    console.log("Are files loading:", hasLoadingFiles);
+    setAreFilesLoading(hasLoadingFiles);
+  }
 
   return (
     <div className="job-listing-url-container">
@@ -99,22 +133,15 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={isLoading}
         />
-        <Button type="button" onClick={handleScrape} disabled={isLoading}>
-          {isLoading ? "scraping..." : "scrape"}
-        </Button>
-        {/* Display error message if scraping failed */}
+        {/* Display error message if something went wrong */}
         {error && <div className="error-message">{error}</div>}
-        {/* Display results textbox if content was scraped */}
-        {scrapedContent && (
-          <textarea
-            className="scraped-content-textbox"
-            value={scrapedContent}
-            readOnly
-            rows={20}
-          />
-        )}
+        <AttachFiles 
+          attachedFilesDidChange={handleAttachedFilesChange} 
+        />
+        <Button type="button" onClick={handleScrape} disabled={!canProceed}>
+          {isScraping ? "scraping..." : "scrape"}
+        </Button>
       </div>
     </div>
   );
