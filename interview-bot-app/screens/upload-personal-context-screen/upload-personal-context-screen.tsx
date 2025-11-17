@@ -2,16 +2,9 @@
 
 import { useState } from "react";
 import "./upload-personal-context-screen.css";
-import UploadFile from "@/components/upload-file";
+import AttachFiles from "@/components/attach-files";
 import Button from "@/components/button";
-
-type FileItem = {
-  id: string;
-  fileName: string;
-  status: "loading" | "success" | "error";
-  errorMessage?: string;
-  text?: string;
-};
+import { FileStatus, type FileItem } from "@/types";
 
 /**
  * Screen component for uploading personal context files.
@@ -33,7 +26,7 @@ export default function UploadPersonalContextScreen() {
     // Store the file items so we can access them later
     setFileItems(fileItems);
     // Check if at least one file has been successfully parsed
-    const hasSuccess = fileItems.some((item) => item.status === "success");
+    const hasSuccess = fileItems.some((item) => item.status === FileStatus.SUCCESS);
     setHasSuccessfulFiles(hasSuccess);
   };
 
@@ -52,7 +45,7 @@ export default function UploadPersonalContextScreen() {
    */
   const handleUseFiles = () => {
     // Filter to only successfully parsed files
-    const successfulFiles = fileItems.filter((item) => item.status === "success");
+    const successfulFiles = fileItems.filter((item) => item.status === FileStatus.SUCCESS);
     
     // Log each file's name and text content
     successfulFiles.forEach((file) => {
@@ -65,7 +58,7 @@ export default function UploadPersonalContextScreen() {
   return (
     <div className="upload-personal-context-container">
       <div className="upload-personal-context-content">
-        <UploadFile onFilesChange={handleFilesChange} />
+        <AttachFiles />
         
         <div className="button-group">
           <Button
@@ -78,7 +71,7 @@ export default function UploadPersonalContextScreen() {
           <Button
             type="button"
             onClick={handleUseFiles}
-            disabled={!hasSuccessfulFiles || fileItems.some((item) => item.status === "loading")}
+            disabled={!hasSuccessfulFiles || fileItems.some((item) => item.status === FileStatus.LOADING)}
           >
             use these files
           </Button>

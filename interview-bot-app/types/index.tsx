@@ -9,3 +9,4 @@ export { MockInterviewMessageResponseSchema, type MockInterviewMessageResponse }
 export type { EvaluationReports } from "./evaluation-reports";
 export { PerformanceFeedbackSchema, PerformanceEvaluationResponseSchema, type PerformanceFeedback, type PerformanceEvaluationResponse } from "./performance-feedback";
 export { AggregatedEvaluationResponseSchema, type AggregatedEvaluationResponse } from "./aggregated-evaluation-response"
+export { FileStatus, type FileItem, type UploadedFileItem } from "./file-item";

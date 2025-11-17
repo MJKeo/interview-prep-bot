@@ -1,53 +1,5 @@
-/* Styles for the test file input screen container */
-.upload-file-input-container {
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Wrapper for input and file list */
-.upload-file-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 28rem;
-}
-
-/* Styles for the test file input field */
-.upload-file-input {
-  width: 100%;
-  padding: 0.5rem 1rem; /* px-4 py-2 */
-  border: 1px solid rgb(209 213 219); /* border-gray-300 */
-  border-radius: 0.375rem; /* rounded-md */
-}
-
-.upload-file-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgb(59 130 246); /* focus:ring-2 focus:ring-blue-500 */
-}
-
-/* File size note text below the file input */
-.file-size-note {
-  margin: 0;
-  font-size: 0.875rem;
-  font-style: italic;
-  color: rgb(107 114 128); /* text-gray-500 */
-}
-
-/* Styles for the file list */
-.file-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-/* Styles for individual file items */
-.file-item {
+/* Container for the attached file item - horizontal flex layout */
+.attached-file-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -57,7 +9,7 @@
   background-color: rgb(249 250 251); /* bg-gray-50 */
 }
 
-/* Status icons (checkmark and x) */
+/* Status icons (checkmark, exclamation, and spinner) */
 .status-icon {
   display: inline-flex;
   align-items: center;
@@ -70,17 +22,38 @@
   flex-shrink: 0;
 }
 
+/* Success status - green circular badge with checkmark */
 .success-icon {
   color: rgb(34 197 94); /* text-green-600 */
   background-color: rgb(220 252 231); /* bg-green-100 */
 }
 
+/* Error status - red circular badge with exclamation */
 .error-icon {
   color: rgb(239 68 68); /* text-red-600 */
   background-color: rgb(254 226 226); /* bg-red-100 */
 }
 
-/* Container for file name and error message */
+/* Loading status - spinning circular animation */
+.loading-spinner {
+  border: 2px solid rgb(229 231 235); /* border-gray-200 */
+  border-top: 2px solid rgb(107 114 128); /* border-gray-500 */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  background-color: transparent;
+}
+
+/* Spinning animation for loading indicator */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Container for file name and error message - vertical stack */
 .file-info {
   flex: 1;
   display: flex;
@@ -88,25 +61,18 @@
   gap: 0.25rem;
 }
 
-/* File name text */
+/* File name text - black color */
 .file-name {
   font-size: 0.875rem;
   color: rgb(17 24 39); /* text-gray-900 */
   word-break: break-word;
 }
 
-/* Error message displayed below file name */
+/* Error message displayed below file name - red color */
 .error-message {
   font-size: 0.75rem;
   color: rgb(239 68 68); /* text-red-600 */
   word-break: break-word;
-}
-
-/* Loading text on the right (before delete button) */
-.loading-text {
-  font-size: 0.875rem;
-  color: rgb(107 114 128); /* text-gray-500 */
-  font-style: italic;
 }
 
 /* Delete button for removing files from the list */
@@ -130,11 +96,13 @@
   flex-shrink: 0;
 }
 
+/* Hover state for delete button */
 .delete-button:hover {
   color: rgb(239 68 68); /* text-red-600 */
   background-color: rgb(254 226 226); /* bg-red-100 */
 }
 
+/* Focus state for accessibility */
 .delete-button:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgb(59 130 246); /* focus:ring-2 focus:ring-blue-500 */

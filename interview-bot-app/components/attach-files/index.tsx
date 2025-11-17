@@ -1,6 +1,6 @@
 /**
- * Index file for the upload-file component.
+ * Index file for the attach-files module.
  * Re-exports the default component to allow importing from the folder path.
  */
-export { default } from "./upload-file";
+export { default } from "./attach-files";
 
