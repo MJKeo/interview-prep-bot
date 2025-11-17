@@ -6,7 +6,8 @@ import {
   type MockInterviewMessageResponse, 
   type EvaluationReports,
   AggregatedEvaluationResponseSchema,
-  type AggregatedEvaluationResponse
+  type AggregatedEvaluationResponse,
+  type FileItem
 } from "@/types";
 import {
   openai,
@@ -30,6 +31,7 @@ import {
   communicationJudgeSystemPrompt,
   riskJudgeSystemPrompt,
   aggregateEvaluationsPromptV1,
+  USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
 } from "@/prompts";
 import { run, withTrace } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
@@ -383,6 +385,62 @@ export async function performEvaluationAggregation(
       throw new Error(`Failed to perform evaluation aggregation: ${error.message}`);
     }
     throw new Error(`Failed to perform evaluation aggregation: ${String(error)}`);
+  }
+}
+
+/**
+ * Distills user context from uploaded files into a consolidated candidate profile.
+ * 
+ * This function takes an array of FileItem objects, transforms them into a format
+ * expected by the distillation prompt, and uses OpenAI's responses.create API to
+ * generate a single, clean Markdown profile of the candidate. The profile extracts
+ * interview-relevant information while filtering out personal information and
+ * following strict safety guidelines.
+ * 
+ * @param fileItems - Array of FileItem objects containing file metadata and text content
+ * @returns A promise that resolves to a Markdown string containing the consolidated candidate profile
+ * @throws Error if the API call fails or returns invalid data
+ */
+export async function performUserContextDistillation(
+  fileItems: FileItem[]
+): Promise<string> {
+  try {
+    // Transform FileItem array into the format expected by the distillation prompt
+    // Each file item is converted to an object with file_name and text_content properties
+    // Only include files that have text content available
+    const fileData = fileItems
+      .filter(item => item.text !== undefined)
+      .map(item => ({
+        file_name: item.fileName,
+        text_content: item.text ?? "",
+      }));
+
+    // Stringify the file data array to use as input to the LLM
+    const input = JSON.stringify(fileData);
+    console.log("Input:\n", input);
+
+    // Call OpenAI's responses.create API with the user context distillation prompt
+    // The prompt guides the LLM to extract and consolidate candidate information
+    const response = await openai.responses.create({
+      model: "gpt-4o-mini",
+      temperature: 0.4,
+      instructions: USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
+      input: input,
+    });
+
+    // Extract the generated candidate profile from the response
+    const result = response.output_text;
+    if (!result) {
+      throw new Error("OpenAI Response gave an empty result");
+    }
+
+    return result;
+  } catch (error) {
+    // Re-throw with more context if it's not already an Error
+    if (error instanceof Error) {
+      throw new Error(`Failed to perform user context distillation: ${error.message}`);
+    }
+    throw new Error(`Failed to perform user context distillation: ${String(error)}`);
   }
 }
 

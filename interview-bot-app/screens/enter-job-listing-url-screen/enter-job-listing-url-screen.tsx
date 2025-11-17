@@ -14,9 +14,9 @@ import { FileItem, FileStatus } from "@/types";
 interface EnterJobListingUrlScreenProps {
   /**
    * Callback function called when job listing scraping is successful.
-   * Receives the scraped content as a parameter.
+   * Receives the scraped content and a list of successfully attached files as parameters.
    */
-  onScrapeSuccess: (scrapedContent: string) => void;
+  onScrapeSuccess: (scrapedContent: string, attachedFiles: FileItem[]) => void;
 }
 
 /**
@@ -35,19 +35,25 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   // State for error messages
   const [error, setError] = useState<string | null>(null);
   // State for tracking if any attached files are still loading (not success or saved)
-  const [areFilesLoading, setAreFilesLoading] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState<FileItem[]>([]);
 
   useEffect(() => {
-    if (url.trim().length === 0) {
+    // Check if any files have a status other than SUCCESS or SAVED
+    // This means files are still loading or have errors
+    const hasLoadingFiles = attachedFiles.some(
+      (item) => item.status !== FileStatus.SUCCESS && item.status !== FileStatus.SAVED
+    );
+
+    if (hasLoadingFiles) {
+      setCanProceed(false);
+    } else if (url.trim().length === 0) {
       setCanProceed(false);
     } else if (isScraping) {
-      setCanProceed(false);
-    } else if (areFilesLoading) {
       setCanProceed(false);
     } else {
       setCanProceed(true);
     }
-  }, [url, areFilesLoading, isScraping]);
+  }, [url, attachedFiles, isScraping]);
 
   /**
    * Handles the scraping of the job listing URL.
@@ -78,8 +84,12 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       
       // Check if the action was successful
       if (result.success && result.content) {
-        // Call the onNext callback with the scraped content to navigate to research screen
-        onScrapeSuccess(result.content);
+        // Filter attached files to only include those with SUCCESS or SAVED status
+        const successfulFiles = attachedFiles.filter(
+          (item) => item.status === FileStatus.SUCCESS || item.status === FileStatus.SAVED
+        );
+        // Call the onNext callback with the scraped content and attached files to navigate to research screen
+        onScrapeSuccess(result.content, successfulFiles);
       } else {
         // Handle error from server action
         throw new Error(result.error || "Failed to scrape job listing");
@@ -111,16 +121,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
    * @param fileItems The current array of attached file items
    */
   const handleAttachedFilesChange = (fileItems: FileItem[]) => {
-    console.log("Attached files changed:", fileItems);
-    
-    // Check if any files have a status other than SUCCESS or SAVED
-    // This means files are still loading or have errors
-    const hasLoadingFiles = fileItems.some(
-      (item) => item.status !== FileStatus.SUCCESS && item.status !== FileStatus.SAVED
-    );
-    
-    console.log("Are files loading:", hasLoadingFiles);
-    setAreFilesLoading(hasLoadingFiles);
+    setAttachedFiles(fileItems);
   }
 
   return (

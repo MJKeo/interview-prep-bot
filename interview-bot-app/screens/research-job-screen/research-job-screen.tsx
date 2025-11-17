@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./research-job-screen.css";
-import { parseJobListingAttributesAction, performDeepResearchAction, createInterviewGuideAction } from "@/app/actions";
-import type { JobListingResearchResponse, DeepResearchReports } from "@/types";
+import { parseJobListingAttributesAction, performDeepResearchAction, createInterviewGuideAction, performUserContextDistillationAction } from "@/app/actions";
+import type { JobListingResearchResponse, DeepResearchReports, FileItem } from "@/types";
 import Button from "@/components/button";
 
 /**
@@ -17,6 +17,11 @@ interface ResearchJobScreenProps {
    * This is required and will be parsed to extract structured attributes.
    */
   jobListingScrapeContent: string;
+  /**
+   * List of attached files that were successfully uploaded (with SUCCESS or SAVED status).
+   * These files will be used for user context distillation.
+   */
+  attachedFiles: FileItem[];
   /**
    * Callback function to navigate to the mock interview screen.
    * Called when the "start mock interview" button is clicked.
@@ -33,7 +38,7 @@ interface ResearchJobScreenProps {
  * Accepts scraped job listing content, parses it to extract structured attributes,
  * and displays the results in a textbox.
  */
-export default function ResearchJobScreen({ jobListingScrapeContent, onStartMockInterview }: ResearchJobScreenProps) {
+export default function ResearchJobScreen({ jobListingScrapeContent, attachedFiles, onStartMockInterview }: ResearchJobScreenProps) {
    // State for the current loading stage message
    const [loadingStage, setLoadingStage] = useState<string | null>(null);
    // State to track if research has been completed successfully
@@ -46,6 +51,44 @@ export default function ResearchJobScreen({ jobListingScrapeContent, onStartMock
   const [deepResearchReports, setDeepResearchReports] = useState<DeepResearchReports | null>(null);
   // State for the interview guide
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
+
+  /**
+   * Effect hook that runs when the component mounts.
+   * Calls the server action to perform user context distillation from attached files.
+   */
+  useEffect(() => {
+    /**
+     * Async function to perform user context distillation from attached files.
+     * Called automatically when the component loads if there are attached files.
+     */
+    const distillUserContext = async () => {
+      // Only run distillation if there are attached files
+      if (attachedFiles.length === 0) {
+        return;
+      }
+
+      try {
+        // Call the server action to perform user context distillation
+        const result = await performUserContextDistillationAction(attachedFiles);
+        
+        // Check if the action was successful
+        if (result.success && result.result) {
+          // Console.log the distillation results
+          console.log("User context distillation results:", result.result);
+        } else {
+          // Handle error from server action
+          console.error("Failed to perform user context distillation:", result.error);
+        }
+      } catch (err) {
+        // Handle exceptions and log error
+        const errorMessage = err instanceof Error ? err.message : "Failed to perform user context distillation";
+        console.error("Error during user context distillation:", errorMessage);
+      }
+    };
+
+    // Call the distillation function when component mounts
+    distillUserContext();
+  }, [attachedFiles]);
 
   /**
    * Effect hook that runs when the component mounts or when jobListingScrapeContent changes.

@@ -6,7 +6,7 @@ import ResearchJobScreen from "@/screens/research-job-screen";
 import MockInterviewScreen from "@/screens/mock-interview-screen";
 import PerformAnalysisScreen from "@/screens/perform-analysis-screen";
 import MobileNotSupportedScreen from "@/screens/mobile-not-supported-screen";
-import { ScreenName, type JobListingResearchResponse, type DeepResearchReports } from "@/types";
+import { ScreenName, type JobListingResearchResponse, type DeepResearchReports, type FileItem } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { isUserOnMobile } from "@/app/actions";
 
@@ -29,7 +29,8 @@ export default function Home() {
   const [conversationMessages, setConversationMessages] = useState<EasyInputMessage[] | null>(null);
   // State to track if the user is on a mobile device
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
-
+  // State to store the attached files when transitioning to research screen
+  const [attachedFiles, setAttachedFiles] = useState<FileItem[]>([]);
   /**
    * Effect hook that checks if the user is on a mobile device on component mount.
    * Calls the server action to determine device type and updates state accordingly.
@@ -46,10 +47,12 @@ export default function Home() {
    * Called when job listing scraping is successful.
    * 
    * @param content - The scraped content from the job listing
+   * @param attachedFiles - List of successfully attached files (with SUCCESS or SAVED status)
    */
-  const handleNavigateToResearch = (content: string) => {
+  const handleNavigateToResearch = (content: string, attachedFiles: FileItem[]) => {
     // Store the scraped content and navigate to research screen
     setJobListingScrapeContent(content);
+    setAttachedFiles(attachedFiles);
     setScreen(ScreenName.ResearchJob);
   };
 
@@ -133,6 +136,7 @@ export default function Home() {
         return jobListingScrapeContent ? (
           <ResearchJobScreen 
             jobListingScrapeContent={jobListingScrapeContent}
+            attachedFiles={attachedFiles}
             onStartMockInterview={handleNavigateToMockInterview}
           />
         ) : null;

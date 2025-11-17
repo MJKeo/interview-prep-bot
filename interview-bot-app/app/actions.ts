@@ -1,8 +1,22 @@
 'use server';
 
 import { scrapeJobListing } from '@/utils/scrape-job-listing';
-import { parseJobListingAttributes, performDeepResearch, createInterviewGuide, generateNextInterviewMessage, performEvaluations, performEvaluationAggregation } from '@/utils/generate-llm-response';
-import type { JobListingResearchResponse, DeepResearchReports, EvaluationReports, PerformanceEvaluationResponse } from '@/types';
+import { 
+  parseJobListingAttributes, 
+  performDeepResearch, 
+  createInterviewGuide, 
+  generateNextInterviewMessage, 
+  performEvaluations, 
+  performEvaluationAggregation, 
+  performUserContextDistillation 
+} from '@/utils/generate-llm-response';
+import type { 
+  JobListingResearchResponse, 
+  DeepResearchReports, 
+  EvaluationReports, 
+  PerformanceEvaluationResponse, 
+  FileItem 
+} from '@/types';
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import CONFIG from "@/app/config";
 import { savedJobParseResponse, savedDeepResearchReports, savedInterviewGuide } from "@/app/saved-responses";
@@ -231,6 +245,33 @@ export async function performEvaluationAggregationAction(
   } catch (error) {
     // Handle errors and return error message
     const message = error instanceof Error ? error.message : 'Failed to perform evaluation aggregation';
+    return { success: false, error: message };
+  }
+}
+
+/**
+ * Server action to distill user context from uploaded files into a consolidated candidate profile.
+ * 
+ * This function runs on the server, keeping the API key secure.
+ * It takes an array of FileItem objects, transforms them into a format expected by the
+ * distillation prompt, and uses OpenAI's responses.create API to generate a single,
+ * clean Markdown profile of the candidate. Returns a result object with either
+ * success and the profile or an error.
+ * 
+ * @param fileItems - Array of FileItem objects containing file metadata and text content
+ * @returns An object with either { success: true, result: string } or { success: false, error: string }
+ */
+export async function performUserContextDistillationAction(
+  fileItems: FileItem[]
+) {
+  try {
+    // Call the performUserContextDistillation function - this runs on the server where process.env is available
+    const result = await performUserContextDistillation(fileItems);
+    
+    return { success: true, result: result };
+  } catch (error) {
+    // Handle errors and return error message
+    const message = error instanceof Error ? error.message : 'Failed to perform user context distillation';
     return { success: false, error: message };
   }
 }

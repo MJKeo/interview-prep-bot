@@ -27,3 +27,4 @@ export {
     riskJudgeSystemPrompt,
 } from "./evaluation-prompts";
 export { aggregateEvaluationsPromptV1 } from "./evaluation-aggregator-prompts";
+export { USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1 } from "./user-context-distillation-prompts";
