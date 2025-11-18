@@ -20,7 +20,8 @@ import {
 import {
   JOB_LISTING_PARSING_PROMPT_V1,
   INTERVIEW_GUIDE_SYSTEM_PROMPT_V2,
-  mockInterviewSystemPrompt,
+  mockInterviewSystemPromptV1,
+  mockInterviewSystemPromptV2,
   companyStrategyInputPrompt,
   roleSuccessInputPrompt,
   teamCultureInputPrompt,
@@ -193,7 +194,7 @@ export async function createInterviewGuide(
       requirements: jobListingResearchResponse.requirements,
       deep_research_results: combineDeepResearchReports(deepResearchReports),
       interview_questions: interviewQuestions,
-      candidate_info: null,//deepResearchReports.userContextReport,
+      candidate_info: deepResearchReports.userContextReport,
     });
 
     // Call OpenAI's responses API with the distillation system prompt
@@ -238,13 +239,14 @@ export async function createInterviewGuide(
 export async function generateNextInterviewMessage(
   combinedHistory: EasyInputMessage[],
   jobListingResearchResponse: JobListingResearchResponse,
-  interviewGuide: string
+  interviewGuide: string,
+  candidateInfo: string | null | undefined
 ): Promise<MockInterviewMessageResponse> {
   try {
     // Call OpenAI's responses.parse API to generate the next message
     const response = await openai.responses.parse({
       model: "gpt-4o-mini",
-      instructions: mockInterviewSystemPrompt(jobListingResearchResponse, interviewGuide),
+      instructions: mockInterviewSystemPromptV2(jobListingResearchResponse, interviewGuide, candidateInfo),
       input: combinedHistory,
       text: { 
         format: zodTextFormat(MockInterviewMessageResponseSchema, "mock_interview_message_response") 

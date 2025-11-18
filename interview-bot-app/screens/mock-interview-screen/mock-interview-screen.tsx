@@ -21,6 +21,10 @@ interface MockInterviewScreenProps {
    */
   interviewGuide: string;
   /**
+   * The candidate info (markdown format) used to provide context for the interview bot.
+   */
+  candidateInfo: string | null | undefined;
+  /**
    * Callback function to navigate to the perform analysis screen.
    * Called when the user confirms the final review warning.
    * 
@@ -35,7 +39,8 @@ interface MockInterviewScreenProps {
  */
 export default function MockInterviewScreen({ 
   jobListingResearchResponse, 
-  interviewGuide, 
+  interviewGuide,
+  candidateInfo,
   onPerformFinalReview 
 }: MockInterviewScreenProps) {
   // State to store the array of messages in the conversation
@@ -52,6 +57,8 @@ export default function MockInterviewScreen({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // Ref to track if initial message has been sent (prevents duplicate sends on mount)
   const hasInitialMessageSentRef = useRef<boolean>(false);
+
+  console.log("candidateInfo: ", candidateInfo);
 
   /**
    * Helper function to send a preliminary "Hello" message and generate the bot's first response.
@@ -76,7 +83,8 @@ export default function MockInterviewScreen({
       const result = await generateNextInterviewMessageAction(
         messagesToSend,
         jobListingResearchResponse,
-        interviewGuide
+        interviewGuide,
+        candidateInfo
       );
 
       // Check if the action was successful
@@ -157,7 +165,8 @@ export default function MockInterviewScreen({
       const result = await generateNextInterviewMessageAction(
         combinedMessages,
         jobListingResearchResponse,
-        interviewGuide
+        interviewGuide,
+        candidateInfo
       );
 
       // Check if the action was successful

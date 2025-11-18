@@ -145,6 +145,7 @@ export default function Home() {
           <MockInterviewScreen 
             jobListingResearchResponse={jobListingResearchResponse}
             interviewGuide={interviewGuide}
+            candidateInfo={deepResearchReports?.userContextReport}
             onPerformFinalReview={handleNavigateToPerformAnalysis} 
           />
         ) : null;

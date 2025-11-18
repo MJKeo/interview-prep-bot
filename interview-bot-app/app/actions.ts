@@ -172,14 +172,16 @@ export async function createInterviewGuideAction(
 export async function generateNextInterviewMessageAction(
   combinedHistory: EasyInputMessage[], // includes most recent message
   jobListingResearchResponse: JobListingResearchResponse,
-  interviewGuide: string
+  interviewGuide: string,
+  candidateInfo: string | null | undefined
 ) {
   try {
     // Call the generateNextInterviewMessage function - this runs on the server where process.env is available
     const response = await generateNextInterviewMessage(
       combinedHistory,
       jobListingResearchResponse,
-      interviewGuide
+      interviewGuide,
+      candidateInfo
     );
     
     // Extract only the message content (not the reasoning) from the response
