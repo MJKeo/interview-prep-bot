@@ -2,7 +2,7 @@ const CONFIG = {
     useCachedScrape: true,
     useCachedListingAttributes: true,
     useCachedDeepResearch: true,
-    useCachedInterviewGuide: true,
+    useCachedInterviewGuide: false,
     useCachedTranscript: true,
     useCachedEvaluations: true,
     useCachedAggregatedEvaluations: true,

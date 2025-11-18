@@ -330,87 +330,99 @@ export const savedDeepResearchReports = {
 
 export const savedInterviewGuide = `### 1) Role Snapshot
 
-The Account Manager at Coca-Cola Northeast acts as the primary liaison between management and store owners, focusing on developing sales strategies and fostering relationships to drive growth. Success is defined by achieving sales quotas, maintaining customer satisfaction, and executing effective promotional programs, with key performance indicators including sales revenue, customer retention, and market share expansion.
+The Account Manager at Coca-Cola Northeast is responsible for managing relationships with store owners in a designated territory, driving sales growth, and ensuring customer satisfaction. Success is defined by achieving sales quotas, maintaining high customer satisfaction, and effectively executing promotional strategies. Primary KPIs include sales revenue, customer retention rates, and successful implementation of marketing initiatives.
 
-### 2) Strategic Context — High-Yield Facts
+### 2) Strategic Context – High-Yield Facts
 
-- Coca-Cola Northeast operates in New England and upstate New York, focusing on regional expansion and community engagement.
-- The company emphasizes sustainability, introducing 100% recycled PET bottles to reduce plastic waste.
-- Key competitors include PepsiCo and Polar Beverages, highlighting the need for innovative sales strategies.
-- Sales force automation tools and CRM systems are integral for managing accounts and tracking progress.
-- The company values strong relationships with clients, distributors, and internal teams, essential for driving sales growth.
+- Coca-Cola Northeast focuses on expanding its market presence and enhancing operational efficiency.
+- The company has exclusive bottling rights for Coca-Cola products in the Northeast U.S.
+- Their mission emphasizes refreshing the Northeast with a diverse beverage portfolio.
+- Strong local community ties and partnerships are key competitive differentiators.
+- The beverage industry is seeing a shift towards healthier options and sustainable packaging.
+- Sales force automation tools are utilized for account management and data tracking.
+- The company is expanding its market share through partnerships with local sports teams.
+- Recent initiatives include the introduction of 100% recycled PET bottles to reduce waste.
 
 ### 3) High-Impact Topics to Probe
 
-- **Sales Strategy:** *Understanding how to develop and implement effective sales tactics is crucial for meeting revenue targets.*
-- **Customer Relationship Management:** *Building and maintaining strong customer relationships directly impacts satisfaction and retention.*
-- **Inventory Management:** *Ensuring appropriate inventory levels is vital for meeting customer demand and optimizing sales.*
-- **Promotional Programs:** *Effective execution of promotional activities enhances brand visibility and drives sales growth.*
-- **Sustainability Initiatives:** *Aligning with the company’s commitment to sustainability can enhance customer engagement and brand loyalty.*
+- **Sales Strategy Development:** *Essential for driving revenue and meeting KPIs.*
+- **Customer Relationship Management:** *Critical for maintaining satisfaction and loyalty.*
+- **Inventory Management:** *Directly impacts product availability and customer service.*
+- **Promotional Campaign Execution:** *Key for enhancing brand visibility and sales growth.*
+- **Team Collaboration:** *Important for aligning strategies across sales, marketing, and logistics.*
 
 ### 4) Tailored Question Bank
 
 * **Job-Specific (2-4):**
-  - How do you utilize sales force automation tools to manage your accounts effectively?
-  - Describe your process for analyzing customer needs to drive sales growth.
+  - How do you analyze customer needs to enhance sales strategies?
+  - What sales force automation tools have you used, and how did they improve your efficiency?
   
 * **Behavioral (2-4):**
-  - Can you share a time when you successfully turned around a dissatisfied customer relationship?
-  - Tell me about a successful promotional campaign you implemented and its impact on sales.
+  - Can you describe a time you successfully built a relationship with a difficult client?
+  - Tell me about a challenging sales target you met and how you achieved it.
 
 * **Situational (2-4):**
-  - What would you do if a key account is consistently underperforming?
-  - How would you prioritize multiple promotional activities across different accounts?
+  - How would you handle a customer who is unhappy with their order?
+  - If you noticed a decline in sales at a key account, what steps would you take?
 
 * **Culture/Values (1-2):**
-  - How do you align your sales strategies with Coca-Cola Northeast's commitment to sustainability?
+  - Which of Coca-Cola Northeast’s values resonates most with you, and why?
+  - How do you contribute to a positive team culture in a sales environment?
 
 ### 5) Signals of Strong Answers
 
-- **Sales Strategy — Signals:**
-  * Evidence of data-driven decision-making.
-  * Clear examples of past sales strategy development and outcomes.
-  * Understanding of market trends and customer demographics.
-
-- **Customer Relationship Management — Signals:**
-  * Demonstrated ability to build rapport and trust with clients.
-  * Specific metrics or feedback indicating customer satisfaction improvements.
-  * Examples of proactive communication and problem resolution.
-
-- **Inventory Management — Signals:**
-  * Understanding of inventory turnover rates and stock management techniques.
-  * Examples of how effective inventory management led to sales success.
-  * Ability to identify and address inventory-related challenges.
-
-- **Promotional Programs — Signals:**
-  * Specific examples of successful promotions and their results.
-  * Understanding of target demographics for promotional activities.
-  * Ability to adapt strategies based on performance metrics.
-
-- **Sustainability Initiatives — Signals:**
-  * Knowledge of sustainability trends in the beverage industry.
-  * Examples of how sustainability efforts influenced customer relationships.
-  * Ability to articulate the importance of sustainability in sales strategies.
+- **Sales Strategy Development:** Clear examples of data-driven decisions that led to increased sales.
+- **Customer Relationship Management:** Demonstrated ability to resolve client issues and maintain long-term relationships.
+- **Inventory Management:** Evidence of proactive inventory assessments leading to improved product availability.
+- **Promotional Campaign Execution:** Success stories of campaigns that boosted sales and brand awareness.
+- **Team Collaboration:** Examples of effective communication with cross-functional teams to achieve business goals.
 
 ### 6) Follow-Up Patterns (Global)
 
-* **Quantify Impact:** “What sales increase did you achieve after implementing that strategy?”
-* **Stakeholders & Trade-offs:** “Who were the key decision-makers in that situation, and what trade-offs did you consider?”
-* **Data & Tooling:** “What specific data did you analyze to support your sales approach?”
-* **Risk & Mitigation:** “What challenges did you foresee with that strategy, and how did you address them?”
+- **Quantify Impact:** "What was the outcome of your strategy in terms of revenue growth?"
+- **Stakeholders & Trade-offs:** "Who did you collaborate with, and what compromises did you make?"
+- **Data & Tooling:** "What specific data did you analyze to inform your sales decisions?"
+- **Risk & Mitigation:** "What potential risks did you identify, and how did you address them?"
 
 ### 7) Micro-Glossary
 
-* **CRM:** Customer Relationship Management, systems used to manage interactions with customers.
-* **SKU:** Stock Keeping Unit, a unique identifier for each distinct product and service that can be purchased.
-* **PET:** Polyethylene Terephthalate, a type of plastic used for beverage containers.
+* **CRM:** Customer Relationship Management - systems for managing a company’s interactions with customers.
+* **SKU:** Stock Keeping Unit - a unique identifier for each distinct product and service that can be purchased.
+* **PET:** Polyethylene Terephthalate - a type of plastic commonly used in packaging.
 
 ### 8) Red Flags to Watch
 
-* Lack of specific examples demonstrating past sales success or customer relationship management.
-* Inability to articulate how they would align with Coca-Cola's sustainability goals.
-* Vague responses regarding inventory management or promotional effectiveness.
-* Ignoring the importance of collaboration with internal teams and external partners.`;
+- Lack of specific examples demonstrating sales achievements or customer satisfaction.
+- Inability to articulate how they would handle common challenges in account management.
+- Weak understanding of the beverage industry trends or Coca-Cola Northeast's competitive landscape.
+
+### 9) Candidate-Specific Hooks
+
+- **What to focus on:** Michael's internship at Facebook developing a component for nearly 1 million users.
+  - **Why it matters for this role:** Demonstrates ability to manage projects impacting a large audience.
+  - **Guidance to interviewer:** Explore how he handled user feedback and metrics tracking in that project.
+
+- **What to focus on:** Experience at Home Depot reducing in-store waiting times through an iOS app.
+  - **Why it matters for this role:** Shows problem-solving skills and experience in a customer-focused environment.
+  - **Guidance to interviewer:** Ask about the process of identifying the problem and implementing the solution.
+
+- **What to focus on:** Development of a strength progression tracking app that reached #45 in the iOS store.
+  - **Why it matters for this role:** Highlights project management skills and ability to drive user engagement.
+  - **Guidance to interviewer:** Inquire about the marketing strategies used to achieve this ranking.
+
+### 10) Candidate-Specific Gaps
+
+- **Gap description:** Role requires 1+ years of relevant sales experience; candidate has primarily technical internship experience.
+  - **Risk/uncertainty:** May lack direct sales experience necessary for managing client relationships effectively.
+  - **Guidance to interviewer:** Probe how he plans to transition technical skills into a sales context.
+
+- **Gap description:** Proficiency in sales analytics tools is required; candidate's profile shows limited experience in sales roles.
+  - **Risk/uncertainty:** Uncertainty about ability to analyze sales data and forecast effectively.
+  - **Guidance to interviewer:** Ask how he would approach learning these tools quickly.
+
+- **Gap description:** Role emphasizes merchandising and promotional activities; candidate lacks relevant experience.
+  - **Risk/uncertainty:** Potential difficulty in executing promotional campaigns or managing inventory.
+  - **Guidance to interviewer:** Explore any related experiences or transferable skills from previous roles.`;
 
 export const savedChatTranscript = `Interviewer:
 Hi there! Thank you for joining me today. What's your name?

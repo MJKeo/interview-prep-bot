@@ -1,5 +1,8 @@
 export { JOB_LISTING_PARSING_PROMPT_V1 } from "./job-parsing-prompts";
-export { DISTILLATION_SYSTEM_PROMPT_V1 } from "./interview-guide-prompts";
+export { 
+    INTERVIEW_GUIDE_SYSTEM_PROMPT_V1,
+    INTERVIEW_GUIDE_SYSTEM_PROMPT_V2
+ } from "./interview-guide-prompts";
 export { mockInterviewSystemPrompt } from "./interview-prompts";
 export { 
     COMPANY_STRATEGY_SYSTEM_PROMPT_V1,
