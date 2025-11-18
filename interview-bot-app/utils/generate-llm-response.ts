@@ -19,7 +19,7 @@ import {
 } from "@/app/openai";
 import {
   JOB_LISTING_PARSING_PROMPT_V1,
-  INTERVIEW_GUIDE_SYSTEM_PROMPT_V2,
+  INTERVIEW_GUIDE_SYSTEM_PROMPT_V3,
   mockInterviewSystemPromptV1,
   mockInterviewSystemPromptV2,
   companyStrategyInputPrompt,
@@ -194,14 +194,14 @@ export async function createInterviewGuide(
       requirements: jobListingResearchResponse.requirements,
       deep_research_results: combineDeepResearchReports(deepResearchReports),
       interview_questions: interviewQuestions,
-      candidate_info: deepResearchReports.userContextReport,
+      candidate_info: null,//deepResearchReports.userContextReport,
     });
 
     // Call OpenAI's responses API with the distillation system prompt
     const response = await openai.responses.create({
       model: "gpt-4o-mini",
       temperature: 0.6,
-      instructions: INTERVIEW_GUIDE_SYSTEM_PROMPT_V2,
+      instructions: INTERVIEW_GUIDE_SYSTEM_PROMPT_V3,
       input: input,
     });
 

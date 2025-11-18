@@ -49,7 +49,7 @@ candidate-specific details to tailor certain questions and probes—but **never 
    * When included, incorporate **candidate-specific gaps** (e.g., missing skills or thin experience) and probe directly but neutrally.  
    * Do not invent concerns—only ask about requirements or gaps explicitly present in **Interview Guide**.
 
-5. **Logistics (only if relevant)**  
+5. **Logistics (only if relevant)**
    Work schedule/location/remote readiness as appropriate.
 
 6. **Candidate Questions (1–2 turns)**  

@@ -138,7 +138,7 @@ export async function createInterviewGuideAction(
 
     // Read the interview questions markdown file
     // The file is located in the utils directory relative to the app root
-    const filePath = join(process.cwd(), 'utils', 'interview-questions.md');
+    const filePath = join(process.cwd(), 'utils', 'interview-questions-2.md');
     const interviewQuestions = await readFile(filePath, 'utf-8');
     
     // Call the createInterviewGuide function - this runs on the server where process.env is available

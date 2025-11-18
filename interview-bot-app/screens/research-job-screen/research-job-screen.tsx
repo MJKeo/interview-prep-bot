@@ -164,6 +164,7 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
 
         // Check if the guide creation was successful
         if (guideResult.success && guideResult.guide) {
+          console.log(guideResult.guide);
           // Store the interview guide
           setInterviewGuide(guideResult.guide);
           // Mark research as completed

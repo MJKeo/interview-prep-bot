@@ -328,101 +328,116 @@ export const savedDeepResearchReports = {
     userContextReport: userContextReport
 };
 
-export const savedInterviewGuide = `### 1) Role Snapshot
+export const savedInterviewGuide = `### 1) Role, Company & Domain Context
 
-The Account Manager at Coca-Cola Northeast is responsible for managing relationships with store owners in a designated territory, driving sales growth, and ensuring customer satisfaction. Success is defined by achieving sales quotas, maintaining high customer satisfaction, and effectively executing promotional strategies. Primary KPIs include sales revenue, customer retention rates, and successful implementation of marketing initiatives.
+- **Success Metrics**: Achieving or exceeding sales quotas, high customer satisfaction, effective promotional campaigns.
+- **Key Outputs**: Develop and implement sales strategies, maintain strong relationships with clients, ensure product availability.
+- **Collaboration**: Work with distributors, retailers, and internal teams including Sales, Marketing, and Customer Service.
+- **Tools**: Utilize sales force automation tools and CRM systems to manage accounts and track progress.
+- **Competitive Landscape**: Competes with PepsiCo, Polar Beverages, and Dr Pepper Snapple Group; must adapt to consumer preferences for healthier and sustainable options.
+- **Market Trends**: Increased emphasis on sustainability, e-commerce growth, and demand for healthier beverage choices.
+- **Physical Demands**: Role requires the ability to lift up to 55 pounds and perform merchandising tasks.
+- **Cultural Values**: Emphasizes quality, integrity, commitment, resourcefulness, and diversity within the team.
+- **Key Challenges**: Managing diverse customer needs and maintaining inventory levels effectively.
+- **Career Progression**: Opportunities to advance to Senior Account Manager, Sales Manager, or Regional Sales Director.
+- **Community Engagement**: Strong local ties and partnerships, with an emphasis on sustainability initiatives.
 
-### 2) Strategic Context – High-Yield Facts
+### 2) Key Areas to Probe
 
-- Coca-Cola Northeast focuses on expanding its market presence and enhancing operational efficiency.
-- The company has exclusive bottling rights for Coca-Cola products in the Northeast U.S.
-- Their mission emphasizes refreshing the Northeast with a diverse beverage portfolio.
-- Strong local community ties and partnerships are key competitive differentiators.
-- The beverage industry is seeing a shift towards healthier options and sustainable packaging.
-- Sales force automation tools are utilized for account management and data tracking.
-- The company is expanding its market share through partnerships with local sports teams.
-- Recent initiatives include the introduction of 100% recycled PET bottles to reduce waste.
+- **Sales Experience**: Understanding of the candidate's previous sales roles and how they drove outcomes.
+- **Customer Relationship Management**: Experience in maintaining long-term relationships with clients.
+- **Problem-Solving Skills**: Ability to address and resolve customer concerns effectively.
+- **Collaboration Skills**: Experience working with cross-functional teams and managing partnerships.
+- **Analytical Skills**: Proficiency in analyzing business trends and customer needs.
+- **Physical Capability**: Comfort with the physical demands of the role, including lifting and merchandising.
+- **Tech Proficiency**: Familiarity with sales force automation tools and CRM systems.
+- **Cultural Fit**: Alignment with the company's values and work environment.
 
-### 3) High-Impact Topics to Probe
+### 3) Tailored Question Ideas by Type
 
-- **Sales Strategy Development:** *Essential for driving revenue and meeting KPIs.*
-- **Customer Relationship Management:** *Critical for maintaining satisfaction and loyalty.*
-- **Inventory Management:** *Directly impacts product availability and customer service.*
-- **Promotional Campaign Execution:** *Key for enhancing brand visibility and sales growth.*
-- **Team Collaboration:** *Important for aligning strategies across sales, marketing, and logistics.*
+**Motivation and job interest:**
+- What excites you about working for Coca-Cola Northeast, especially regarding community engagement?
+  - *Assesses genuine interest in the company’s mission and values.*
+- Why do you want to be an Account Manager in the beverage industry?
+  - *Evaluates alignment of the candidate's career goals with the role's demands.*
 
-### 4) Tailored Question Bank
+**Work history and career transitions:**
+- Can you describe a previous sales role and the strategies you used to achieve your targets?
+  - *Examines relevant experience and strategic thinking in sales.*
+- Why did you leave your last position, and what did you learn from that experience?
+  - *Explores the candidate's decision-making and growth potential.*
 
-* **Job-Specific (2-4):**
-  - How do you analyze customer needs to enhance sales strategies?
-  - What sales force automation tools have you used, and how did they improve your efficiency?
+**Qualifications and experience verification:**
+- How have you utilized sales force automation tools in your previous roles?
+  - *Verifies technical proficiency with tools essential for the role.*
+- Can you provide an example of a time you analyzed customer needs to drive sales growth?
+  - *Checks for analytical skills and relevance to the job responsibilities.*
+- What is your experience with maintaining inventory levels in a sales context?
+  - *Confirms understanding of inventory management related to the role.*
+
+**Job-Specific:**
+- How would you approach developing a sales strategy for a new product launch?
+  - *Tests strategic planning skills relevant to the Account Manager role.*
+- What merchandising standards do you believe are essential for maintaining brand visibility?
+  - *Evaluates understanding of industry-specific practices.*
+- How do you ensure that client communications are effective and timely?
+  - *Assesses interpersonal and communication skills critical for the role.*
+- Describe how you would handle a situation where a client is unhappy with a product delivery.
+  - *Explores problem-solving capabilities in customer service scenarios.*
+
+**Behavioral (past-experience):**
+- Tell me about a time you successfully built a relationship with a difficult client.
+  - *Assesses relationship-building skills and resilience.*
+- Give an example of when you had to meet a tight deadline while managing multiple accounts.
+  - *Evaluates time management and prioritization skills.*
+- Describe a situation where you had to adapt your sales strategy based on market feedback.
+  - *Tests adaptability and responsiveness to changing conditions.*
+- Can you share an experience where you exceeded a customer’s expectations?
+  - *Looks for dedication to customer satisfaction and initiative.*
+
+**Situational (hypothetical):**
+- If you were tasked with increasing sales in a territory with declining performance, what steps would you take?
+  - *Assesses strategic thinking and problem-solving skills.*
+- How would you prioritize your accounts if you had multiple urgent client requests?
+  - *Evaluates prioritization and decision-making under pressure.*
+- If a client requested a product that is out of stock, how would you handle the situation?
+  - *Tests customer service skills and resourcefulness.*
+- What would you do if you noticed a significant drop in customer satisfaction ratings?
+  - *Explores analytical and proactive problem-solving skills.*
+
+**Work style and cultural fit:**
+- What does collaboration mean to you in a sales environment?
+  - *Assesses alignment with the company's emphasis on teamwork and collaboration.*
+- How do you handle feedback and criticism from your peers or supervisors?
+  - *Evaluates openness to feedback and adaptability in a team setting.*
+- Describe your ideal work environment and how it aligns with Coca-Cola Northeast's culture.
+  - *Checks cultural fit and understanding of company values.*
+
+**Strengths and weaknesses:**
+- What would you say is your greatest strength that you can bring to the Account Manager role?
+  - *Identifies self-awareness and relevance of strengths to the position.*
+- Can you discuss a weakness you are actively working to improve?
+  - *Assesses self-awareness and commitment to personal growth.*
+
+**Career goals and future plans:**
+- Where do you see yourself in the next five years, and how does this role fit into that vision?
+  - *Evaluates long-term ambition and alignment with company growth.*
+- What skills do you hope to develop further in this position?
+  - *Checks motivation for growth and eagerness to learn.*
+
+**Candidate-Specific Experiences:**
+- **What to focus on:** Experience as a Software Engineer Intern at Facebook.
+  - **Why it matters for this role:** Demonstrates technical skills and capacity to work with large user bases, relevant to managing client relationships.
+  - **Guidance to interviewer:** Explore how this experience has shaped their approach to user engagement and sales strategies.
   
-* **Behavioral (2-4):**
-  - Can you describe a time you successfully built a relationship with a difficult client?
-  - Tell me about a challenging sales target you met and how you achieved it.
+- **What to focus on:** Development of an iOS app at Home Depot to reduce in-store waiting times.
+  - **Why it matters for this role:** Shows problem-solving skills and ability to enhance customer experiences, crucial for an Account Manager.
+  - **Guidance to interviewer:** Ask how they approached user feedback and implemented changes based on customer needs.
 
-* **Situational (2-4):**
-  - How would you handle a customer who is unhappy with their order?
-  - If you noticed a decline in sales at a key account, what steps would you take?
-
-* **Culture/Values (1-2):**
-  - Which of Coca-Cola Northeast’s values resonates most with you, and why?
-  - How do you contribute to a positive team culture in a sales environment?
-
-### 5) Signals of Strong Answers
-
-- **Sales Strategy Development:** Clear examples of data-driven decisions that led to increased sales.
-- **Customer Relationship Management:** Demonstrated ability to resolve client issues and maintain long-term relationships.
-- **Inventory Management:** Evidence of proactive inventory assessments leading to improved product availability.
-- **Promotional Campaign Execution:** Success stories of campaigns that boosted sales and brand awareness.
-- **Team Collaboration:** Examples of effective communication with cross-functional teams to achieve business goals.
-
-### 6) Follow-Up Patterns (Global)
-
-- **Quantify Impact:** "What was the outcome of your strategy in terms of revenue growth?"
-- **Stakeholders & Trade-offs:** "Who did you collaborate with, and what compromises did you make?"
-- **Data & Tooling:** "What specific data did you analyze to inform your sales decisions?"
-- **Risk & Mitigation:** "What potential risks did you identify, and how did you address them?"
-
-### 7) Micro-Glossary
-
-* **CRM:** Customer Relationship Management - systems for managing a company’s interactions with customers.
-* **SKU:** Stock Keeping Unit - a unique identifier for each distinct product and service that can be purchased.
-* **PET:** Polyethylene Terephthalate - a type of plastic commonly used in packaging.
-
-### 8) Red Flags to Watch
-
-- Lack of specific examples demonstrating sales achievements or customer satisfaction.
-- Inability to articulate how they would handle common challenges in account management.
-- Weak understanding of the beverage industry trends or Coca-Cola Northeast's competitive landscape.
-
-### 9) Candidate-Specific Hooks
-
-- **What to focus on:** Michael's internship at Facebook developing a component for nearly 1 million users.
-  - **Why it matters for this role:** Demonstrates ability to manage projects impacting a large audience.
-  - **Guidance to interviewer:** Explore how he handled user feedback and metrics tracking in that project.
-
-- **What to focus on:** Experience at Home Depot reducing in-store waiting times through an iOS app.
-  - **Why it matters for this role:** Shows problem-solving skills and experience in a customer-focused environment.
-  - **Guidance to interviewer:** Ask about the process of identifying the problem and implementing the solution.
-
-- **What to focus on:** Development of a strength progression tracking app that reached #45 in the iOS store.
-  - **Why it matters for this role:** Highlights project management skills and ability to drive user engagement.
-  - **Guidance to interviewer:** Inquire about the marketing strategies used to achieve this ranking.
-
-### 10) Candidate-Specific Gaps
-
-- **Gap description:** Role requires 1+ years of relevant sales experience; candidate has primarily technical internship experience.
-  - **Risk/uncertainty:** May lack direct sales experience necessary for managing client relationships effectively.
-  - **Guidance to interviewer:** Probe how he plans to transition technical skills into a sales context.
-
-- **Gap description:** Proficiency in sales analytics tools is required; candidate's profile shows limited experience in sales roles.
-  - **Risk/uncertainty:** Uncertainty about ability to analyze sales data and forecast effectively.
-  - **Guidance to interviewer:** Ask how he would approach learning these tools quickly.
-
-- **Gap description:** Role emphasizes merchandising and promotional activities; candidate lacks relevant experience.
-  - **Risk/uncertainty:** Potential difficulty in executing promotional campaigns or managing inventory.
-  - **Guidance to interviewer:** Explore any related experiences or transferable skills from previous roles.`;
+**Candidate-Specific Uncertainties:**
+- **Gap description:** The role requires 1+ years of relevant sales experience; candidate has primarily technical internships.
+  - **Risk/uncertainty:** Lack of direct sales experience may impact ability to manage client relationships effectively.
+  - **Guidance to interviewer:** Inquire about any transferable skills from technical roles that could apply to sales and customer engagement.`;
 
 export const savedChatTranscript = `Interviewer:
 Hi there! Thank you for joining me today. What's your name?
