@@ -126,6 +126,12 @@ Output Scaffolding (Use These Exact Section Headers, In Order)
 - Include one-line statement of what each question hopes to accomplish.
 - Where candidate_info is provided, personalize relevant questions to that candidate's history (BE SPECIFIC).
 
+**Logistics and practical constraints:** (1-2 questions)
+- Short, one-line nuts-and-bolts questions about practical matters such as your availability, start date, work authorization, relocation, travel \
+requirements, or scheduling needs.
+- Tailor questions to the specifics of this company, role, and domain as well as candidate_info, if provided.
+- Include one-line statement of what each question hopes to accomplish.
+
 **Candidate-Specific Experiences:** (1-2 questions)
 - Each bullet must reference a specific item from 'candidate_info' such as:
   * a **specific role** with employer (e.g., "Senior iOS Engineer at [Company], 2021-2024"),

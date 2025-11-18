@@ -6,7 +6,8 @@ export {
  } from "./interview-guide-prompts";
 export { 
     mockInterviewSystemPromptV1,
-    mockInterviewSystemPromptV2
+    mockInterviewSystemPromptV2,
+    mockInterviewSystemPromptV3
 } from "./interview-prompts";
 export { 
     COMPANY_STRATEGY_SYSTEM_PROMPT_V1,

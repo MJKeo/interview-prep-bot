@@ -330,114 +330,124 @@ export const savedDeepResearchReports = {
 
 export const savedInterviewGuide = `### 1) Role, Company & Domain Context
 
-- **Success Metrics**: Achieving or exceeding sales quotas, high customer satisfaction, effective promotional campaigns.
-- **Key Outputs**: Develop and implement sales strategies, maintain strong relationships with clients, ensure product availability.
-- **Collaboration**: Work with distributors, retailers, and internal teams including Sales, Marketing, and Customer Service.
-- **Tools**: Utilize sales force automation tools and CRM systems to manage accounts and track progress.
-- **Competitive Landscape**: Competes with PepsiCo, Polar Beverages, and Dr Pepper Snapple Group; must adapt to consumer preferences for healthier and sustainable options.
-- **Market Trends**: Increased emphasis on sustainability, e-commerce growth, and demand for healthier beverage choices.
-- **Physical Demands**: Role requires the ability to lift up to 55 pounds and perform merchandising tasks.
-- **Cultural Values**: Emphasizes quality, integrity, commitment, resourcefulness, and diversity within the team.
-- **Key Challenges**: Managing diverse customer needs and maintaining inventory levels effectively.
-- **Career Progression**: Opportunities to advance to Senior Account Manager, Sales Manager, or Regional Sales Director.
-- **Community Engagement**: Strong local ties and partnerships, with an emphasis on sustainability initiatives.
+- The Account Manager at Coca-Cola Northeast is the primary liaison between the company and store owners, focusing on relationship management and sales growth.
+- Success is measured through sales revenue, customer satisfaction, and effective execution of promotional campaigns.
+- The role requires collaboration with distributors, retailers, and internal teams to develop sales strategies tailored to customer needs.
+- Familiarity with sales force automation tools and inventory management is essential for maintaining appropriate stock levels and promotional displays.
+- The beverage industry is competitive, with trends leaning towards healthier options and sustainability, impacting customer preferences and sales strategies.
+- Effective communication and interpersonal skills are crucial for building strong relationships with clients and internal stakeholders.
+- The role involves physical demands, such as lifting heavy items, requiring candidates to be fit for the job.
+- A strong candidate typically demonstrates sales experience, strategic thinking, and adaptability in a dynamic environment.
+- Knowledge of market trends and customer demographics is vital for aligning product offerings with consumer needs.
+- The company values community engagement and sustainability, which should resonate with candidates' values and work ethics.
+- The Account Manager must understand Coca-Cola's diverse beverage portfolio to effectively educate and excite customers about the products.
 
 ### 2) Key Areas to Probe
 
-- **Sales Experience**: Understanding of the candidate's previous sales roles and how they drove outcomes.
-- **Customer Relationship Management**: Experience in maintaining long-term relationships with clients.
-- **Problem-Solving Skills**: Ability to address and resolve customer concerns effectively.
-- **Collaboration Skills**: Experience working with cross-functional teams and managing partnerships.
-- **Analytical Skills**: Proficiency in analyzing business trends and customer needs.
-- **Physical Capability**: Comfort with the physical demands of the role, including lifting and merchandising.
-- **Tech Proficiency**: Familiarity with sales force automation tools and CRM systems.
-- **Cultural Fit**: Alignment with the company's values and work environment.
+- Assess the candidate's previous sales experience and understanding of the beverage industry.
+- Explore their ability to analyze customer needs and adapt sales strategies accordingly.
+- Investigate their experience with inventory management and promotional activities.
+- Examine their communication skills and ability to collaborate with various stakeholders.
+- Identify their approach to relationship building and customer satisfaction.
+- Probe for understanding of market trends and how they can influence sales strategies.
+- Clarify any gaps in experience, particularly regarding physical demands or technical skills related to sales tools.
+- Explore their familiarity with Coca-Cola's product offerings and community engagement practices.
 
 ### 3) Tailored Question Ideas by Type
 
-**Motivation and job interest:**
-- What excites you about working for Coca-Cola Northeast, especially regarding community engagement?
-  - *Assesses genuine interest in the company’s mission and values.*
-- Why do you want to be an Account Manager in the beverage industry?
-  - *Evaluates alignment of the candidate's career goals with the role's demands.*
+**Motivation and job interest:**  
+- "What excites you about working with Coca-Cola Northeast and its beverage portfolio?"  
+  *This assesses genuine interest in the company and its mission.*  
+- "How do you see your sales experience contributing to our goal of community engagement?"  
+  *This gauges alignment with the company's values and objectives.*
 
-**Work history and career transitions:**
-- Can you describe a previous sales role and the strategies you used to achieve your targets?
-  - *Examines relevant experience and strategic thinking in sales.*
-- Why did you leave your last position, and what did you learn from that experience?
-  - *Explores the candidate's decision-making and growth potential.*
+**Work history and career transitions:**  
+- "Can you describe your past sales roles and how they prepared you for this Account Manager position?"  
+  *This evaluates relevant experience and its applicability to the role.*  
+- "What motivated your transitions between different sales roles, and how do they align with your career goals?"  
+  *This explores decision-making and commitment to the sales field.*
 
-**Qualifications and experience verification:**
-- How have you utilized sales force automation tools in your previous roles?
-  - *Verifies technical proficiency with tools essential for the role.*
-- Can you provide an example of a time you analyzed customer needs to drive sales growth?
-  - *Checks for analytical skills and relevance to the job responsibilities.*
-- What is your experience with maintaining inventory levels in a sales context?
-  - *Confirms understanding of inventory management related to the role.*
+**Qualifications and experience verification:**  
+- "Can you elaborate on your experience using sales force automation tools?"  
+  *This confirms familiarity with tools critical for the role.*  
+- "What strategies have you implemented in past roles to manage inventory effectively?"  
+  *This assesses practical experience with inventory management.*  
+- "How have your communication skills helped you resolve conflicts with clients in the past?"  
+  *This verifies interpersonal skills essential for the role.*
 
-**Job-Specific:**
-- How would you approach developing a sales strategy for a new product launch?
-  - *Tests strategic planning skills relevant to the Account Manager role.*
-- What merchandising standards do you believe are essential for maintaining brand visibility?
-  - *Evaluates understanding of industry-specific practices.*
-- How do you ensure that client communications are effective and timely?
-  - *Assesses interpersonal and communication skills critical for the role.*
-- Describe how you would handle a situation where a client is unhappy with a product delivery.
-  - *Explores problem-solving capabilities in customer service scenarios.*
+**Job-Specific:**  
+- "What sales strategies would you propose to increase market share in our assigned territory?"  
+  *This tests strategic thinking relevant to the role.*  
+- "How would you address a store owner's concerns about product availability?"  
+  *This examines problem-solving and customer service skills.*  
+- "What promotional programs have you successfully implemented in previous roles?"  
+  *This assesses experience with relevant marketing strategies.*  
+- "How do you approach educating clients about new product offerings?"  
+  *This evaluates the candidate's ability to communicate product knowledge effectively.*
 
-**Behavioral (past-experience):**
-- Tell me about a time you successfully built a relationship with a difficult client.
-  - *Assesses relationship-building skills and resilience.*
-- Give an example of when you had to meet a tight deadline while managing multiple accounts.
-  - *Evaluates time management and prioritization skills.*
-- Describe a situation where you had to adapt your sales strategy based on market feedback.
-  - *Tests adaptability and responsiveness to changing conditions.*
-- Can you share an experience where you exceeded a customer’s expectations?
-  - *Looks for dedication to customer satisfaction and initiative.*
+**Behavioral (past-experience):**  
+- "Tell me about a time you exceeded sales targets in a challenging market."  
+  *This reveals past performance under pressure.*  
+- "Can you describe a conflict with a client and how you handled it?"  
+  *This assesses conflict resolution skills.*  
+- "Give an example of how you used data to make a sales decision."  
+  *This tests analytical skills in a practical context.*  
+- "Describe a situation where you had to adapt your sales approach quickly."  
+  *This evaluates adaptability in fast-paced environments.*
 
-**Situational (hypothetical):**
-- If you were tasked with increasing sales in a territory with declining performance, what steps would you take?
-  - *Assesses strategic thinking and problem-solving skills.*
-- How would you prioritize your accounts if you had multiple urgent client requests?
-  - *Evaluates prioritization and decision-making under pressure.*
-- If a client requested a product that is out of stock, how would you handle the situation?
-  - *Tests customer service skills and resourcefulness.*
-- What would you do if you noticed a significant drop in customer satisfaction ratings?
-  - *Explores analytical and proactive problem-solving skills.*
+**Situational (hypothetical):**  
+- "If you were faced with a significant drop in sales from an account, how would you address it?"  
+  *This assesses problem-solving and strategic thinking.*  
+- "How would you prioritize multiple accounts with urgent needs?"  
+  *This evaluates time management and prioritization skills.*  
+- "If a store owner is unhappy with a product's performance, what steps would you take?"  
+  *This examines customer service and relationship management.*  
+- "What would you do if you noticed a competitor's promotional strategy impacting your sales?"  
+  *This tests market awareness and competitive analysis skills.*
 
-**Work style and cultural fit:**
-- What does collaboration mean to you in a sales environment?
-  - *Assesses alignment with the company's emphasis on teamwork and collaboration.*
-- How do you handle feedback and criticism from your peers or supervisors?
-  - *Evaluates openness to feedback and adaptability in a team setting.*
-- Describe your ideal work environment and how it aligns with Coca-Cola Northeast's culture.
-  - *Checks cultural fit and understanding of company values.*
+**Work style and cultural fit:**  
+- "What type of work environment helps you thrive as a sales professional?"  
+  *This assesses fit with the company's culture.*  
+- "How do you handle feedback from peers or supervisors?"  
+  *This evaluates openness to feedback and collaboration.*  
+- "What values do you prioritize when building relationships with clients?"  
+  *This gauges alignment with the company's commitment to integrity and community.*
 
-**Strengths and weaknesses:**
-- What would you say is your greatest strength that you can bring to the Account Manager role?
-  - *Identifies self-awareness and relevance of strengths to the position.*
-- Can you discuss a weakness you are actively working to improve?
-  - *Assesses self-awareness and commitment to personal growth.*
+**Strengths and weaknesses:**  
+- "What do you consider your greatest strength in sales, and how has it benefited your previous employers?"  
+  *This assesses self-awareness and relevance to the role.*  
+- "What area do you see as your greatest opportunity for improvement?"  
+  *This evaluates honesty and commitment to personal development.*
 
-**Career goals and future plans:**
-- Where do you see yourself in the next five years, and how does this role fit into that vision?
-  - *Evaluates long-term ambition and alignment with company growth.*
-- What skills do you hope to develop further in this position?
-  - *Checks motivation for growth and eagerness to learn.*
+**Career goals and future plans:**  
+- "Where do you see yourself in five years within the beverage industry?"  
+  *This assesses long-term ambition and alignment with the company's growth.*  
+- "How does this role fit into your overall career aspirations?"  
+  *This gauges motivation and commitment to the position.*
 
-**Candidate-Specific Experiences:**
-- **What to focus on:** Experience as a Software Engineer Intern at Facebook.
-  - **Why it matters for this role:** Demonstrates technical skills and capacity to work with large user bases, relevant to managing client relationships.
-  - **Guidance to interviewer:** Explore how this experience has shaped their approach to user engagement and sales strategies.
-  
-- **What to focus on:** Development of an iOS app at Home Depot to reduce in-store waiting times.
-  - **Why it matters for this role:** Shows problem-solving skills and ability to enhance customer experiences, crucial for an Account Manager.
-  - **Guidance to interviewer:** Ask how they approached user feedback and implemented changes based on customer needs.
+**Logistics and practical constraints:**  
+- "When would you be available to start if offered the position?"  
+  *This confirms availability and eagerness for the role.*  
+- "Are you comfortable with the physical demands of this position, including lifting and merchandising?"  
+  *This ensures the candidate can meet the job's physical requirements.*
 
-**Candidate-Specific Uncertainties:**
-- **Gap description:** The role requires 1+ years of relevant sales experience; candidate has primarily technical internships.
-  - **Risk/uncertainty:** Lack of direct sales experience may impact ability to manage client relationships effectively.
-  - **Guidance to interviewer:** Inquire about any transferable skills from technical roles that could apply to sales and customer engagement.`;
+**Candidate-Specific Experiences:**  
+- **What to focus on:** Experience at Facebook as a Software Engineer Intern.  
+  **Why it matters for this role:** Demonstrates ability to develop and implement solutions for a large user base.  
+  **Guidance to interviewer:** Explore how this experience translates to driving sales and managing relationships in the beverage sector.
+
+- **What to focus on:** Development of an iOS app at Home Depot that improved customer experience.  
+  **Why it matters for this role:** Highlights skills in enhancing customer satisfaction, a critical aspect of the Account Manager role.  
+  **Guidance to interviewer:** Ask about the specific strategies used to gather user feedback and improve service delivery.
+
+**Candidate-Specific Uncertainties:**  
+- **Gap description:** The role requires 1+ years of relevant sales experience; the candidate has internship experience but lacks direct sales roles.  
+  **Risk/uncertainty:** This could indicate a steep learning curve in a competitive sales environment.  
+  **Guidance to interviewer:** Explore how the candidate plans to leverage their internship experiences to meet sales challenges.
+
+- **Gap description:** The job emphasizes physical demands like lifting; there’s no mention of relevant physical capability in the candidate profile.  
+  **Risk/uncertainty:** This may raise concerns about the candidate’s ability to fulfill job requirements.  
+  **Guidance to interviewer:** Clarify the candidate's comfort level with the physical aspects of the role and their readiness to meet these demands.`;
 
 export const savedChatTranscript = `Interviewer:
 Hi there! Thank you for joining me today. What's your name?
