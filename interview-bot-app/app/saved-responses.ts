@@ -937,42 +937,47 @@ export const savedEvaluationReports = {
 };
 
 export const savedAggregatedEvaluation = {
+  "what_went_well_summary": "You demonstrated a solid and professional background, clearly articulating your educational and work experiences, including relevant problem-solving examples like streamlining checkout processes at Home Depot. Your enthusiasm for transitioning into an account management role and connecting your motivation to problem-solving and client engagement was well conveyed, and your self-awareness about challenges like building client relationships shows a proactive mindset. Additionally, your familiarity with analyzing data and handling feedback indicates a foundation of skills important for this role, and your professionalism was evident from the start of the interview. These attributes and efforts improve your chances of fitting well into the Account Manager position at Coca-Cola Northeast.",
+  "ways_to_improve_summary": "Your responses reveal areas needing development to better align with the core responsibilities of an Account Manager. You should work on explicitly connecting your past experiences to customer-facing skills, emphasizing how your technical background prepares you for relationship management and sales strategies. Detailing more strategic approaches to handling client dissatisfaction, follow-up, and data analysis will show confidence and competence. Addressing your uncertainty about industry passion by expressing genuine interest and understanding of Coca-Cola’s mission will strengthen your overall presentation. Building awareness of the importance of proactive communication, asserting ideas confidently, and demonstrating long-term commitment to the role are essential improvements to focus on.",
   "consolidated_feedback_by_message": [
       {
           "message_id": 2,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "The candidate provides a clear and concise summary of their educational and professional background, highlighting relevant skills and experiences.",
-                  "They demonstrate enthusiasm for transitioning into the account management role, indicating motivation and a desire to leverage their technical background."
+                  "You provided a clear and engaging summary of your educational and professional background, highlighting relevant skills which helps establish your credibility for the role.",
+                  "Your transition statement shows enthusiasm for moving into account management and highlights your desire to leverage your technical background, demonstrating motivation for the switch."
               ],
               "reasons_why_this_is_bad": [
-                  "The answer fails to explicitly connect their past roles and skills to the specific responsibilities of an account management position, especially regarding client interaction and relationship building.",
-                  "There is a lack of emphasis on customer-facing experiences or transferable interpersonal skills crucial for success in account management.",
-                  "The response emphasizes technical skills without sufficiently illustrating how these skills translate into understanding and addressing client needs."
+                  "Your answer did not explicitly connect your past experiences to the core responsibilities of an account manager, such as client interaction, relationship building, or sales skills, which could make your fit less clear to the interviewer.",
+                  "You focused heavily on technical skills and project management without emphasizing customer-facing or interpersonal aspects that are crucial for an account management role.",
+                  "The explanation lacks specific examples of how your previous roles involved understanding and addressing customer needs, which are key for this position."
               ],
               "ways_to_improve_response": [
-                  "Begin by explicitly linking your past experiences to the core responsibilities of an account manager, such as client engagement and solution delivery. For example, mention how leading cross-functional teams involved understanding customer requirements.",
-                  "Highlight specific instances from your background that demonstrate interpersonal skills, customer feedback incorporation, or other relevant qualities, to show you’re prepared for client interactions.",
-                  "Frame your technical skills as tools to better understand client needs and develop solutions, emphasizing how your analytical background supports problem-solving in an account management context.",
-                  "For example, instead of just listing roles, say: 'At Home Depot, I worked closely with Pro members to gather feedback, which improved our service offerings, illustrating my ability to listen to and understand customer needs.'"
+                  "Incorporate specific examples that demonstrate how your technical skills have helped you understand or improve customer experience, such as your internship at Home Depot where you gathered user feedback to enhance a checkout app.",
+                  "Explicitly connect your past roles to an account management context by highlighting transferable skills like problem-solving, communication, and understanding customer needs—e.g., 'At Home Depot, I gained experience engaging with Pro members to gather feedback for product improvements, which I see as directly relevant to managing client relationships.'",
+                  "Frame your background as a foundation for the role by mentioning how your analytical mindset and project management experience will help you excel in client interaction and strategic account oversight.",
+                  "Use the improved example: 'During my internship at Home Depot, I engaged with Pro members to gather feedback that improved our checkout application. This experience taught me how to understand customer needs and communicate effectively—skills I am eager to apply in an account management role.'"
               ]
           }
       },
       {
           "message_id": 5,
           "consolidated_feedback": {
-              "reasons_why_this_is_good": [],
+              "reasons_why_this_is_good": [
+                  "The candidate demonstrates awareness of their technical strengths, such as understanding data and processes, which are valuable skills in an account management role.",
+                  "They express a willingness to learn and adapt, showing a positive mindset toward developing relationship-building skills.",
+                  "The candidate indicates an understanding of the importance of problem-solving and data analysis as tools to enhance client satisfaction."
+              ],
               "reasons_why_this_is_bad": [
-                  "The candidate did not clearly demonstrate how their technical skills could directly support relationship-building with clients, which is crucial for an account manager role.",
-                  "There was a lack of confidence expressed in their ability to develop client relationships, potentially raising concerns about their initiative and proactive mindset.",
-                  "The response acknowledged a lack of experience in client relationships but did not effectively showcase a plan or eagerness to develop these skills actively.",
-                  "The answer was somewhat vague about how they would leverage their data and process understanding in a customer-facing context, missing an opportunity to tie skills to client success."
+                  "The response lacks specific examples or strategies for translating their technical skills into relationship-building, making their potential seem less concrete.",
+                  "They appear uncertain about their ability to establish client relationships, which could raise concerns about confidence and initiative.",
+                  "They do not sufficiently acknowledge how they will actively overcome their lack of direct experience in relationship management, which is critical for the role."
               ],
               "ways_to_improve_response": [
-                  "Clearly articulate how your analytical skills can directly benefit client relationships, such as by using customer data to tailor solutions, which shows your ability to translate technical skills into client value.",
-                  "Express enthusiasm and a proactive attitude toward developing relationship-building skills, for example, mentioning your willingness to seek mentorship or training to strengthen this area.",
-                  "Provide specific examples or scenarios where your technical expertise could be used to understand customer needs better, like analyzing sales trends or customer feedback to inform account strategies.",
-                  "Show confidence in your ability to adapt and learn new skills relevant to the role, emphasizing your commitment to professional growth in relationship management."
+                  "Emphasize how your analytical skills can be directly applied to understanding customer needs, such as analyzing sales data or customer feedback to provide tailored solutions, e.g., \"I would use customer feedback and analyze sales data to offer tailored recommendations that improve client satisfaction.\"",
+                  "Acknowledge your current gaps in relationship-building but proactively mention steps you will take to develop these skills, like seeking mentorship or hands-on practice, e.g., \"I'm eager to learn through mentorship and adapt my problem-solving skills to build rapport with customers.\"",
+                  "Highlight your enthusiasm and proactive mindset to reassure interviewers of your commitment to excelling in relationship management, such as saying, \"While I haven't yet established client relationships, I am excited to learn and apply my technical background to connect with customers effectively.\"",
+                  "Connect your technical expertise to customer outcomes explicitly, like using data analytics to inform inventory or promotion strategies, e.g., \"I could use data analytics to understand sales trends for clients and make informed suggestions to enhance their operations.\""
               ]
           }
       },
@@ -981,31 +986,34 @@ export const savedAggregatedEvaluation = {
           "consolidated_feedback": {
               "reasons_why_this_is_good": [],
               "reasons_why_this_is_bad": [
-                  "Your response indicates a basic understanding of follow-up through email but lacks depth in demonstrating ongoing relationship management, which is essential for client retention in account management.",
-                  "The answer suggests that you haven't yet thought about long-term engagement strategies beyond an initial satisfaction check, which limits your ability to build strong, lasting client relationships."
+                  "The answer is too simplistic and demonstrates a lack of strategic thinking about long-term client relationships, which are vital in account management.",
+                  "Sending a follow-up email alone is not enough to make the client feel truly valued or engaged; it shows a basic understanding rather than a comprehensive approach."
               ],
               "ways_to_improve_response": [
-                  "Incorporate multiple touchpoints in your follow-up approach, such as a phone call or personalized message, to demonstrate genuine care and commitment.",
-                  "Mention proactively seeking feedback and offering additional support, which shows you are attentive to client needs and invested in their success.",
-                  "Explain how you track and document follow-up interactions to ensure continuous engagement and to reinforce that clients feel valued and prioritized."
+                  "Expand your follow-up plan to include multiple touchpoints, such as a follow-up phone call a few days later, as shown in the improved example, to demonstrate proactive client engagement.",
+                  "Discuss ways to create ongoing value during follow-up, like asking for feedback or offering additional support, which shows you're committed to the client's success beyond immediate resolution.",
+                  "Mention personalized communication methods that resonate with clients, which can build stronger relationships and make clients feel genuinely valued, as in the improved example."
               ]
           }
       },
       {
           "message_id": 23,
           "consolidated_feedback": {
-              "reasons_why_this_is_good": [],
+              "reasons_why_this_is_good": [
+                  "The candidate shows an openness to broadening their experience and skills by considering account management, which demonstrates a growth mindset.",
+                  "They acknowledge their current career focus in software engineering, indicating honesty about their background and interests."
+              ],
               "reasons_why_this_is_bad": [
-                  "Your response indicates uncertainty about your passion for the beverage industry and unclear long-term goals, which may concern interviewers regarding your commitment to the role.",
-                  "You expressed a lack of enthusiasm for beverages and the industry, potentially signaling low engagement and connection with the company's mission.",
-                  "The answer does not convincingly connect your career ambitions with the responsibilities and opportunities within the account management position at Coca-Cola.",
-                  "By stating your primary focus is still software engineering and that you're not passionate about beverages, you risk appearing less motivated to contribute and grow within this role."
+                  "The response reveals uncertainty about their passion for the beverages industry and how this role aligns with their long-term goals, which might concern interviewers about their commitment.",
+                  "The candidate explicitly states they are not passionate about beverages yet, potentially signaling a lack of enthusiasm for the role and company culture.",
+                  "There is a lack of clear connection between their career aspirations and the specific value or mission of Coca-Cola, which is important in customer-facing roles.",
+                  "The response could be perceived as a distraction from the role's purpose, as it focuses on their current lack of passion rather than opportunities for growth or contribution."
               ],
               "ways_to_improve_response": [
-                  "Frame your answer to show how this role aligns with developing your skills and advancing your career, even if your long-term goals are different, demonstrating adaptability and growth mindset.",
-                  "Express enthusiasm for specific aspects of Coca-Cola's portfolio, community initiatives, or company values to show genuine interest and cultural alignment.",
-                  "Communicate how gaining experience in account management can complement your existing skills and contribute to your long-term goals, emphasizing the value you see in the role.",
-                  "Provide an example or a reason why you’re excited about the industry or the role, such as learning about consumer engagement or contributing to social initiatives, to convey motivation and enthusiasm."
+                  "Frame your long-term goals to show how this role can serve as a stepping stone. For example, say, 'I see this role as an opportunity to develop my interpersonal and client management skills, which are valuable regardless of whether I continue in account management or transition back into tech.'",
+                  "Express enthusiasm for the company and its products by linking them to your personal or professional values—such as community engagement, innovation, or sustainability—rather than focusing on your current disinterest.",
+                  "Demonstrate that you understand the importance of this role within your broader career path by saying, 'While my background is in software engineering, I am eager to apply my problem-solving skills in a new context and believe that working with Coca-Cola will help me develop valuable client relationship skills.'",
+                  "Show genuine curiosity and eagerness to learn about the beverage industry, even if it is not your primary passion, to reassure interviewers of your motivation."
               ]
           }
       },
@@ -1013,17 +1021,17 @@ export const savedAggregatedEvaluation = {
           "message_id": 25,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "You demonstrate self-awareness by recognizing building strong client relationships as your biggest challenge, which is crucial for effective account management.",
-                  "Your proactive approach to personal development, such as being more outgoing and shadowing coworkers, shows a willingness to improve and learn."
+                  "You demonstrate good self-awareness by identifying building strong client relationships as your biggest challenge.",
+                  "Your intent to improve your outgoingness and shadow coworkers shows a willingness to develop necessary skills for account management."
               ],
               "reasons_why_this_is_bad": [
-                  "Your current response lacks specificity in how you plan to overcome the challenge, which makes it seem like a vague acknowledgment rather than a strategic plan.",
-                  "Simply stating that you'll be more outgoing and shadow coworkers doesn't fully convey how you'll implement these actions or measure progress, which is important for demonstrating a proactive attitude."
+                  "Your response lacks a detailed plan or specific strategies for overcoming the challenge of building client relationships.",
+                  "Mentioning only pushing yourself to be more outgoing and shadowing coworkers may seem somewhat superficial without demonstrating deeper proactive efforts."
               ],
               "ways_to_improve_response": [
-                  "Specify concrete actions you will take, such as seeking mentorship or participating in networking events, to show a detailed plan for overcoming the challenge.",
-                  "Explain how these actions will help you develop the necessary skills, like practicing open communication or building confidence, to strengthen client relationships.",
-                  "Include potential metrics or milestones to track your progress, making your approach measurable and goal-oriented."
+                  "Develop more concrete strategies, such as seeking mentorship or participating in networking opportunities, to show proactive steps, like in the improved example: 'I plan on actively seeking mentorship from colleagues with strong relationship-building skills and participating in social events.'",
+                  "Expand on how you will implement these strategies, for example, by stating how shadowing coworkers will help you observe effective relationship-building techniques in action.",
+                  "Show that you have thought beyond general intentions by including specific actions and timelines to demonstrate your commitment to overcoming the challenge, as in: 'I will shadow a colleague at least once a week and review my progress monthly.'"
               ]
           }
       },
@@ -1031,19 +1039,18 @@ export const savedAggregatedEvaluation = {
           "message_id": 4,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "You provided a concrete example of a project that enhanced customer experience, demonstrating initiative and problem-solving skills.",
-                  "Your description of the app development clearly shows your role in impacting customer satisfaction, even if indirectly.",
-                  "You highlighted a specific achievement that illustrates your ability to contribute to a customer-centric environment."
+                  "You provided a tangible example of your technical contribution during your internship, demonstrating problem-solving and initiative, which are valuable in account management.",
+                  "Your example highlights a specific achievement—developing an app to streamline transactions—that can be linked to improving customer experience.",
+                  "You effectively conveyed the impact of your project in improving checkout speed, which is a key aspect of customer satisfaction."
               ],
               "reasons_why_this_is_bad": [
-                  "Your example lacks direct customer interaction, which may raise concerns about your experience in client-facing situations.",
-                  "You did not emphasize any active engagement with customers or collecting customer feedback, which are important in account management roles.",
-                  "Your initial response could be perceived as somewhat detached from essential customer-facing responsibilities, limiting the full demonstration of your customer service skills."
+                  "The example lacks direct customer interaction, which may weaken your perceived ability to handle customer-facing situations in account management roles.",
+                  "Your explanation doesn't sufficiently connect your contribution to the customer experience, making your involvement seem indirect and less relevant."
               ],
               "ways_to_improve_response": [
-                  "Include details about how you gathered feedback from Pro members or colleagues, demonstrating your engagement with customer needs.",
-                  "Connect your technical work to the benefits it delivered for customers—such as faster checkout times or improved service quality.",
-                  "If possible, mention any opportunities you took to interact with customers or steps you plan to take to develop this aspect of your experience, emphasizing your growth mindset."
+                  "Emphasize any steps you took to gather feedback or understand customer needs even if you didn't interact with customers directly, such as seeking input from Pro members or team members.",
+                  "Use phrasing that highlights your role in enhancing customer satisfaction, like ‘collecting user feedback to improve the app,’ to demonstrate customer-centric thinking.",
+                  "Provide an example where you actively engaged with customers or their feedback, even in small ways, to strengthen your narrative of customer focus, such as: 'I gathered feedback from Pro members to tailor the app features, which contributed to a better checkout experience.'"
               ]
           }
       },
@@ -1052,35 +1059,30 @@ export const savedAggregatedEvaluation = {
           "consolidated_feedback": {
               "reasons_why_this_is_good": [],
               "reasons_why_this_is_bad": [
-                  "Your response was overly simplistic and lacked specific strategies for managing client dissatisfaction, which is an important aspect of relationship building.",
-                  "You suggested offering a discount or replacement as a solution, but did not explain how you would handle the conversation to truly address the client's concerns or maintain trust.",
-                  "The answer did not demonstrate proactive problem-solving or a strategic mindset, which are crucial for an Account Manager role.",
-                  "Your response was vague and showed uncertainty in conflict resolution, missing an opportunity to showcase confidence and professionalism."
+                  "Your response was overly simplistic and did not demonstrate a proactive or strategic approach to handling client dissatisfaction.",
+                  "Offering a discount or replacement without further context can be perceived as a generic solution lacking personalization or depth.",
+                  "The answer did not specify how you would actively listen, follow up, or engage with the client to truly strengthen the relationship."
               ],
               "ways_to_improve_response": [
-                  "Start by emphasizing active listening to fully understand the client's concerns, showing empathy and care.",
-                  "Clearly articulate a plan to apologize sincerely and collaborate with the client to find a suitable solution, whether it's a product replacement, a personalized offer, or another service recovery step.",
-                  "Include follow-up actions to ensure the client feels valued and their issue was resolved to their satisfaction, demonstrating your commitment to the relationship.",
-                  "Practice framing your responses with confidence, showing that you are proactive and capable of handling challenging situations effectively."
+                  "Provide a clear, step-by-step approach that includes actively listening to the client's concerns, which shows empathy and understanding.",
+                  "Incorporate specific actions like proposing tailored solutions, following up after resolution, and turning the situation into an opportunity to reinforce the relationship.",
+                  "Avoid vague statements such as 'maybe offer a discount'; instead, specify you would assess the situation and suggest appropriate remedies, like personalized solutions or regular check-ins."
               ]
           }
       },
       {
           "message_id": 15,
           "consolidated_feedback": {
-              "reasons_why_this_is_good": [
-                  "The candidate recognizes the importance of reviewing sales data, which shows an understanding of basic data analysis in customer needs assessment.",
-                  "They are open about their current lack of familiarity with competitive sales strategies, indicating honesty and a willingness to learn."
-              ],
+              "reasons_why_this_is_good": [],
               "reasons_why_this_is_bad": [
-                  "The response lacks specific methods or approaches for analyzing customer data, which is essential for demonstrating a strategic mindset.",
-                  "Relying only on sales data without discussing additional sources like customer feedback or market trends limits the depth of analysis.",
-                  "Expressing uncertainty about competitive sales strategies suggests a gap in industry knowledge critical for the role."
+                  "Your response lacked specific methods or approaches for analyzing customer needs, which is crucial for demonstrating a strategic mindset.",
+                  "You expressed uncertainty about using data and competitive sales strategies, indicating a gap in knowledge that is important for this role.",
+                  "Relying solely on sales data without discussing other sources like customer feedback or market trends shows a limited understanding of comprehensive analysis."
               ],
               "ways_to_improve_response": [
-                  "Provide a detailed plan such as reviewing sales data to identify customer preferences and trends, showing a proactive analytical approach.",
-                  "Mention analyzing customer feedback and market conditions to tailor strategies, demonstrating a comprehensive understanding of customer needs.",
-                  "Show readiness to learn about industry-specific sales strategies and market dynamics, reflecting adaptability and initiative."
+                  "Incorporate a detailed approach, such as stating, 'I would review historical sales data to identify customer preferences and look for patterns in feedback and market conditions,' to demonstrate a proactive analytical process.",
+                  "Show readiness to learn by mentioning, 'I plan to study market trends and established industry strategies to inform my client recommendations,' which reflects adaptability and strategic thinking.",
+                  "Avoid expressing uncertainty; instead, frame your goals as learning opportunities, for example, 'I aim to leverage data insights to tailor strategies that meet customer needs effectively.'"
               ]
           }
       },
@@ -1088,17 +1090,17 @@ export const savedAggregatedEvaluation = {
           "message_id": 3,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "You effectively linked your personal interests, such as working closely with clients and solving problems, to the core responsibilities of an account manager, demonstrating good role alignment.",
-                  "You expressed enthusiasm about representing a major brand like Coca-Cola and leveraging its diverse product portfolio, showing motivation to contribute positively to the company."
+                  "You effectively linked your desire to work closely with customers and solve problems to the role, showing a clear understanding of what account management entails.",
+                  "Your mention of Coca-Cola's large brand and product range demonstrates an awareness of the company's scope and assets, which is positive."
               ],
               "reasons_why_this_is_bad": [
-                  "Your response was somewhat generic, lacking specific details about how your unique skills or experiences will enable you to succeed in the account management role at Coca-Cola.",
-                  "You didn't clearly articulate how your background in tech and project management will translate into tangible benefits for Coca-Cola and its clients, which could help make your fit more compelling."
+                  "Your response was somewhat generic and lacked specific enthusiasm or personal motivation that could make your candidacy more compelling.",
+                  "You did not explicitly connect your skills and experience with how they will benefit Coca-Cola as an account manager, missing an opportunity to showcase your unique value."
               ],
               "ways_to_improve_response": [
-                  "Make your answer more specific by detailing how your project management and data analysis skills can solve particular challenges faced by Coca-Cola's accounts, thus demonstrating your value more concretely.",
-                  "Enhance your response by explicitly connecting your personal motivation with Coca-Cola's specific values or initiatives, which will show genuine interest and thorough understanding of the company.",
-                  "Incorporate examples of past experiences where you've successfully managed client relationships or driven growth, to illustrate your capability to excel in an account management role."
+                  "Enhance your answer by explicitly stating your enthusiasm for Coca-Cola's brand and how its value aligns with your professional goals, such as: \"I'm excited about contributing to Coca-Cola's legacy and engaging with its diverse product portfolio.\"",
+                  "Incorporate specific examples of how your project management and data analysis skills will directly benefit Coca-Cola's accounts, like: \"My experience in analyzing data can help identify growth opportunities for clients and tailor strategies accordingly.\"",
+                  "Express genuine passion for client engagement to build rapport, for instance: \"I'm particularly motivated by building strong relationships with clients and helping them succeed, which I see as a key part of this role.\""
               ]
           }
       },
@@ -1106,17 +1108,15 @@ export const savedAggregatedEvaluation = {
           "message_id": 0,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "Michael confidently and appropriately introduces himself, which helps establish a positive first impression.",
-                  "The tone is professional, aligning with the expectations for an Account Manager role."
+                  "Michael introduces himself confidently, which helps establish a positive first impression.",
+                  "He maintains a professional tone, showing respect for the interviewer and the interview process."
               ],
               "reasons_why_this_is_bad": [
-                  "The response lacks a thank you or acknowledgment of the opportunity, which could make the introduction feel less warm or engaging.",
-                  "It does not explicitly confirm the interviewer’s identity or express enthusiasm for the conversation."
+                  "The response is somewhat brief and lacks an expression of appreciation for the opportunity, which could make the greeting more warm and engaging."
               ],
               "ways_to_improve_response": [
-                  "Add a polite expression of gratitude, such as 'Thank you for this opportunity,' to create a more welcoming tone.",
-                  "Include an acknowledgment of the interview context, like 'I'm pleased to speak with you today,' to show enthusiasm and engagement.",
-                  "Maintain professionalism by clearly stating your name, but enhance the opening with a courteous phrase to set a positive tone for the interview."
+                  "Add a brief expression of thanks for the opportunity, such as 'Thank you for this opportunity to interview today,' to convey enthusiasm and appreciation.",
+                  "Maintain confident delivery while incorporating politeness to create a more personable and engaging first impression."
               ]
           }
       },
@@ -1124,14 +1124,15 @@ export const savedAggregatedEvaluation = {
           "message_id": 1,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "Michael's brief response clearly indicates that he's prepared and eager to proceed, which helps set a positive tone for the interview."
+                  "Michael's concise response clearly indicates his readiness and enthusiasm for the interview.",
+                  "His positive tone helps create an engaging and welcoming atmosphere."
               ],
               "reasons_why_this_is_bad": [
-                  "The answer is a bit too brief and could benefit from more enthusiasm or warmth to better engage the interviewer from the start."
+                  "The response is somewhat generic and doesn't convey additional enthusiasm or preparation beyond a simple affirmation."
               ],
               "ways_to_improve_response": [
-                  "Add more enthusiasm to your affirmation, such as 'Absolutely, I’m looking forward to our conversation!', to convey greater interest and energy.",
-                  "Include a brief comment that reflects your eagerness, which can help establish a positive and engaging rapport with the interviewer."
+                  "Enhance your response by expressing enthusiasm, such as saying, \"Absolutely, I’m looking forward to our conversation!\" which demonstrates energy and genuine interest.",
+                  "Adding a brief comment about being prepared or excited to discuss your fit for the role can further reinforce your enthusiasm."
               ]
           }
       },
@@ -1140,13 +1141,13 @@ export const savedAggregatedEvaluation = {
           "consolidated_feedback": {
               "reasons_why_this_is_good": [],
               "reasons_why_this_is_bad": [
-                  "Your response indicates a tendency to defer too much to authority, which might suggest a lack of assertiveness needed for an Account Manager role.",
-                  "You mentioned only slightly sharing ideas without pushing too hard, which might limit your contribution and influence in team discussions."
+                  "Your response shows a tendency to defer too much to authority, which might suggest a lack of assertiveness essential for an Account Manager role.",
+                  "By stating you would 'not push too hard,' you may appear unwilling to offer valuable insights or challenge ideas when appropriate, potentially missing opportunities for improvement."
               ],
               "ways_to_improve_response": [
-                  "Make sure to confidently present your ideas with clear explanations of your rationale, demonstrating your value and insight.",
-                  "Balance sharing your insights with openness to feedback, but avoid being overly hesitant; this shows initiative and leadership potential.",
-                  "Practice articulating your suggestions assertively, ensuring you convey both confidence and openness to collaboration."
+                  "Instead of simply saying you'd 'mention your ideas but not push too hard,' frame your response to reflect confidence in sharing insights—like, 'I would present my ideas confidently, explaining the rationale behind them.'",
+                  "Show willingness to engage in constructive dialogue. For example, say, 'If my ideas differ from standard directions, I would be open to feedback while standing firm on insights that could benefit the account.'",
+                  "Demonstrate a balance between assertiveness and receptiveness, highlighting your initiative in sharing insights while respecting managerial guidance."
               ]
           }
       },
@@ -1154,17 +1155,17 @@ export const savedAggregatedEvaluation = {
           "message_id": 28,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "You clearly state your availability to start within a month, which helps the employer understand your timeline.",
-                  "You acknowledge the physical demands of the role and express comfort with them, showing transparency and honesty."
+                  "You effectively acknowledged the physical demands of the role and expressed readiness to adapt, which shows awareness of job responsibilities.",
+                  "Your response clearly states your availability to start, providing a concrete timeline that can facilitate scheduling."
               ],
               "reasons_why_this_is_bad": [
-                  "Your response is somewhat vague regarding the level of physical demand you can handle; specifying what 'moderate' entails would make it clearer.",
-                  "The answer could benefit from a more confident tone, reinforcing your readiness and enthusiasm for the role."
+                  "The answer could have been more enthusiastic; simply stating 'I'm comfortable' might come across as somewhat indifferent.",
+                  "It would be beneficial to specify what aspects of physical work you are comfortable with, to give a clearer picture of your readiness."
               ],
               "ways_to_improve_response": [
-                  "Specify what physical tasks you are comfortable with to demonstrate a clear understanding of the role's demands.",
-                  "Reframe your answer to include a positive, confident statement about your preparedness, such as 'I am well-equipped to handle the physical aspects of the role.'",
-                  "Consistently link my readiness to the understanding that these physical tasks are essential to the job, reinforcing your alignment with role requirements."
+                  "Express enthusiasm about starting and working in the role, e.g., 'I'm excited to start as soon as possible.'",
+                  "Include specific examples of physical tasks you are comfortable with to reinforce your preparedness, e.g., 'I'm comfortable with tasks such as lifting, moving supplies, and standing for extended periods.'",
+                  "Reinforce your understanding that these physical tasks are a key part of the role, similar to the improved example: 'I could start in a month and I'm comfortable with the physical tasks, understanding they are integral to the role.'"
               ]
           }
       },
@@ -1173,13 +1174,12 @@ export const savedAggregatedEvaluation = {
           "consolidated_feedback": {
               "reasons_why_this_is_good": [],
               "reasons_why_this_is_bad": [
-                  "The candidate described a passive role, mainly following instructions rather than taking initiative, which can be a concern for a leadership position requiring proactive communication.",
-                  "The response indicates a limited involvement in the communication process, potentially implying a lack of ownership or leadership in team coordination."
+                  "The candidate demonstrated passivity in communication roles by mainly following the mentor’s directives and not taking the initiative to lead or coordinate efforts, which is not ideal for an Account Manager role.",
+                  "The answer lacks emphasis on the candidate’s proactive involvement and responsibility in ensuring smooth implementation, which is essential in demonstrating leadership qualities."
               ],
               "ways_to_improve_response": [
-                  "Emphasize instances where you took the lead in communicating with your team or stakeholders, highlighting your initiative and responsibility.",
-                  "Describe specific actions you undertook to ensure smooth implementation, such as proactively updating documents or clarifying goals, to demonstrate your role in driving the process.",
-                  "Use a more outcome-oriented approach by explaining how your communication efforts contributed to the success of the change initiative."
+                  "Describe specific instances where you independently coordinated or led communication efforts, such as 'I coordinated with my team to implement changes based on feedback, ensuring our communication was transparent and everyone was aligned on our objectives.'",
+                  "Emphasize your proactive role, highlighting how you took initiative rather than just following instructions, to showcase leadership skills relevant to the Account Manager position."
               ]
           }
       },
@@ -1187,25 +1187,23 @@ export const savedAggregatedEvaluation = {
           "message_id": 21,
           "consolidated_feedback": {
               "reasons_why_this_is_good": [
-                  "You demonstrated self-awareness by acknowledging the initial difficulty in accepting criticism, which shows maturity.",
-                  "You showed a willingness to improve by taking the feedback about your code seriously and making adjustments.",
-                  "The example provided illustrates your ability to reflect on feedback and respond constructively, which is key in client management."
+                  "The candidate demonstrates self-awareness by acknowledging the initial emotional response to criticism.",
+                  "They show a willingness to learn and adapt, which is crucial for a client-facing and collaborative environment.",
+                  "The response indicates an understanding of the importance of feedback in professional growth."
               ],
               "reasons_why_this_is_bad": [
-                  "Your response is somewhat vague about the specific actions you took to improve after receiving feedback, which could be expanded to better demonstrate your proactive approach.",
-                  "The example used comes from a technical context (coding), which may not best connect to the skills you’ll need in account management, such as client communication and relationship building.",
-                  "Your answer could have benefitted from emphasizing how you sought additional feedback or took further steps to ensure ongoing improvement."
+                  "The answer is somewhat vague and lacks specific details about how the candidate improved after receiving feedback.",
+                  "It doesn't clearly connect the experience of handling feedback to the skills required in an account management role, such as client communication or strategic adjustment.",
+                  "The response could benefit from a more proactive tone, emphasizing continuous learning and applying feedback to future tasks."
               ],
               "ways_to_improve_response": [
-                  "Use a more relevant example, such as receiving feedback from a client or a manager about your communication or project approach, to better align with the account management role.",
-                  "Expand on specific actions you took to improve after receiving feedback, such as seeking additional guidance, practicing new strategies, or implementing systematic changes.",
-                  "Highlight how you view feedback as an ongoing opportunity for growth rather than a one-time event, by mentioning how you've maintained a mindset of continuous learning."
+                  "Expand on how you transformed initial frustration into a positive learning experience, for example, 'I reviewed my code, sought feedback from peers, and practiced better organization, which ultimately improved my work.'",
+                  "Draw a clear parallel between handling personal feedback and managing client or team feedback in an account management context, such as, 'I would listen carefully to client concerns, ask clarifying questions, and adjust my strategy accordingly.'",
+                  "Showcase your proactive approach by mentioning steps you take after receiving feedback, like 'I regularly seek feedback to ensure continuous improvement and better meet team or client expectations.'"
               ]
           }
       }
-  ],
-  "what_went_well_summary": "What went well summary",
-  "opportunities_for_improvement_summary": "Opportunities for improvement summary"
+  ]
 };
 
 export const savedUserContextDistillation = `# Consolidated Candidate Profile

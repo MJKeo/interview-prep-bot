@@ -465,7 +465,7 @@ export default function PerformAnalysisScreen({
             <div className="evaluation-section">
               <h2 className="evaluation-section-title">Areas for Improvement</h2>
               <p className="evaluation-section-summary">
-                {aggregatedEvaluation.opportunities_for_improvement_summary}
+                {aggregatedEvaluation.ways_to_improve_summary}
               </p>
             </div>
             

@@ -1,12 +1,17 @@
 import OpenAI from "openai";
 import { Agent, webSearchTool } from "@openai/agents";
-import { COMPANY_STRATEGY_SYSTEM_PROMPT_V2, 
+import { 
+  COMPANY_STRATEGY_SYSTEM_PROMPT_V2, 
   ROLE_SUCCESS_SYSTEM_PROMPT_V2, 
   TEAM_CULTURE_SYSTEM_PROMPT_V2, 
-  DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V2 } from "@/prompts";
+  DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V2,
+  aggregatedEvaluationsSummaryPrompt
+} from "@/prompts";
 import {
   PerformanceEvaluationResponseSchema,
   ConsolidatedFeedbackResponseSchema,
+  AggregatedSummaryResponseSchema,
+  JobListingResearchResponse,
 } from "@/types";
 
 export const openai = new OpenAI({
@@ -72,6 +77,15 @@ export function createEvaluationAggregatorAgent(systemPrompt: string, name: stri
     instructions: systemPrompt,
     model: "gpt-4.1-nano",
     outputType: ConsolidatedFeedbackResponseSchema,
+  });
+}
+
+export function createEvaluationSummaryAgent(jobListingData: JobListingResearchResponse) {
+  return new Agent({
+    name: "Evaluation summary agent",
+    instructions: aggregatedEvaluationsSummaryPrompt(jobListingData),
+    model: "gpt-4.1-nano",
+    outputType: AggregatedSummaryResponseSchema,
   });
 }
 

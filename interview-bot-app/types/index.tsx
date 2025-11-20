@@ -15,10 +15,12 @@ export {
 } from "./performance-feedback";
 export {
     ConsolidatedFeedbackResponseSchema,
+    AggregatedSummaryResponseSchema,
     type ConsolidatedFeedbackResponse,
     type ConsolidatedFeedback,
     type ConsolidatedFeedbackInput,
-    type AggregatedEvaluation
+    type AggregatedEvaluation,
+    type AggregatedSummaryResponse,
 } from "./aggregated-evaluation-response"
 export { FileStatus, type FileItem, type UploadedFileItem } from "./file-item";
 export { InterviewMessagePairSchema, InterviewTranscriptSchema, type InterviewMessagePair, type InterviewTranscript } from "./interview-transcript";

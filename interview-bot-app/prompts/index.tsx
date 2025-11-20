@@ -40,5 +40,6 @@ export {
     aggregatePositiveEvaluationsPromptV1,
     aggregateNegativeEvaluationsPromptV1,
     aggregateEvaluationsByMessagePrompt,
+    aggregatedEvaluationsSummaryPrompt,
 } from "./evaluation-aggregator-prompts";
 export { USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1 } from "./user-context-distillation-prompts";

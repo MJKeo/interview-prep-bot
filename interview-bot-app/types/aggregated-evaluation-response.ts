@@ -7,7 +7,13 @@ export const ConsolidatedFeedbackResponseSchema = z.object({
     ways_to_improve_response: z.array(z.string()),
 });
 
+export const AggregatedSummaryResponseSchema = z.object({
+    what_went_well_summary: z.string(),
+    ways_to_improve_summary: z.string(),
+});
+
 export type ConsolidatedFeedbackResponse = z.infer<typeof ConsolidatedFeedbackResponseSchema>;
+export type AggregatedSummaryResponse = z.infer<typeof AggregatedSummaryResponseSchema>;
 
 export type ConsolidatedFeedbackInput = {
     message_id: number,
@@ -23,6 +29,6 @@ export type ConsolidatedFeedback = {
 
 export type AggregatedEvaluation = {
     what_went_well_summary: string,
-    opportunities_for_improvement_summary: string,
+    ways_to_improve_summary: string,
     consolidated_feedback_by_message: ConsolidatedFeedback[],
 }

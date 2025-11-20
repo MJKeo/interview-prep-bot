@@ -9,7 +9,9 @@ import {
   type AggregatedEvaluation,
   type InterviewTranscript,
   type ConsolidatedFeedback,
-  type ConsolidatedFeedbackResponse
+  type ConsolidatedFeedbackResponse,
+  type PerformanceFeedback,
+  type AggregatedSummaryResponse
 } from "@/types";
 import {
   openai,
@@ -18,7 +20,8 @@ import {
   teamCultureAgent,
   domainKnowledgeAgent,
   createEvaluationAgent,
-  createEvaluationAggregatorAgent
+  createEvaluationAggregatorAgent,
+  createEvaluationSummaryAgent
 } from "@/app/openai";
 import {
   JOB_LISTING_PARSING_PROMPT_V1,
@@ -372,7 +375,73 @@ export async function performEvaluationAggregation(
   jobListingData: JobListingResearchResponse
 ): Promise<AggregatedEvaluation> {
   try {
+    // Step 1 - Create tasks for running consolidateEvaluationsByMessage and createEvaluationSummaryAgent
+    const consolidationTask = consolidateEvaluationsByMessage(evaluations, transcript, jobListingData);
+    
+    // Prepare input for summary agent: extract summaries and all feedback from evaluations
+    const evaluationSummaries: string[] = [];
+    const allFeedback: PerformanceFeedback = [];
+    
+    if (evaluations.contentJudgeEvaluation) {
+      evaluationSummaries.push(evaluations.contentJudgeEvaluation.summary);
+      allFeedback.push(...evaluations.contentJudgeEvaluation.feedback);
+    }
+    if (evaluations.structureJudgeEvaluation) {
+      evaluationSummaries.push(evaluations.structureJudgeEvaluation.summary);
+      allFeedback.push(...evaluations.structureJudgeEvaluation.feedback);
+    }
+    if (evaluations.fitJudgeEvaluation) {
+      evaluationSummaries.push(evaluations.fitJudgeEvaluation.summary);
+      allFeedback.push(...evaluations.fitJudgeEvaluation.feedback);
+    }
+    if (evaluations.communicationJudgeEvaluation) {
+      evaluationSummaries.push(evaluations.communicationJudgeEvaluation.summary);
+      allFeedback.push(...evaluations.communicationJudgeEvaluation.feedback);
+    }
+    if (evaluations.riskJudgeEvaluation) {
+      evaluationSummaries.push(evaluations.riskJudgeEvaluation.summary);
+      allFeedback.push(...evaluations.riskJudgeEvaluation.feedback);
+    }
+    if (evaluations.candidateContextJudgeEvaluation) {
+      evaluationSummaries.push(evaluations.candidateContextJudgeEvaluation.summary);
+      allFeedback.push(...evaluations.candidateContextJudgeEvaluation.feedback);
+    }
+    
+    const summaryAgent = createEvaluationSummaryAgent(jobListingData);
+    const summaryInput = JSON.stringify({
+      evaluation_summaries: evaluationSummaries,
+      feedback: allFeedback,
+    });
+    const summaryTask = run(summaryAgent, summaryInput);
+    
+    // Step 2 - Execute them in parallel
+    const [consolidatedFeedback, summaryResult] = await Promise.all([
+      consolidationTask,
+      summaryTask,
+    ]);
+    
+    // Step 3 - Return the results
+    const summary = summaryResult.finalOutput as AggregatedSummaryResponse;
+    return {
+      what_went_well_summary: summary.what_went_well_summary,
+      ways_to_improve_summary: summary.ways_to_improve_summary,
+      consolidated_feedback_by_message: consolidatedFeedback,
+    };
+  } catch (error) {
+    // Re-throw with more context if it's not already an Error
+    if (error instanceof Error) {
+      throw new Error(`Failed to perform evaluation aggregation: ${error.message}`);
+    }
+    throw new Error(`Failed to perform evaluation aggregation: ${String(error)}`);
+  }
+}
 
+async function consolidateEvaluationsByMessage(
+  evaluations: EvaluationReports,
+  transcript: InterviewTranscript,
+  jobListingData: JobListingResearchResponse
+): Promise<ConsolidatedFeedback[]> {
+  try {
     // STEP 1 - CREATE METHOD THAT TURNS evaluations INTO FEEDBACK GROUPED BY MESSAGE ID
     const feedbackByMessage = convertEvaluationsToFeedbackByMessage(evaluations, transcript);
     const evaluationAggregatorSystemPrompt = aggregateEvaluationsByMessagePrompt(jobListingData);
@@ -397,7 +466,7 @@ export async function performEvaluationAggregation(
     // STEP 3 - Execute all tasks in parallel and build ConsolidatedFeedback array
     // Promise.all preserves order: results[index] corresponds to consolidationTasks[index].task
     // Each task resolves directly to a ConsolidatedFeedback object, pairing messageId with its result
-    const consolidatedFeedbackByMessage: ConsolidatedFeedback[] = await Promise.all(
+    return await Promise.all(
       consolidationTasks.map(item => 
         item.task.then(result => ({
           message_id: item.messageId,
@@ -405,77 +474,11 @@ export async function performEvaluationAggregation(
         }))
       )
     );
-
-    // STEP 4 - RETURN FAKE SUMMARIES FOR THE SAKE OF TESTING THESE RESULTS
-    return {
-      consolidated_feedback_by_message: consolidatedFeedbackByMessage,
-      what_went_well_summary: "What went well summary",
-      opportunities_for_improvement_summary: "Opportunities for improvement summary",
-    };
-
-    // // Extract all feedback arrays from each evaluation report and combine them into a single array
-    // // Each evaluation report contains a feedback array, so we flatten all of them together
-    // var combinedFeedback = [
-    //   ...evaluations.contentJudgeEvaluation.feedback,
-    //   ...evaluations.structureJudgeEvaluation.feedback,
-    //   ...evaluations.fitJudgeEvaluation.feedback,
-    //   ...evaluations.communicationJudgeEvaluation.feedback,
-    //   ...evaluations.riskJudgeEvaluation.feedback,
-    // ];
-
-    // if (evaluations.candidateContextJudgeEvaluation) {
-    //   combinedFeedback.push(...evaluations.candidateContextJudgeEvaluation.feedback);
-    // }
-
-    // // Separate feedback into GOOD and BAD lists based on the type property
-    // // Filter all feedback items where type is "good"
-    // var goodFeedback = combinedFeedback.filter(feedback => feedback.type === "good");
-    
-    // // Filter all feedback items where type is "bad"
-    // var badFeedback = combinedFeedback.filter(feedback => feedback.type === "bad");
-
-    // // Extract summaries from each evaluation
-    // var evaluationSummaries = [
-    //   evaluations.contentJudgeEvaluation.summary,
-    //   evaluations.structureJudgeEvaluation.summary,
-    //   evaluations.fitJudgeEvaluation.summary,
-    //   evaluations.communicationJudgeEvaluation.summary,
-    //   evaluations.riskJudgeEvaluation.summary,
-    //   ...(evaluations.candidateContextJudgeEvaluation ? [evaluations.candidateContextJudgeEvaluation.summary] : []),
-    // ];
-
-    // const positiveAggregatorInput = JSON.stringify({
-    //   summaries: evaluationSummaries,
-    //   positive_feedback: goodFeedback,
-    // });
-
-    // const negativeAggregatorInput = JSON.stringify({
-    //   summaries: evaluationSummaries,
-    //   negative_feedback: badFeedback,
-    // });
-
-    // const positiveAggregatorAgent = createAggregatorAgent(aggregatePositiveEvaluationsPromptV1(jobListingData), "Positive Evaluation Aggregator Agent");
-    // const negativeAggregatorAgent = createAggregatorAgent(aggregateNegativeEvaluationsPromptV1(jobListingData), "Negative Evaluation Aggregator Agent");
-
-    // const aggregationTasks = [
-    //   run(positiveAggregatorAgent, positiveAggregatorInput),
-    //   run(negativeAggregatorAgent, negativeAggregatorInput),
-    // ] as const;
-
-    // const [positiveAggregatedEvaluation, negativeAggregatedEvaluation] = await Promise.all(aggregationTasks);
-
-    // return {
-    //   positive_evaluation_summary: positiveAggregatedEvaluation.finalOutput ?? "Unknown",
-    //   positive_evaluation_feedback: goodFeedback,
-    //   negative_evaluation_summary: negativeAggregatedEvaluation.finalOutput ?? "Unknown",
-    //   negative_evaluation_feedback: badFeedback,
-    // };
   } catch (error) {
-    // Re-throw with more context if it's not already an Error
     if (error instanceof Error) {
-      throw new Error(`Failed to perform evaluation aggregation: ${error.message}`);
+      throw new Error(`Failed to consolidate evaluations by message: ${error.message}`);
     }
-    throw new Error(`Failed to perform evaluation aggregation: ${String(error)}`);
+    throw new Error(`Failed to consolidate evaluations by message: ${String(error)}`);
   }
 }
 
