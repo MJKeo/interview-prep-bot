@@ -5,9 +5,11 @@ import {
   MockInterviewMessageResponseSchema, 
   type MockInterviewMessageResponse, 
   type EvaluationReports,
-  AggregatedEvaluationResponseSchema,
-  type AggregatedEvaluationResponse,
-  type FileItem
+  type FileItem,
+  type AggregatedEvaluation,
+  type InterviewTranscript,
+  type ConsolidatedFeedback,
+  type ConsolidatedFeedbackResponse
 } from "@/types";
 import {
   openai,
@@ -16,6 +18,7 @@ import {
   teamCultureAgent,
   domainKnowledgeAgent,
   createEvaluationAgent,
+  createEvaluationAggregatorAgent
 } from "@/app/openai";
 import {
   JOB_LISTING_PARSING_PROMPT_V1,
@@ -29,13 +32,17 @@ import {
   structureJudgeSystemPrompt,
   fitJudgeSystemPrompt,
   communicationJudgeSystemPrompt,
+  candidateContextJudgeSystemPrompt,
   riskJudgeSystemPrompt,
-  aggregateEvaluationsPromptV1,
+  aggregateEvaluationsByMessagePrompt,
+  aggregatePositiveEvaluationsPromptV1,
+  aggregateNegativeEvaluationsPromptV1,
   USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
 } from "@/prompts";
 import { run, withTrace } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
+import { convertEvaluationsToFeedbackByMessage } from "./utils";
 
 /**
  * Generates a structured response from OpenAI's chat completions API
@@ -238,8 +245,7 @@ export async function createInterviewGuide(
 export async function generateNextInterviewMessage(
   combinedHistory: EasyInputMessage[],
   jobListingResearchResponse: JobListingResearchResponse,
-  interviewGuide: string,
-  candidateInfo: string | null | undefined
+  interviewGuide: string
 ): Promise<MockInterviewMessageResponse> {
   try {
     // Call OpenAI's responses.parse API to generate the next message
@@ -284,7 +290,7 @@ export async function generateNextInterviewMessage(
  * @throws Error if any agent execution fails
  */
 export async function performEvaluations(
-  transcript: string,
+  transcript: InterviewTranscript,
   listing: JobListingResearchResponse,
   deepResearchReports: DeepResearchReports,
   interview_guideline: string
@@ -297,16 +303,24 @@ export async function performEvaluations(
   const communicationJudgeAgent = createEvaluationAgent(communicationJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Communication Judge Agent");
   const riskJudgeAgent = createEvaluationAgent(riskJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Risk Judge Agent");
 
+  const input = JSON.stringify(transcript);
+  console.log("=== input", input);
+
   return await withTrace("InterviewEvaluationWorkflow", async () => {
     // Launch all agent runs immediately so they can execute in parallel
     // Each agent receives the transcript as input
-    const evaluationTasks = [
-      run(contentJudgeAgent, transcript),
-      run(structureJudgeAgent, transcript),
-      run(fitJudgeAgent, transcript),
-      run(communicationJudgeAgent, transcript),
-      run(riskJudgeAgent, transcript),
-    ] as const;
+    var evaluationTasks = [
+      run(contentJudgeAgent, input),
+      run(structureJudgeAgent, input),
+      run(fitJudgeAgent, input),
+      run(communicationJudgeAgent, input),
+      run(riskJudgeAgent, input),
+    ];
+
+    if (deepResearchReports.userContextReport) {
+      const candidateContextJudgeAgent = createEvaluationAgent(candidateContextJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline, deepResearchReports.userContextReport), "Candidate Context Judge Agent");
+      evaluationTasks.push(run(candidateContextJudgeAgent, input));
+    }
 
     try {
       // Execute all evaluation tasks concurrently and wait for all to complete
@@ -317,15 +331,17 @@ export async function performEvaluations(
         fitJudge,
         communicationJudge,
         riskJudge,
+        candidateContextJudge,
       ] = await Promise.all(evaluationTasks);
 
-      // Extract final outputs from each agent run, defaulting to "Unknown" if not available
+      // Extract final outputs from each agent run
       return {
-        contentJudgeEvaluation: contentJudge.finalOutput ?? "Unknown",
-        structureJudgeEvaluation: structureJudge.finalOutput ?? "Unknown",
-        fitJudgeEvaluation: fitJudge.finalOutput ?? "Unknown",
-        communicationJudgeEvaluation: communicationJudge.finalOutput ?? "Unknown",
-        riskJudgeEvaluation: riskJudge.finalOutput ?? "Unknown",
+        contentJudgeEvaluation: contentJudge.finalOutput,
+        structureJudgeEvaluation: structureJudge.finalOutput,
+        fitJudgeEvaluation: fitJudge.finalOutput,
+        communicationJudgeEvaluation: communicationJudge.finalOutput,
+        riskJudgeEvaluation: riskJudge.finalOutput,
+        candidateContextJudgeEvaluation: candidateContextJudge.finalOutput,
       };
     } catch (error) {
       // Re-throw with more context if it's not already an Error
@@ -352,40 +368,108 @@ export async function performEvaluations(
  */
 export async function performEvaluationAggregation(
   evaluations: EvaluationReports,
+  transcript: InterviewTranscript,
   jobListingData: JobListingResearchResponse
-): Promise<AggregatedEvaluationResponse> {
+): Promise<AggregatedEvaluation> {
   try {
-    // Extract all feedback arrays from each evaluation report and combine them into a single array
-    // Each evaluation report contains a feedback array, so we flatten all of them together
-    const combinedFeedback = [
-      ...evaluations.contentJudgeEvaluation.feedback,
-      ...evaluations.structureJudgeEvaluation.feedback,
-      ...evaluations.fitJudgeEvaluation.feedback,
-      ...evaluations.communicationJudgeEvaluation.feedback,
-      ...evaluations.riskJudgeEvaluation.feedback,
-    ];
 
-    // Stringify the combined feedback array to use as input to the LLM
-    const input = JSON.stringify(combinedFeedback);
-
-    // Call OpenAI's responses.parse API with the aggregation prompt
-    // The prompt guides the LLM to synthesize the feedback into a cohesive evaluation
-    const response = await openai.responses.parse({
-      model: "gpt-4o-mini",
-      instructions: aggregateEvaluationsPromptV1(jobListingData),
-      input: input,
-      text: { 
-        format: zodTextFormat(AggregatedEvaluationResponseSchema, "aggregated_evaluation_response") 
-      },
+    // STEP 1 - CREATE METHOD THAT TURNS evaluations INTO FEEDBACK GROUPED BY MESSAGE ID
+    const feedbackByMessage = convertEvaluationsToFeedbackByMessage(evaluations, transcript);
+    const evaluationAggregatorSystemPrompt = aggregateEvaluationsByMessagePrompt(jobListingData);
+    
+    // STEP 2 - Create an agent for each message, saving a reference to the message_id
+    const consolidationTasks = feedbackByMessage.map((feedbackInput) => {
+      const agent = createEvaluationAggregatorAgent(
+        evaluationAggregatorSystemPrompt,
+        `Evaluation Aggregator Agent for Message ${feedbackInput.message_id}`
+      );
+      const input = JSON.stringify({
+        interviewer_question: feedbackInput.interviewer_question,
+        candidate_answer: feedbackInput.candidate_answer,
+        feedback: feedbackInput.feedback,
+      });
+      return {
+        messageId: feedbackInput.message_id,
+        task: run(agent, input),
+      };
     });
 
-    // Extract and validate the parsed response
-    const result = response.output_parsed;
-    if (!result) {
-      throw new Error("OpenAI Response gave an empty result");
-    }
+    // STEP 3 - Execute all tasks in parallel and build ConsolidatedFeedback array
+    // Promise.all preserves order: results[index] corresponds to consolidationTasks[index].task
+    // Each task resolves directly to a ConsolidatedFeedback object, pairing messageId with its result
+    const consolidatedFeedbackByMessage: ConsolidatedFeedback[] = await Promise.all(
+      consolidationTasks.map(item => 
+        item.task.then(result => ({
+          message_id: item.messageId,
+          consolidated_feedback: result.finalOutput as ConsolidatedFeedbackResponse,
+        }))
+      )
+    );
 
-    return result;
+    // STEP 4 - RETURN FAKE SUMMARIES FOR THE SAKE OF TESTING THESE RESULTS
+    return {
+      consolidated_feedback_by_message: consolidatedFeedbackByMessage,
+      what_went_well_summary: "What went well summary",
+      opportunities_for_improvement_summary: "Opportunities for improvement summary",
+    };
+
+    // // Extract all feedback arrays from each evaluation report and combine them into a single array
+    // // Each evaluation report contains a feedback array, so we flatten all of them together
+    // var combinedFeedback = [
+    //   ...evaluations.contentJudgeEvaluation.feedback,
+    //   ...evaluations.structureJudgeEvaluation.feedback,
+    //   ...evaluations.fitJudgeEvaluation.feedback,
+    //   ...evaluations.communicationJudgeEvaluation.feedback,
+    //   ...evaluations.riskJudgeEvaluation.feedback,
+    // ];
+
+    // if (evaluations.candidateContextJudgeEvaluation) {
+    //   combinedFeedback.push(...evaluations.candidateContextJudgeEvaluation.feedback);
+    // }
+
+    // // Separate feedback into GOOD and BAD lists based on the type property
+    // // Filter all feedback items where type is "good"
+    // var goodFeedback = combinedFeedback.filter(feedback => feedback.type === "good");
+    
+    // // Filter all feedback items where type is "bad"
+    // var badFeedback = combinedFeedback.filter(feedback => feedback.type === "bad");
+
+    // // Extract summaries from each evaluation
+    // var evaluationSummaries = [
+    //   evaluations.contentJudgeEvaluation.summary,
+    //   evaluations.structureJudgeEvaluation.summary,
+    //   evaluations.fitJudgeEvaluation.summary,
+    //   evaluations.communicationJudgeEvaluation.summary,
+    //   evaluations.riskJudgeEvaluation.summary,
+    //   ...(evaluations.candidateContextJudgeEvaluation ? [evaluations.candidateContextJudgeEvaluation.summary] : []),
+    // ];
+
+    // const positiveAggregatorInput = JSON.stringify({
+    //   summaries: evaluationSummaries,
+    //   positive_feedback: goodFeedback,
+    // });
+
+    // const negativeAggregatorInput = JSON.stringify({
+    //   summaries: evaluationSummaries,
+    //   negative_feedback: badFeedback,
+    // });
+
+    // const positiveAggregatorAgent = createAggregatorAgent(aggregatePositiveEvaluationsPromptV1(jobListingData), "Positive Evaluation Aggregator Agent");
+    // const negativeAggregatorAgent = createAggregatorAgent(aggregateNegativeEvaluationsPromptV1(jobListingData), "Negative Evaluation Aggregator Agent");
+
+    // const aggregationTasks = [
+    //   run(positiveAggregatorAgent, positiveAggregatorInput),
+    //   run(negativeAggregatorAgent, negativeAggregatorInput),
+    // ] as const;
+
+    // const [positiveAggregatedEvaluation, negativeAggregatedEvaluation] = await Promise.all(aggregationTasks);
+
+    // return {
+    //   positive_evaluation_summary: positiveAggregatedEvaluation.finalOutput ?? "Unknown",
+    //   positive_evaluation_feedback: goodFeedback,
+    //   negative_evaluation_summary: negativeAggregatedEvaluation.finalOutput ?? "Unknown",
+    //   negative_evaluation_feedback: badFeedback,
+    // };
   } catch (error) {
     // Re-throw with more context if it's not already an Error
     if (error instanceof Error) {

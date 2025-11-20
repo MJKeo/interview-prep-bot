@@ -3,10 +3,10 @@ const CONFIG = {
     useCachedListingAttributes: true,
     useCachedDeepResearch: true,
     useCachedInterviewGuide: true,
-    useCachedTranscript: false,
+    useCachedTranscript: true,
     useCachedEvaluations: true,
     useCachedAggregatedEvaluations: true,
-    bypassMockInterview: false,
+    bypassMockInterview: true,
 };
 
 export default CONFIG;

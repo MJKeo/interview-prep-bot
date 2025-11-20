@@ -211,6 +211,36 @@
   margin: 0;
 }
 
+/* Styles for consolidated feedback card */
+.consolidated-feedback-card {
+  border-color: rgb(59 130 246); /* border-blue-500 */
+}
+
+/* Styles for consolidated feedback badge */
+.consolidated-feedback-badge {
+  background-color: rgb(219 234 254); /* bg-blue-100 */
+  color: rgb(30 64 175); /* text-blue-800 */
+}
+
+/* Styles for feedback list (bulleted lists) */
+.feedback-list {
+  list-style-type: disc;
+  list-style-position: inside;
+  margin: 0;
+  padding-left: 0.5rem;
+}
+
+.feedback-list li {
+  font-size: 0.875rem; /* text-sm */
+  color: rgb(75 85 99); /* text-gray-600 */
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-list li:last-child {
+  margin-bottom: 0;
+}
+
 /* Styles for evaluation loading message */
 .evaluation-loading {
   font-size: 1rem;

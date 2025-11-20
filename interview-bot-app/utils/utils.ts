@@ -1,4 +1,5 @@
 import type { EasyInputMessage } from "openai/resources/responses/responses";
+import type { InterviewTranscript, EvaluationReports, ConsolidatedFeedbackInput, PerformanceFeedback } from "@/types";
 
 /**
  * Validates if a string is a syntactically valid URL.
@@ -31,27 +32,110 @@ export function isValidURL(urlString: string): boolean {
 }
 
 /**
- * Converts a list of EasyInputMessage objects into a formatted transcript string.
- * Renames "user" to "Candidate" and "assistant" to "Interviewer".
+ * Converts a list of EasyInputMessage objects into an array of message pairs.
+ * Assumes messages alternate: even indices are interviewer questions, odd indices are candidate answers.
+ * If the array length is odd, the final message is ignored.
  * 
  * @param messages - Array of messages from the conversation
- * @returns Formatted transcript string with speaker labels
+ * @returns Array of InterviewMessagePair objects with id, interviewer_question, and candidate_answer
  */
-export function convertMessagesToTranscript(messages: EasyInputMessage[]): string {
-  // Map to rename entity roles to more readable names
-  const entityRenameMap: Record<string, string> = {
-    user: "Candidate",
-    assistant: "Interviewer",
-  };
+export function convertMessagesToTranscript(messages: EasyInputMessage[]): InterviewTranscript {
+  const pairs: InterviewTranscript = [];
 
-  let interviewTranscript = "";
+  // Iterate through messages in pairs (interviewer question, candidate answer)
+  // Stop before the last message if array length is odd
+  const maxIndex = messages.length % 2 === 0 ? messages.length : messages.length - 1;
 
-  // Iterate through each message and format it
-  for (const message of messages) {
-    const entityName = entityRenameMap[message.role] || "Unknown";
-    interviewTranscript += `${entityName}:\n${message.content}\n\n`;
+  for (let i = 0; i < maxIndex; i += 2) {
+    // Even index is interviewer question, odd index is candidate answer
+    // Convert content to string (content can be string or ResponseInputMessageContentList)
+    const interviewerQuestion = String(messages[i].content);
+    const candidateAnswer = String(messages[i + 1].content);
+    
+    // Calculate pair id as floor(index / 2)
+    const pairId = Math.floor(i / 2);
+
+    pairs.push({
+      id: pairId,
+      interviewer_question: interviewerQuestion,
+      candidate_answer: candidateAnswer,
+    });
   }
 
-  return interviewTranscript;
+  return pairs;
 }
 
+
+/**
+ * Converts evaluation reports into feedback organized by message ID.
+ * Groups all feedback items by their transcript message ID and pairs them with
+ * the corresponding question and answer from the transcript.
+ * 
+ * @param evaluations - The evaluation reports containing feedback from all judge agents
+ * @param transcript - The interview transcript containing question-answer pairs
+ * @returns Array of ConsolidatedFeedbackInput objects, one per unique message ID with feedback
+ */
+export function convertEvaluationsToFeedbackByMessage(evaluations: EvaluationReports, transcript: InterviewTranscript): ConsolidatedFeedbackInput[] {
+  // Collect all feedback items from all evaluation judges
+  const allFeedback: PerformanceFeedback = [];
+  
+  // Extract feedback from each judge evaluation
+  if (evaluations.contentJudgeEvaluation?.feedback) {
+    allFeedback.push(...evaluations.contentJudgeEvaluation.feedback);
+  }
+  if (evaluations.structureJudgeEvaluation?.feedback) {
+    allFeedback.push(...evaluations.structureJudgeEvaluation.feedback);
+  }
+  if (evaluations.fitJudgeEvaluation?.feedback) {
+    allFeedback.push(...evaluations.fitJudgeEvaluation.feedback);
+  }
+  if (evaluations.communicationJudgeEvaluation?.feedback) {
+    allFeedback.push(...evaluations.communicationJudgeEvaluation.feedback);
+  }
+  if (evaluations.riskJudgeEvaluation?.feedback) {
+    allFeedback.push(...evaluations.riskJudgeEvaluation.feedback);
+  }
+  if (evaluations.candidateContextJudgeEvaluation?.feedback) {
+    allFeedback.push(...evaluations.candidateContextJudgeEvaluation.feedback);
+  }
+
+  // Get all unique message IDs that have feedback
+  const uniqueMessageIds = new Set<number>();
+  allFeedback.forEach(feedback => {
+    uniqueMessageIds.add(feedback.transcript_message_id);
+  });
+
+  // Create a map of transcript entries by ID for quick lookup
+  const transcriptMap = new Map<number, { interviewer_question: string; candidate_answer: string }>();
+  transcript.forEach(pair => {
+    transcriptMap.set(pair.id, {
+      interviewer_question: pair.interviewer_question,
+      candidate_answer: pair.candidate_answer,
+    });
+  });
+
+  // Build the result array: one entry per unique message ID
+  const result: ConsolidatedFeedbackInput[] = [];
+  
+  uniqueMessageIds.forEach(messageId => {
+    // Find the transcript entry for this message ID
+    const transcriptEntry = transcriptMap.get(messageId);
+    
+    // If transcript entry exists, create the consolidated feedback input
+    if (transcriptEntry) {
+      // Collect all feedback items for this message ID
+      const feedbackForMessage: PerformanceFeedback = allFeedback.filter(
+        feedback => feedback.transcript_message_id === messageId
+      );
+      
+      result.push({
+        message_id: messageId,
+        interviewer_question: transcriptEntry.interviewer_question,
+        candidate_answer: transcriptEntry.candidate_answer,
+        feedback: feedbackForMessage,
+      });
+    }
+  });
+
+  return result;
+}

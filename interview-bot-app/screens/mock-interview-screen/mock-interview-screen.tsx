@@ -5,8 +5,10 @@ import "./mock-interview-screen.css";
 import Button from "@/components/button";
 import { generateNextInterviewMessageAction } from "@/app/actions";
 import CONFIG from "@/app/config";
-import type { JobListingResearchResponse } from "@/types";
+import type { JobListingResearchResponse, InterviewTranscript } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
+import { convertMessagesToTranscript } from "@/utils/utils";
+import { savedChatTranscript } from "@/app/saved-responses";
 
 /**
  * Props for the MockInterviewScreen component.
@@ -21,16 +23,12 @@ interface MockInterviewScreenProps {
    */
   interviewGuide: string;
   /**
-   * The candidate info (markdown format) used to provide context for the interview bot.
-   */
-  candidateInfo: string | null | undefined;
-  /**
    * Callback function to navigate to the perform analysis screen.
    * Called when the user confirms the final review warning.
    * 
    * @param messages - The conversation history to pass to the analysis screen (in EasyInputMessage format)
    */
-  onPerformFinalReview: (messages: EasyInputMessage[]) => void;
+  onPerformFinalReview: (messages: InterviewTranscript) => void;
 }
 
 /**
@@ -40,7 +38,6 @@ interface MockInterviewScreenProps {
 export default function MockInterviewScreen({ 
   jobListingResearchResponse, 
   interviewGuide,
-  candidateInfo,
   onPerformFinalReview 
 }: MockInterviewScreenProps) {
   // State to store the array of messages in the conversation
@@ -55,10 +52,6 @@ export default function MockInterviewScreen({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // Ref to the messages container for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // Ref to track if initial message has been sent (prevents duplicate sends on mount)
-  const hasInitialMessageSentRef = useRef<boolean>(false);
-
-  console.log("candidateInfo: ", candidateInfo);
 
   /**
    * Helper function to send a preliminary "Hello" message and generate the bot's first response.
@@ -83,8 +76,7 @@ export default function MockInterviewScreen({
       const result = await generateNextInterviewMessageAction(
         messagesToSend,
         jobListingResearchResponse,
-        interviewGuide,
-        candidateInfo
+        interviewGuide
       );
 
       // Check if the action was successful
@@ -165,8 +157,7 @@ export default function MockInterviewScreen({
       const result = await generateNextInterviewMessageAction(
         combinedMessages,
         jobListingResearchResponse,
-        interviewGuide,
-        candidateInfo
+        interviewGuide
       );
 
       // Check if the action was successful
@@ -229,7 +220,12 @@ export default function MockInterviewScreen({
     // Close the modal
     setShowWarningModal(false);
     // Navigate to perform analysis screen with conversation history
-    onPerformFinalReview(messages);
+    if (CONFIG.useCachedTranscript) {
+      onPerformFinalReview(savedChatTranscript as InterviewTranscript);
+    } else {
+      // Convert messages to transcript format
+      onPerformFinalReview(convertMessagesToTranscript(messages));
+    }
   };
 
   /**

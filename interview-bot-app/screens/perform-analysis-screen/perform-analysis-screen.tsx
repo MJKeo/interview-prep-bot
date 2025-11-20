@@ -2,13 +2,21 @@
 
 import { useState, useEffect } from "react";
 import "./perform-analysis-screen.css";
-import type { EasyInputMessage } from "openai/resources/responses/responses";
+import { convertEvaluationsToFeedbackByMessage } from "@/utils/utils";
 import { savedEvaluationReports, savedAggregatedEvaluation } from "@/app/saved-responses";
-import type { PerformanceFeedback, JobListingResearchResponse, DeepResearchReports, EvaluationReports, AggregatedEvaluationResponse } from "@/types";
+import type { 
+  PerformanceFeedback, 
+  PerformanceEvaluationResponse, 
+  JobListingResearchResponse, 
+  DeepResearchReports, 
+  EvaluationReports, 
+  InterviewTranscript,
+  AggregatedEvaluation,
+  ConsolidatedFeedback
+} from "@/types";
 import Button from "@/components/button";
 import CONFIG from "@/app/config";
 import { performEvaluationsAction, performEvaluationAggregationAction } from "@/app/actions";
-import { convertMessagesToTranscript } from "@/utils/utils";
 
 /**
  * Props for the PerformAnalysisScreen component.
@@ -18,7 +26,7 @@ interface PerformAnalysisScreenProps {
    * The conversation history from the mock interview.
    * Array of messages with role and content in EasyInputMessage format.
    */
-  messages: EasyInputMessage[];
+  transcript: InterviewTranscript;
   /**
    * Parsed job listing metadata used for evaluation context.
    */
@@ -61,6 +69,17 @@ function getJudgeTitle(key: string): string {
 }
 
 /**
+ * Type guard function to check if an evaluation entry has a non-null value.
+ * @param entry - A tuple of [key, evaluation] from Object.entries
+ * @returns True if the evaluation is not null or undefined
+ */
+function isNonNullEvaluation(
+  entry: [string, PerformanceEvaluationResponse | null | undefined]
+): entry is [string, PerformanceEvaluationResponse] {
+  return entry[1] != null;
+}
+
+/**
  * Component for rendering a single feedback card.
  * @param feedback - The feedback item to display
  */
@@ -76,7 +95,7 @@ function FeedbackCard({ feedback }: { feedback: PerformanceFeedback[number] }) {
       <div className="feedback-card-content">
         <div className="feedback-field">
           <strong>Relevant Quotes:</strong>
-          <p>{feedback.relevant_quotes}</p>
+          <p>{feedback.transcript_message_id}</p>
         </div>
         <div className="feedback-field">
           <strong>Evaluation Explanation:</strong>
@@ -124,12 +143,86 @@ function EvaluationSection({
 }
 
 /**
+ * Component for rendering consolidated feedback for a single message.
+ * Displays the message ID and the consolidated feedback (reasons why good/bad, ways to improve).
+ * @param consolidatedFeedback - The consolidated feedback item to display
+ * @param transcript - The interview transcript to find the question/answer pair
+ */
+function ConsolidatedFeedbackCard({ 
+  consolidatedFeedback,
+  transcript
+}: { 
+  consolidatedFeedback: ConsolidatedFeedback;
+  transcript: InterviewTranscript;
+}) {
+  // Find the transcript entry for this message ID
+  const transcriptEntry = transcript.find(pair => pair.id === consolidatedFeedback.message_id);
+  
+  return (
+    <div className="feedback-card consolidated-feedback-card">
+      <div className="feedback-card-header">
+        <span className="feedback-badge consolidated-feedback-badge">
+          Message {consolidatedFeedback.message_id}
+        </span>
+        {transcriptEntry && (
+          <div>
+            <h3 className="feedback-card-title">
+              Q: {transcriptEntry.interviewer_question}
+            </h3>
+            <h3 className="feedback-card-title">
+              A: {transcriptEntry.candidate_answer}
+            </h3>
+          </div>
+        )}
+      </div>
+      <div className="feedback-card-content">
+        {/* Reasons why this is good */}
+        {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_good.length > 0 && (
+          <div className="feedback-field">
+            <strong>What Went Well:</strong>
+            <ul className="feedback-list">
+              {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_good.map((reason, index) => (
+                <li key={index}>{reason}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        {/* Reasons why this is bad */}
+        {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_bad.length > 0 && (
+          <div className="feedback-field">
+            <strong>Areas for Improvement:</strong>
+            <ul className="feedback-list">
+              {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_bad.map((reason, index) => (
+                <li key={index}>{reason}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        {/* Ways to improve */}
+        {consolidatedFeedback.consolidated_feedback.ways_to_improve_response.length > 0 && (
+          <div className="feedback-field">
+            <strong>Ways to Improve:</strong>
+            <ul className="feedback-list">
+              {consolidatedFeedback.consolidated_feedback.ways_to_improve_response.map((improvement, index) => (
+                <li key={index}>{improvement}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
  * Screen component for performing analysis.
  * Displays individual judge evaluations and aggregated evaluation results
  * in a structured format with horizontally scrollable feedback cards.
  */
 export default function PerformAnalysisScreen({ 
-  messages, 
+  transcript, 
   jobListingResearchResponse,
   deepResearchReports,
   interviewGuide,
@@ -143,11 +236,11 @@ export default function PerformAnalysisScreen({
   // State to store evaluation reports (either cached or fetched)
   const [evaluationReports, setEvaluationReports] = useState<EvaluationReports | null>(null);
   // State to store aggregated evaluation (either cached or fetched)
-  const [aggregatedEvaluation, setAggregatedEvaluation] = useState<AggregatedEvaluationResponse | null>(null);
+  const [aggregatedEvaluation, setAggregatedEvaluation] = useState<AggregatedEvaluation | null>(null);
   // State to track loading status for evaluations
-  const [isLoadingEvaluations, setIsLoadingEvaluations] = useState<boolean>(true);
+  const [isLoadingEvaluations, setIsLoadingEvaluations] = useState<boolean>(false);
   // State to track loading status for aggregated evaluation
-  const [isLoadingAggregated, setIsLoadingAggregated] = useState<boolean>(true);
+  const [isLoadingAggregated, setIsLoadingAggregated] = useState<boolean>(false);
   // State to store any error messages
   const [error, setError] = useState<string | null>(null);
 
@@ -240,8 +333,6 @@ export default function PerformAnalysisScreen({
           // Use cached evaluation reports (with type assertion to handle string literals)
           setEvaluationReports(savedEvaluationReports as EvaluationReports);
         } else {
-          // Convert messages to transcript format
-          const transcript = convertMessagesToTranscript(messages);
           
           // Fetch evaluation reports from server action
           const result = await performEvaluationsAction(
@@ -252,6 +343,7 @@ export default function PerformAnalysisScreen({
           );
 
           if (result.success && result.evaluations) {
+            console.log("result.evaluations", result.evaluations);
             setEvaluationReports(result.evaluations);
           } else {
             setError(result.error || "Failed to fetch evaluation reports");
@@ -264,8 +356,10 @@ export default function PerformAnalysisScreen({
       }
     };
 
-    fetchEvaluationReports();
-  }, [messages, jobListingResearchResponse, deepResearchReports, interviewGuide]);
+    if (!isLoadingEvaluations) {
+      fetchEvaluationReports();
+    }
+  }, [transcript, jobListingResearchResponse, deepResearchReports, interviewGuide]);
 
   /**
    * Effect hook to fetch or use cached aggregated evaluation based on config.
@@ -287,31 +381,18 @@ export default function PerformAnalysisScreen({
       try {
         if (CONFIG.useCachedAggregatedEvaluations) {
           // Use cached aggregated evaluation
-          // Note: savedAggregatedEvaluation uses old PerformanceEvaluationResponse format
-          // Convert it to AggregatedEvaluationResponse format for consistency
-          const cachedData = savedAggregatedEvaluation as any;
-          if (cachedData.feedback && cachedData.summary) {
-            // Old format: convert to new format by splitting feedback into good/bad
-            const whatWentWellFeedback = cachedData.feedback.filter((f: any) => f.type === "good");
-            const improvementsFeedback = cachedData.feedback.filter((f: any) => f.type === "bad");
-            setAggregatedEvaluation({
-              what_went_well_summary: cachedData.summary,
-              what_went_well_feedback: whatWentWellFeedback,
-              improvements_summary: cachedData.summary,
-              improvements_feedback: improvementsFeedback,
-            } as AggregatedEvaluationResponse);
-          } else {
-            // Already in new format
-            setAggregatedEvaluation(cachedData as AggregatedEvaluationResponse);
-          }
+          setAggregatedEvaluation(savedAggregatedEvaluation as AggregatedEvaluation);
         } else {
           // Fetch aggregated evaluation from server action
           const result = await performEvaluationAggregationAction(
             evaluationReports,
+            transcript,
             jobListingResearchResponse
           );
 
+
           if (result.success && result.result) {
+            console.log("result.aggregated", result.result);
             setAggregatedEvaluation(result.result);
           } else {
             setError(result.error || "Failed to fetch aggregated evaluation");
@@ -324,7 +405,9 @@ export default function PerformAnalysisScreen({
       }
     };
 
-    fetchAggregatedEvaluation();
+    if (!isLoadingAggregated) {
+      fetchAggregatedEvaluation();
+    }
   }, [evaluationReports, jobListingResearchResponse]);
 
   return (
@@ -348,14 +431,16 @@ export default function PerformAnalysisScreen({
           <div className="evaluations-section">
             <h2 className="evaluations-section-header">Individual Judge Evaluations</h2>
             <div className="evaluations-vstack">
-              {Object.entries(evaluationReports).map(([key, evaluation]) => (
-                <EvaluationSection
-                  key={key}
-                  title={getJudgeTitle(key)}
-                  summary={evaluation.summary}
-                  feedback={evaluation.feedback as PerformanceFeedback}
-                />
-              ))}
+              {Object.entries(evaluationReports)
+                .filter(isNonNullEvaluation)
+                .map(([key, evaluation]) => (
+                  <EvaluationSection
+                    key={key}
+                    title={getJudgeTitle(key)}
+                    summary={evaluation.summary}
+                    feedback={evaluation.feedback as PerformanceFeedback}
+                  />
+                ))}
             </div>
           </div>
         ) : null}
@@ -369,19 +454,37 @@ export default function PerformAnalysisScreen({
           <div className="aggregated-section">
             <h2 className="aggregated-section-header">Aggregated Evaluation</h2>
             
-            {/* What Went Well Section */}
-            <EvaluationSection
-              title="What Went Well"
-              summary={aggregatedEvaluation.what_went_well_summary}
-              feedback={aggregatedEvaluation.what_went_well_feedback}
-            />
+            {/* Overall Summary Sections */}
+            <div className="evaluation-section">
+              <h2 className="evaluation-section-title">What Went Well</h2>
+              <p className="evaluation-section-summary">
+                {aggregatedEvaluation.what_went_well_summary}
+              </p>
+            </div>
             
-            {/* Improvements Section */}
-            <EvaluationSection
-              title="Areas for Improvement"
-              summary={aggregatedEvaluation.improvements_summary}
-              feedback={aggregatedEvaluation.improvements_feedback}
-            />
+            <div className="evaluation-section">
+              <h2 className="evaluation-section-title">Areas for Improvement</h2>
+              <p className="evaluation-section-summary">
+                {aggregatedEvaluation.opportunities_for_improvement_summary}
+              </p>
+            </div>
+            
+            {/* Consolidated Feedback by Message */}
+            {aggregatedEvaluation.consolidated_feedback_by_message && 
+             aggregatedEvaluation.consolidated_feedback_by_message.length > 0 && (
+              <div className="evaluation-section">
+                <h2 className="evaluation-section-title">Feedback by Message</h2>
+                <div className="feedback-cards-container">
+                  {aggregatedEvaluation.consolidated_feedback_by_message.map((consolidatedFeedback, index) => (
+                    <ConsolidatedFeedbackCard
+                      key={consolidatedFeedback.message_id}
+                      consolidatedFeedback={consolidatedFeedback}
+                      transcript={transcript}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : null}
 

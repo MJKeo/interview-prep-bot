@@ -7,6 +7,18 @@ export { JobListingResearchResponseSchema, type JobListingResearchResponse } fro
 export type { DeepResearchReports } from "./deep-research-reports";
 export { MockInterviewMessageResponseSchema, type MockInterviewMessageResponse } from "./mock-interview-message-response";
 export type { EvaluationReports } from "./evaluation-reports";
-export { PerformanceFeedbackSchema, PerformanceEvaluationResponseSchema, type PerformanceFeedback, type PerformanceEvaluationResponse } from "./performance-feedback";
-export { AggregatedEvaluationResponseSchema, type AggregatedEvaluationResponse } from "./aggregated-evaluation-response"
+export { 
+    PerformanceFeedbackSchema, 
+    PerformanceEvaluationResponseSchema, 
+    type PerformanceFeedback, 
+    type PerformanceEvaluationResponse,
+} from "./performance-feedback";
+export {
+    ConsolidatedFeedbackResponseSchema,
+    type ConsolidatedFeedbackResponse,
+    type ConsolidatedFeedback,
+    type ConsolidatedFeedbackInput,
+    type AggregatedEvaluation
+} from "./aggregated-evaluation-response"
 export { FileStatus, type FileItem, type UploadedFileItem } from "./file-item";
+export { InterviewMessagePairSchema, InterviewTranscriptSchema, type InterviewMessagePair, type InterviewTranscript } from "./interview-transcript";

@@ -14,7 +14,7 @@ import type {
   JobListingResearchResponse, 
   DeepResearchReports, 
   EvaluationReports, 
-  PerformanceEvaluationResponse, 
+  InterviewTranscript, 
   FileItem 
 } from '@/types';
 import type { EasyInputMessage } from "openai/resources/responses/responses";
@@ -172,16 +172,14 @@ export async function createInterviewGuideAction(
 export async function generateNextInterviewMessageAction(
   combinedHistory: EasyInputMessage[], // includes most recent message
   jobListingResearchResponse: JobListingResearchResponse,
-  interviewGuide: string,
-  candidateInfo: string | null | undefined
+  interviewGuide: string
 ) {
   try {
     // Call the generateNextInterviewMessage function - this runs on the server where process.env is available
     const response = await generateNextInterviewMessage(
       combinedHistory,
       jobListingResearchResponse,
-      interviewGuide,
-      candidateInfo
+      interviewGuide
     );
     
     // Extract only the message content (not the reasoning) from the response
@@ -207,7 +205,7 @@ export async function generateNextInterviewMessageAction(
  * @returns An object with either { success: true, reports: EvaluationReports } or { success: false, error: string }
  */
 export async function performEvaluationsAction(
-  transcript: string,
+  transcript: InterviewTranscript,
   listing: JobListingResearchResponse,
   deepResearchReports: DeepResearchReports,
   interview_guideline: string
@@ -243,12 +241,14 @@ export async function performEvaluationsAction(
  */
 export async function performEvaluationAggregationAction(
   evaluations: EvaluationReports,
+  transcript: InterviewTranscript,
   jobListingData: JobListingResearchResponse
 ) {
   try {
     // Call the performEvaluationAggregation function - this runs on the server where process.env is available
     const result = await performEvaluationAggregation(
       evaluations,
+      transcript,
       jobListingData
     );
     

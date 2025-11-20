@@ -6,7 +6,13 @@ import ResearchJobScreen from "@/screens/research-job-screen";
 import MockInterviewScreen from "@/screens/mock-interview-screen";
 import PerformAnalysisScreen from "@/screens/perform-analysis-screen";
 import MobileNotSupportedScreen from "@/screens/mobile-not-supported-screen";
-import { ScreenName, type JobListingResearchResponse, type DeepResearchReports, type FileItem } from "@/types";
+import { 
+  ScreenName, 
+  type JobListingResearchResponse, 
+  type DeepResearchReports, 
+  type FileItem, 
+  type InterviewTranscript 
+} from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { isUserOnMobile } from "@/app/actions";
 
@@ -26,7 +32,7 @@ export default function Home() {
   // State to store the interview guide when transitioning to mock interview screen
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
   // State to store the conversation messages when transitioning to perform analysis screen
-  const [conversationMessages, setConversationMessages] = useState<EasyInputMessage[] | null>(null);
+  const [transcript, setTranscript] = useState<InterviewTranscript | null>(null);
   // State to track if the user is on a mobile device
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   // State to store the attached files when transitioning to research screen
@@ -81,11 +87,11 @@ export default function Home() {
    * Callback function to handle navigation to the perform analysis screen.
    * Called when the user confirms the final review warning.
    * 
-   * @param messages - The conversation history to pass to the analysis screen (in EasyInputMessage format)
+   * @param transcript - The formatted conversation history to pass to the analysis screen (as InterviewTranscript)
    */
-  const handleNavigateToPerformAnalysis = (messages: EasyInputMessage[]) => {
+  const handleNavigateToPerformAnalysis = (transcript: InterviewTranscript) => {
     // Store the conversation messages and navigate to perform analysis screen
-    setConversationMessages(messages);
+    setTranscript(transcript);
     setScreen(ScreenName.PerformAnalysis);
   };
 
@@ -96,7 +102,7 @@ export default function Home() {
    */
   const handleNewMockInterview = () => {
     // Reset conversation messages to start fresh
-    setConversationMessages(null);
+    setTranscript(null);
     // Navigate back to mock interview screen (jobListingResearchResponse and interviewGuide are still set)
     setScreen(ScreenName.MockInterview);
   };
@@ -112,7 +118,7 @@ export default function Home() {
     setJobListingResearchResponse(null);
     setDeepResearchReports(null);
     setInterviewGuide(null);
-    setConversationMessages(null);
+    setTranscript(null);
     // Navigate back to the starting screen
     setScreen(ScreenName.EnterJobListingUrl);
   };
@@ -145,14 +151,13 @@ export default function Home() {
           <MockInterviewScreen 
             jobListingResearchResponse={jobListingResearchResponse}
             interviewGuide={interviewGuide}
-            candidateInfo={deepResearchReports?.userContextReport}
             onPerformFinalReview={handleNavigateToPerformAnalysis} 
           />
         ) : null;
       case ScreenName.PerformAnalysis:
-        return jobListingResearchResponse && deepResearchReports && interviewGuide ? (
+        return jobListingResearchResponse && deepResearchReports && interviewGuide && transcript ? (
           <PerformAnalysisScreen 
-            messages={conversationMessages || []}
+            transcript={transcript}
             jobListingResearchResponse={jobListingResearchResponse}
             deepResearchReports={deepResearchReports}
             interviewGuide={interviewGuide}

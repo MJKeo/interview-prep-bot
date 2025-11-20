@@ -7,9 +7,9 @@ enum PerformanceFeedbackType {
 
 export const PerformanceFeedbackSchema = z.array(
     z.object({
+        transcript_message_id: z.int(),
         type: z.enum(PerformanceFeedbackType),
         title: z.string(),
-        relevant_quotes: z.string(),
         evaluation_explanation: z.string(),
         context_best_practices: z.string(),
         improved_example: z.string(),

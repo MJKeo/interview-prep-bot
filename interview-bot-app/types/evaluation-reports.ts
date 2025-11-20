@@ -10,5 +10,6 @@ export type EvaluationReports = {
   fitJudgeEvaluation: PerformanceEvaluationResponse;
   communicationJudgeEvaluation: PerformanceEvaluationResponse;
   riskJudgeEvaluation: PerformanceEvaluationResponse;
+  candidateContextJudgeEvaluation: PerformanceEvaluationResponse | null | undefined;
 };
 

@@ -6,6 +6,7 @@ import { COMPANY_STRATEGY_SYSTEM_PROMPT_V2,
   DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V2 } from "@/prompts";
 import {
   PerformanceEvaluationResponseSchema,
+  ConsolidatedFeedbackResponseSchema,
 } from "@/types";
 
 export const openai = new OpenAI({
@@ -62,6 +63,15 @@ export function createEvaluationAgent(systemPrompt: string, name: string) {
     instructions: systemPrompt,
     model: "gpt-4o-mini",
     outputType: PerformanceEvaluationResponseSchema,
+  });
+}
+
+export function createEvaluationAggregatorAgent(systemPrompt: string, name: string) {
+  return new Agent({
+    name: name,
+    instructions: systemPrompt,
+    model: "gpt-4.1-nano",
+    outputType: ConsolidatedFeedbackResponseSchema,
   });
 }
 
