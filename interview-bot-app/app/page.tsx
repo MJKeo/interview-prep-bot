@@ -11,10 +11,18 @@ import {
   type JobListingResearchResponse, 
   type DeepResearchReports, 
   type FileItem, 
-  type InterviewTranscript 
+  type InterviewTranscript,
+  type JobListingWithId,
+  type SidebarSelection
 } from "@/types";
-import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { isUserOnMobile } from "@/app/actions";
+import Sidebar from "@/components/sidebar";
+import { saveJobListing, fetchAllJobListings } from "@/utils/local-database";
+import { 
+  createJobListingWithIdFromScrapedListing, 
+  jobListingsWithUpdatedListing, 
+  jobListingsWithRemovedListing 
+} from "@/utils/utils";
 
 /**
  * Main page component that manages screen navigation using state.
@@ -23,10 +31,8 @@ import { isUserOnMobile } from "@/app/actions";
 export default function Home() {
   // State to track the current screen being displayed
   const [screen, setScreen] = useState<ScreenName>(ScreenName.EnterJobListingUrl);
-  // State to store the scraped job listing content when transitioning to research screen
-  const [jobListingScrapeContent, setJobListingScrapeContent] = useState<string | null>(null);
   // State to store the job listing research response when transitioning to mock interview screen
-  const [jobListingResearchResponse, setJobListingResearchResponse] = useState<JobListingResearchResponse | null>(null);
+  const [jobListingParsedData, setJobListingParsedData] = useState<JobListingResearchResponse | null>(null);
   // State to store the deep research reports when transitioning to mock interview screen
   const [deepResearchReports, setDeepResearchReports] = useState<DeepResearchReports | null>(null);
   // State to store the interview guide when transitioning to mock interview screen
@@ -37,6 +43,9 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   // State to store the attached files when transitioning to research screen
   const [attachedFiles, setAttachedFiles] = useState<FileItem[]>([]);
+  // State to store job listings for the sidebar
+  const [jobListings, setJobListings] = useState<JobListingWithId[]>([]);
+
   /**
    * Effect hook that checks if the user is on a mobile device on component mount.
    * Calls the server action to determine device type and updates state accordingly.
@@ -49,17 +58,41 @@ export default function Home() {
   }, []);
 
   /**
+   * Effect hook that fetches all job listings from the database on component mount.
+   * Loads saved job listings to display in the sidebar.
+   */
+  useEffect(() => {
+    // Fetch all job listings from IndexedDB
+    fetchAllJobListings()
+      .then((fetchedJobListings) => {
+        setJobListings(fetchedJobListings);
+      })
+      .catch((error) => {
+        // Log error but don't crash the component
+        console.error("Failed to fetch job listings:", error);
+      });
+  }, []);
+
+  /**
    * Callback function to handle navigation to the research screen.
    * Called when job listing scraping is successful.
    * 
-   * @param content - The scraped content from the job listing
+   * @param jobListingParsedData - The parsed job listing research response data
    * @param attachedFiles - List of successfully attached files (with SUCCESS or SAVED status)
    */
-  const handleNavigateToResearch = (content: string, attachedFiles: FileItem[]) => {
-    // Store the scraped content and navigate to research screen
-    setJobListingScrapeContent(content);
+  const handleNavigateToResearch = (jobListingParsedData: JobListingResearchResponse, attachedFiles: FileItem[]) => {
+    // Store the new listing and navigate to research screen
+    setJobListingParsedData(jobListingParsedData);
     setAttachedFiles(attachedFiles);
     setScreen(ScreenName.ResearchJob);
+    
+    const jobListingWithId = createJobListingWithIdFromScrapedListing(jobListingParsedData);
+    saveJobListing(jobListingWithId).then(() => {
+      setJobListings(jobListingsWithUpdatedListing(jobListings, jobListingWithId));
+    }).catch((error) => {
+      // Error is already logged by saveJobListing, but we catch to prevent unhandled promise rejection
+      console.error("Error saving scraped job listing:", error);
+    });
   };
 
   /**
@@ -71,12 +104,10 @@ export default function Home() {
    * @param interviewGuide - The interview guide to pass to the interview screen
    */
   const handleNavigateToMockInterview = (
-    jobListingResearchResponse: JobListingResearchResponse,
     deepResearchReports: DeepResearchReports,
     interviewGuide: string
   ) => {
-    // Store the job listing research response, deep research reports, and interview guide
-    setJobListingResearchResponse(jobListingResearchResponse);
+    // Store the deep research reports and interview guide
     setDeepResearchReports(deepResearchReports);
     setInterviewGuide(interviewGuide);
     // Navigate to mock interview screen
@@ -109,18 +140,32 @@ export default function Home() {
 
   /**
    * Callback function to handle navigation back to the enter job listing URL screen.
-   * Called when the user confirms the "new job listing" warning.
-   * Resets all stored attributes to start completely fresh.
+   * Called when the user confirms the "new job listing" warning or clicks "New Listing" button.
+   * Resets all stored attributes to start completely fresh (except isMobile and jobListings).
    */
   const handleNewJobListing = () => {
-    // Reset all stored state to start fresh
-    setJobListingScrapeContent(null);
-    setJobListingResearchResponse(null);
+    // Reset all stored state to start fresh (except isMobile and jobListings)
+    setScreen(ScreenName.EnterJobListingUrl);
+    setJobListingParsedData(null);
     setDeepResearchReports(null);
     setInterviewGuide(null);
     setTranscript(null);
-    // Navigate back to the starting screen
-    setScreen(ScreenName.EnterJobListingUrl);
+    setAttachedFiles([]);
+  };
+
+  /**
+   * Callback function to handle deletion of a job listing.
+   * Called when the user clicks the delete button in the sidebar menu.
+   * Updates the local state to remove the deleted job listing from the UI.
+   * The actual deletion from IndexedDB is handled in the sidebar component.
+   * 
+   * @param deletedJobListing - The job listing that was deleted
+   */
+  const handleDeleteJobListing = (deletedJobListing: JobListingWithId) => {
+    // Update local state to remove the deleted job listing
+    setJobListings((currentListings) =>
+      jobListingsWithRemovedListing(currentListings, deletedJobListing)
+    );
   };
 
   /**
@@ -139,26 +184,26 @@ export default function Home() {
       case ScreenName.EnterJobListingUrl:
         return <EnterJobListingUrlScreen onScrapeSuccess={handleNavigateToResearch} />;
       case ScreenName.ResearchJob:
-        return jobListingScrapeContent ? (
+        return (jobListingParsedData) ? (
           <ResearchJobScreen 
-            jobListingScrapeContent={jobListingScrapeContent}
+            jobListingParsedData={jobListingParsedData}
             attachedFiles={attachedFiles}
             onStartMockInterview={handleNavigateToMockInterview}
           />
         ) : null;
       case ScreenName.MockInterview:
-        return jobListingResearchResponse && interviewGuide ? (
+        return jobListingParsedData && interviewGuide ? (
           <MockInterviewScreen 
-            jobListingResearchResponse={jobListingResearchResponse}
+            jobListingResearchResponse={jobListingParsedData}
             interviewGuide={interviewGuide}
             onPerformFinalReview={handleNavigateToPerformAnalysis} 
           />
         ) : null;
       case ScreenName.PerformAnalysis:
-        return jobListingResearchResponse && deepResearchReports && interviewGuide && transcript ? (
+        return jobListingParsedData && deepResearchReports && interviewGuide && transcript ? (
           <PerformAnalysisScreen 
             transcript={transcript}
-            jobListingResearchResponse={jobListingResearchResponse}
+            jobListingResearchResponse={jobListingParsedData}
             deepResearchReports={deepResearchReports}
             interviewGuide={interviewGuide}
             onNewMockInterview={handleNewMockInterview}
@@ -170,5 +215,22 @@ export default function Home() {
     }
   };
 
-  return <>{renderScreen()}</>;
+  // If on mobile, render only the screen (no sidebar)
+  if (isMobile === true) {
+    return <>{renderScreen()}</>;
+  }
+
+  // On desktop, render sidebar and main content side by side
+  return (
+    <div className="app-container">
+      <Sidebar
+        jobListings={jobListings}
+        onDeleteJobListing={handleDeleteJobListing}
+        onNewJobListing={handleNewJobListing}
+      />
+      <main className="app-main-content">
+        {renderScreen()}
+      </main>
+    </div>
+  );
 }

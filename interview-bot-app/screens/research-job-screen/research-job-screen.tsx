@@ -16,7 +16,7 @@ interface ResearchJobScreenProps {
    * The scraped content from the job listing website.
    * This is required and will be parsed to extract structured attributes.
    */
-  jobListingScrapeContent: string;
+  jobListingParsedData: JobListingResearchResponse;
   /**
    * List of attached files that were successfully uploaded (with SUCCESS or SAVED status).
    * These files will be used for user context distillation.
@@ -26,11 +26,10 @@ interface ResearchJobScreenProps {
    * Callback function to navigate to the mock interview screen.
    * Called when the "start mock interview" button is clicked.
    * 
-   * @param jobListingResearchResponse - Parsed job listing metadata to pass to the interview screen
    * @param deepResearchReports - Deep research reports to pass to the interview screen
    * @param interviewGuide - The interview guide to pass to the interview screen
    */
-  onStartMockInterview: (jobListingResearchResponse: JobListingResearchResponse, deepResearchReports: DeepResearchReports, interviewGuide: string) => void;
+  onStartMockInterview: (deepResearchReports: DeepResearchReports, interviewGuide: string) => void;
 }
 
 /**
@@ -38,84 +37,37 @@ interface ResearchJobScreenProps {
  * Accepts scraped job listing content, parses it to extract structured attributes,
  * and displays the results in a textbox.
  */
-export default function ResearchJobScreen({ jobListingScrapeContent, attachedFiles, onStartMockInterview }: ResearchJobScreenProps) {
+export default function ResearchJobScreen({ jobListingParsedData, attachedFiles, onStartMockInterview }: ResearchJobScreenProps) {
    // State for the current loading stage message
    const [loadingStage, setLoadingStage] = useState<string | null>(null);
+   //  State for if deep research is running
+   const [isLoadingDeepResearch, setIsLoadingDeepResearch] = useState<boolean>(false);
+   //  State for if guide creation is running
+  const [isLoadingGuide, setIsLoadingGuide] = useState<boolean>(false);
    // State to track if research has been completed successfully
    const [hasCompletedResearch, setHasCompletedResearch] = useState<boolean>(false);
    // State for error messages
    const [error, setError] = useState<string | null>(null);
-  // State for the parsed job listing attributes
-  const [parsedData, setParsedData] = useState<JobListingResearchResponse | null>(null);
   // State for deep research reports
   const [deepResearchAndContextDistillationReports, setDeepResearchAndContextDistillationReports] = useState<DeepResearchReports | null>(null);
   // State for the interview guide
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
 
   /**
-   * Effect hook that runs when the component mounts or when jobListingScrapeContent changes.
-   * Calls the server action to parse the job listing attributes.
-   */
-  useEffect(() => {
-    /**
-     * Async function to parse the job listing attributes.
-     * Called automatically when the component loads.
-     */
-    const parseAttributes = async () => {
-
-      console.log("Test 2")
-
-      setLoadingStage("Parsing job listing attributes...");
-
-      try {
-        // Call the server action to parse the job listing attributes
-        console.log("Test 2.1")
-        const result = await parseJobListingAttributesAction(jobListingScrapeContent);
-        console.log("Test 2.2")
-        // Check if the action was successful
-        if (result.success && result.data) {
-          console.log("Test 2.3")
-          // Update loading stage to reflect next step
-          setLoadingStage("Performing deep research...");
-          // Store the parsed data
-          setParsedData(result.data);
-        } else {
-          // Handle error from server action
-          throw new Error(result.error || "Failed to parse job listing attributes");
-        }
-      } catch (err) {
-        // Handle exceptions and display error message
-        const errorMessage = err instanceof Error ? err.message : "Failed to parse job listing attributes";
-        setError(errorMessage);
-        setParsedData(null);
-
-        setLoadingStage(null);
-      }
-    };
-
-    // Call the parse function when component mounts
-    parseAttributes();
-  }, [jobListingScrapeContent]);
-
-  /**
    * Effect hook that runs when parsedData changes.
    * Calls the server action to perform deep research and user context distillation in parallel if parsedData exists.
    */
   useEffect(() => {
-    // Only run deep research if parsedData exists
-    if (!parsedData) {
-      return;
-    }
-
     /**
      * Async function to perform deep research on the parsed job listing and user context distillation.
      * Both operations run in parallel automatically when parsedData is available.
      */
     const runDeepResearch = async () => {
-      console.log("Test 3")
       try {
+        setIsLoadingDeepResearch(true);
+        setLoadingStage("Performing deep research...");
         // Call the server action to perform deep research and user context distillation in parallel
-        const deepResearchResult = await performDeepResearchAndContextDistillationAction(parsedData, attachedFiles);
+        const deepResearchResult = await performDeepResearchAndContextDistillationAction(jobListingParsedData, attachedFiles);
         
         // Check if the deep research was successful
         if (deepResearchResult.success && deepResearchResult.reports) {
@@ -136,31 +88,35 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
         setError(deepResearchErrorMessage);
         setDeepResearchAndContextDistillationReports(null);
         setLoadingStage(null);
+      } finally {
+        setIsLoadingDeepResearch(false);
       }
     };
 
     // Call the deep research function when parsedData is available
-    runDeepResearch();
-  }, [parsedData]);
+    if (jobListingParsedData && !isLoadingDeepResearch) {
+      runDeepResearch();
+    }
+  }, [jobListingParsedData]);
 
   /**
    * Effect hook that runs when deepResearchReports changes.
    * Calls the server action to create an interview guide if both parsedData and deepResearchReports exist.
    */
   useEffect(() => {
-    // Only create interview guide if both parsedData and deepResearchReports exist
-    if (!parsedData || !deepResearchAndContextDistillationReports) {
-      return;
-    }
-
     /**
      * Async function to create an interview guide from the job listing research and deep research reports.
      * Called automatically when deepResearchReports is available.
      */
     const createGuide = async () => {
       try {
+        if (!deepResearchAndContextDistillationReports) {
+          throw new Error("No deep research reports to create interview guide from");
+        }
+
+        setIsLoadingGuide(true);
         // Call the server action to create the interview guide
-        const guideResult = await createInterviewGuideAction(parsedData, deepResearchAndContextDistillationReports);
+        const guideResult = await createInterviewGuideAction(jobListingParsedData, deepResearchAndContextDistillationReports);
 
         // Check if the guide creation was successful
         if (guideResult.success && guideResult.guide) {
@@ -179,23 +135,17 @@ export default function ResearchJobScreen({ jobListingScrapeContent, attachedFil
           : "Failed to create interview guide";
         setError(guideErrorMessage);
         setInterviewGuide(null);
-        setHasCompletedResearch(false);
       } finally {
         setLoadingStage(null);
+        setIsLoadingGuide(false);
       }
     };
 
     // Call the guide creation function when deepResearchReports is available
-    createGuide();
-  }, [deepResearchAndContextDistillationReports, parsedData]);
-
-  const markdown = `
-# Hello World 👋
-This is **Markdown** rendered in React.
-- Supports *lists*
-- [Links](https://example.com)
-- Tables | too | 🍀
-`;
+    if (jobListingParsedData && deepResearchAndContextDistillationReports && !isLoadingGuide) {
+      createGuide();
+    }
+  }, [deepResearchAndContextDistillationReports]);
 
   return (
     <div className="research-job-container">
@@ -213,23 +163,23 @@ This is **Markdown** rendered in React.
         {error && <div className="error-message">{error}</div>}
         
         {/* Display parsed job listing data as text labels */}
-        {parsedData && (
+        {jobListingParsedData && (
           <div className="parsed-data-section">
             <div className="data-label">
               <span className="label-text">Role Title:</span>
-              <span className="label-value">{parsedData.job_title}</span>
+              <span className="label-value">{jobListingParsedData.job_title}</span>
             </div>
             <div className="data-label">
               <span className="label-text">Company Name:</span>
-              <span className="label-value">{parsedData.company_name}</span>
+              <span className="label-value">{jobListingParsedData.company_name}</span>
             </div>
             <div className="data-label">
               <span className="label-text">Job Location:</span>
-              <span className="label-value">{parsedData.job_location}</span>
+              <span className="label-value">{jobListingParsedData.job_location}</span>
             </div>
             <div className="data-label">
               <span className="label-text">Job Description:</span>
-              <span className="label-value">{parsedData.job_description}</span>
+              <span className="label-value">{jobListingParsedData.job_description}</span>
             </div>
           </div>
         )}
@@ -254,11 +204,11 @@ This is **Markdown** rendered in React.
         )}
         
         {/* Display start mock interview button when research has been completed */}
-        {hasCompletedResearch && parsedData && deepResearchAndContextDistillationReports && interviewGuide && (
+        {hasCompletedResearch && deepResearchAndContextDistillationReports && interviewGuide && (
           <div className="button-section">
             <Button 
               type="button" 
-              onClick={() => onStartMockInterview(parsedData, deepResearchAndContextDistillationReports, interviewGuide)}
+              onClick={() => onStartMockInterview(deepResearchAndContextDistillationReports, interviewGuide)}
             >
               start mock interview
             </Button>

@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import "./enter-job-listing-url-screen.css";
 import Button from "@/components/button";
-import { scrapeJobListingAction } from "@/app/actions";
+import { parseJobListingAttributesAction, scrapeJobListingAction } from "@/app/actions";
 import { isValidURL } from "@/utils/utils";
 import AttachFiles from "@/components/attach-files/attach-files";
-import { FileItem, FileStatus } from "@/types";
+import { FileItem, FileStatus, type JobListingResearchResponse } from "@/types";
 
 /**
  * Props for the EnterJobListingUrlScreen component.
@@ -16,7 +16,7 @@ interface EnterJobListingUrlScreenProps {
    * Callback function called when job listing scraping is successful.
    * Receives the scraped content and a list of successfully attached files as parameters.
    */
-  onScrapeSuccess: (scrapedContent: string, attachedFiles: FileItem[]) => void;
+  onScrapeSuccess: (jobListingData: JobListingResearchResponse, attachedFiles: FileItem[]) => void;
 }
 
 /**
@@ -31,7 +31,13 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   // State for the URL input value
   const [url, setUrl] = useState("");
   // State for loading status
-  const [isScraping, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  // State for loading status
+  const [isScraping, setIsScraping] = useState(false);
+  // State for scraped job listing website content
+  const [scrapedJobListingWebsiteContent, setScrapedJobListingWebsiteContent] = useState<string | null>(null);
+  // State for parsing job listing attributes
+  const [isParsingAttributes, setIsParsingAttributes] = useState(false);
   // State for error messages
   const [error, setError] = useState<string | null>(null);
   // State for tracking if any attached files are still loading (not success or saved)
@@ -48,12 +54,55 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       setCanProceed(false);
     } else if (url.trim().length === 0) {
       setCanProceed(false);
-    } else if (isScraping) {
+    } else if (isScraping || isParsingAttributes) {
       setCanProceed(false);
     } else {
       setCanProceed(true);
     }
   }, [url, attachedFiles, isScraping]);
+
+  /**
+   * Effect hook that runs when the component mounts or when jobListingScrapeContent changes.
+   * Calls the server action to parse the job listing attributes.
+   */
+  useEffect(() => {
+    /**
+     * Async function to parse the job listing attributes.
+     * Called automatically when the component loads.
+     */
+    const parseAttributes = async () => {
+      try {
+        if (!scrapedJobListingWebsiteContent) {
+          throw new Error("No scraped job listing website content to parse");
+        }
+
+        setIsParsingAttributes(true);
+
+        // Call the server action to parse the job listing attributes
+        const result = await parseJobListingAttributesAction(scrapedJobListingWebsiteContent);
+        // Check if the action was successful
+        if (result.success && result.data) {
+          // We have our data so let's move on to the next page
+          completeScrapeAndParse(result.data);
+        } else {
+          // Handle error from server action
+          throw new Error(result.error || "Failed to parse job listing attributes");
+        }
+      } catch (err) {
+        // Handle exceptions and display error message
+        const errorMessage = err instanceof Error ? err.message : "Failed to parse job listing attributes";
+        setError(errorMessage);
+      } finally {
+        setIsParsingAttributes(false);
+        setIsLoading(false);
+      }
+    };
+
+    // Call the parse function when component mounts
+    if (!isParsingAttributes && scrapedJobListingWebsiteContent) {
+      parseAttributes();
+    }
+  }, [scrapedJobListingWebsiteContent]);
 
   /**
    * Handles the scraping of the job listing URL.
@@ -76,6 +125,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
 
     // Reset error and set loading state
     setError(null);
+    setIsScraping(true);
     setIsLoading(true);
 
     try {
@@ -84,12 +134,8 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       
       // Check if the action was successful
       if (result.success && result.content) {
-        // Filter attached files to only include those with SUCCESS or SAVED status
-        const successfulFiles = attachedFiles.filter(
-          (item) => item.status === FileStatus.SUCCESS || item.status === FileStatus.SAVED
-        );
-        // Call the onNext callback with the scraped content and attached files to navigate to research screen
-        onScrapeSuccess(result.content, successfulFiles);
+        // Update local state to trigger attribute parsing
+        setScrapedJobListingWebsiteContent(result.content);
       } else {
         // Handle error from server action
         throw new Error(result.error || "Failed to scrape job listing");
@@ -98,11 +144,22 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       // Handle exceptions and display error message
       const errorMessage = err instanceof Error ? err.message : "Failed to scrape job listing";
       setError(errorMessage);
+      setIsLoading(false);
     } finally {
       // Always reset loading state when done
-      setIsLoading(false);
+      setIsScraping(false);
     }
   };
+
+  const completeScrapeAndParse = (parsedJobListingData: JobListingResearchResponse) => {
+    // Filter attached files to only include those with SUCCESS or SAVED status
+    const successfulFiles = attachedFiles.filter(
+      (item) => item.status === FileStatus.SUCCESS || item.status === FileStatus.SAVED
+    );
+
+    // Handle navigation to the next page
+    onScrapeSuccess(parsedJobListingData, successfulFiles);
+  }
 
   /**
    * Handles the Enter key press in the input field.
@@ -140,8 +197,8 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         <AttachFiles 
           attachedFilesDidChange={handleAttachedFilesChange} 
         />
-        <Button type="button" onClick={handleScrape} disabled={!canProceed}>
-          {isScraping ? "scraping..." : "scrape"}
+        <Button type="button" onClick={handleScrape} disabled={!canProceed || isLoading}>
+          {isLoading ? "loading..." : "scrape"}
         </Button>
       </div>
     </div>

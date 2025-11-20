@@ -24,3 +24,9 @@ export {
 } from "./aggregated-evaluation-response"
 export { FileStatus, type FileItem, type UploadedFileItem } from "./file-item";
 export { InterviewMessagePairSchema, InterviewTranscriptSchema, type InterviewMessagePair, type InterviewTranscript } from "./interview-transcript";
+export type { 
+    JobListingInterview, 
+    JobListingData, 
+    SidebarSelection, 
+    JobListingWithId 
+} from "./job-listing-data";

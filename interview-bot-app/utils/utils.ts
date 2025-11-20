@@ -1,5 +1,12 @@
 import type { EasyInputMessage } from "openai/resources/responses/responses";
-import type { InterviewTranscript, EvaluationReports, ConsolidatedFeedbackInput, PerformanceFeedback } from "@/types";
+import type { 
+  InterviewTranscript, 
+  EvaluationReports, 
+  ConsolidatedFeedbackInput, 
+  PerformanceFeedback,
+  JobListingResearchResponse,
+  JobListingWithId
+} from "@/types";
 
 /**
  * Validates if a string is a syntactically valid URL.
@@ -138,4 +145,81 @@ export function convertEvaluationsToFeedbackByMessage(evaluations: EvaluationRep
   });
 
   return result;
+}
+
+export function createJobListingWithIdFromScrapedListing(jobListing: JobListingResearchResponse): JobListingWithId {
+  // Extract job title and company name from the scraped data
+  const jobTitle = jobListing.job_title;
+  const companyName = jobListing.company_name;
+
+  // Create display name in format "job_role: company_name"
+  const displayName = `${jobTitle}: ${companyName}`;
+
+  // Create unique ID by appending current timestamp to display name
+  const timestamp = Date.now();
+  const id = `${displayName}_${timestamp}`;
+
+  // Return JobListingData with only display-name and listing-scrape-results set
+  return {
+      id,
+      data: {
+          "display-name": displayName,
+          "listing-scrape-results": jobListing,
+          "deep-research-report": null,
+          "interview-guide": null,
+          interviews: null,
+      },
+  };
+}
+
+/**
+ * Updates a job listings array with a new or updated job listing.
+ * If a job listing with the same ID already exists, it replaces it at the same index.
+ * Otherwise, adds the new job listing to the end of the array.
+ * 
+ * @param currentJobListings - The current array of job listings
+ * @param updatedJobListing - The job listing that has been created or updated
+ * @returns A new array with the updated job listing inserted or replaced
+ */
+export function jobListingsWithUpdatedListing(
+  currentJobListings: JobListingWithId[],
+  updatedJobListing: JobListingWithId
+): JobListingWithId[] {
+  // Find the index of an existing job listing with the same ID
+  const existingIndex = currentJobListings.findIndex(
+    (listing) => listing.id === updatedJobListing.id
+  );
+
+  // Create a new array to avoid mutating the input
+  const updatedList = [...currentJobListings];
+
+  if (existingIndex !== -1) {
+    // Replace the existing job listing at the same index
+    updatedList[existingIndex] = updatedJobListing;
+  } else {
+    // Add the new job listing to the end of the array
+    updatedList.push(updatedJobListing);
+  }
+
+  return updatedList;
+}
+
+export function jobListingsWithRemovedListing(
+  currentJobListings: JobListingWithId[],
+  removedJobListing: JobListingWithId
+): JobListingWithId[] {
+  // Find the index of an existing job listing with the same ID
+  const existingIndex = currentJobListings.findIndex(
+    (listing) => listing.id === removedJobListing.id
+  );
+
+  // Create a new array to avoid mutating the input
+  const updatedList = [...currentJobListings];
+
+  if (existingIndex !== -1) {
+    // Replace the existing job listing at the same index
+    updatedList.splice(existingIndex, 1);
+  }
+
+  return updatedList;
 }
