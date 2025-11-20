@@ -12,7 +12,8 @@ import type {
   EvaluationReports, 
   InterviewTranscript,
   AggregatedEvaluation,
-  ConsolidatedFeedback
+  ConsolidatedFeedback,
+  JobListingWithId
 } from "@/types";
 import Button from "@/components/button";
 import CONFIG from "@/app/config";
@@ -39,6 +40,11 @@ interface PerformAnalysisScreenProps {
    * Interview guide providing context for evaluation.
    */
   interviewGuide: string;
+  /**
+   * Reference to the current job listing being explored.
+   * Contains the job listing ID and full data structure.
+   */
+  currentJobListing: JobListingWithId | null;
   /**
    * Callback function to navigate back to the mock interview screen with a fresh conversation.
    * Called when the user confirms the "new mock interview" warning.
@@ -226,6 +232,7 @@ export default function PerformAnalysisScreen({
   jobListingResearchResponse,
   deepResearchReports,
   interviewGuide,
+  currentJobListing,
   onNewMockInterview, 
   onNewJobListing 
 }: PerformAnalysisScreenProps) {

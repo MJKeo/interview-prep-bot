@@ -14,6 +14,13 @@ interface SidebarProps {
    * Each item contains an id and the full job listing data.
    */
   jobListings: JobListingWithId[];
+
+  /**
+   * The currently selected job listing (from the parent component).
+   * Necessary when we create a new listing
+   */
+  currentJobListing: JobListingWithId | null;
+
   /**
    * Callback function called when a job listing is deleted.
    * Receives the deleted job listing as a parameter.
@@ -26,6 +33,12 @@ interface SidebarProps {
    * Used to navigate back to the enter job listing URL screen and reset state.
    */
   onNewJobListing: () => void;
+  /**
+   * Callback function called when a job listing is selected from the sidebar.
+   * 
+   * @param selection - The job listing that was clicked
+   */
+  onSelectJobListing: (selectedListing: JobListingWithId) => void;
 }
 
 /**
@@ -45,8 +58,10 @@ interface SidebarProps {
  */
 export default function Sidebar({
   jobListings,
+  currentJobListing,
   onDeleteJobListing,
   onNewJobListing,
+  onSelectJobListing,
 }: SidebarProps) {
   // Track which job listings have their interview lists expanded
   // Key is jobListingId, value is boolean (true = expanded, false = collapsed)
@@ -75,6 +90,14 @@ export default function Sidebar({
     });
     setExpandedJobListings(initialExpanded);
   }, [jobListings]);
+
+  useEffect(() => {
+    if (currentJobListing) {
+        setSelectedItem({ jobListingId: currentJobListing.id });
+    } else {
+        setSelectedItem(null);
+    }
+  }, [currentJobListing]);
 
   /**
    * Effect hook that handles clicking outside the menu to close it.
@@ -143,11 +166,23 @@ export default function Sidebar({
    * 
    * @param jobListingId - The ID of the clicked job listing
    */
-  const handleJobListingClick = (jobListingId: string) => {
-    // Update local state to select the job listing (without an interview ID)
-    const selection: SidebarSelection = { jobListingId };
-    setSelectedItem(selection);
+  const handleJobListingClick = (jobListing: JobListingWithId) => {
+    // Do nothing if this is the same thing already clicked
+    if (jobListing.id === selectedItem?.jobListingId) {
+      return;
+    }
+
+    updateSelectedItem(jobListing);
+    
+    // Notify parent component of the selection
+    onSelectJobListing(jobListing);
   };
+
+  const updateSelectedItem = (jobListing: JobListingWithId) => {
+    // Update local state to select the job listing (without an interview ID)
+    const selection: SidebarSelection = { jobListingId: jobListing.id };
+    setSelectedItem(selection);
+  }
 
   /**
    * Handles clicking on an interview item.
@@ -277,7 +312,7 @@ export default function Sidebar({
                   {/* Job Listing Label */}
                   <span
                     className="sidebar-job-listing-name"
-                    onClick={() => handleJobListingClick(jobListingId)}
+                    onClick={() => handleJobListingClick(jobListing)}
                   >
                     {displayName}
                   </span>

@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./research-job-screen.css";
 import { parseJobListingAttributesAction, performDeepResearchAndContextDistillationAction, createInterviewGuideAction } from "@/app/actions";
-import type { JobListingResearchResponse, DeepResearchReports, FileItem } from "@/types";
+import type { JobListingResearchResponse, DeepResearchReports, FileItem, JobListingWithId } from "@/types";
 import Button from "@/components/button";
 
 /**
@@ -23,6 +23,16 @@ interface ResearchJobScreenProps {
    */
   attachedFiles: FileItem[];
   /**
+   * Reference to the current job listing being explored.
+   * Contains the job listing ID and full data structure.
+   */
+  currentJobListing: JobListingWithId;
+  /**
+   * Callback function called when the current job listing is updated.
+   * Used to save updated job listing data (e.g., deep research reports, interview guide) to the database.
+   */
+  onCurrentListingUpdated: () => void;
+  /**
    * Callback function to navigate to the mock interview screen.
    * Called when the "start mock interview" button is clicked.
    * 
@@ -37,7 +47,7 @@ interface ResearchJobScreenProps {
  * Accepts scraped job listing content, parses it to extract structured attributes,
  * and displays the results in a textbox.
  */
-export default function ResearchJobScreen({ jobListingParsedData, attachedFiles, onStartMockInterview }: ResearchJobScreenProps) {
+export default function ResearchJobScreen({ jobListingParsedData, attachedFiles, currentJobListing, onCurrentListingUpdated, onStartMockInterview }: ResearchJobScreenProps) {
    // State for the current loading stage message
    const [loadingStage, setLoadingStage] = useState<string | null>(null);
    //  State for if deep research is running
@@ -52,6 +62,17 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
   const [deepResearchAndContextDistillationReports, setDeepResearchAndContextDistillationReports] = useState<DeepResearchReports | null>(null);
   // State for the interview guide
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
+  // State determining if we've parsed our selected job listing (if provided)
+  const [hasParsedSelectedJobListing, setHasParsedSelectedJobListing] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (currentJobListing) {
+      setDeepResearchAndContextDistillationReports(currentJobListing.data["deep-research-report"]);
+      setInterviewGuide(currentJobListing.data["interview-guide"]);
+    }
+
+    setHasParsedSelectedJobListing(true);
+  }, [currentJobListing]);
 
   /**
    * Effect hook that runs when parsedData changes.
@@ -73,6 +94,10 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         if (deepResearchResult.success && deepResearchResult.reports) {
           // Store the deep research reports
           setDeepResearchAndContextDistillationReports(deepResearchResult.reports);
+
+          // Save this to the db
+          currentJobListing.data["deep-research-report"] = deepResearchResult.reports;
+          onCurrentListingUpdated();
           
           // Update loading stage to reflect next step
           setLoadingStage("Creating interview guide...");
@@ -94,10 +119,13 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
     };
 
     // Call the deep research function when parsedData is available
-    if (jobListingParsedData && !isLoadingDeepResearch) {
+    if (hasParsedSelectedJobListing 
+      && jobListingParsedData 
+      && !isLoadingDeepResearch 
+      && !deepResearchAndContextDistillationReports) {
       runDeepResearch();
     }
-  }, [jobListingParsedData]);
+  }, [jobListingParsedData, hasParsedSelectedJobListing]);
 
   /**
    * Effect hook that runs when deepResearchReports changes.
@@ -122,8 +150,10 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         if (guideResult.success && guideResult.guide) {
           // Store the interview guide
           setInterviewGuide(guideResult.guide);
-          // Mark research as completed
-          setHasCompletedResearch(true);
+
+          // Save this to the db
+          currentJobListing.data["interview-guide"] = guideResult.guide;
+          onCurrentListingUpdated();
         } else {
           // Handle error from guide creation action
           throw new Error(guideResult.error || "Failed to create interview guide");
@@ -142,10 +172,20 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
     };
 
     // Call the guide creation function when deepResearchReports is available
-    if (jobListingParsedData && deepResearchAndContextDistillationReports && !isLoadingGuide) {
+    if (hasParsedSelectedJobListing 
+      && jobListingParsedData 
+      && deepResearchAndContextDistillationReports 
+      && !isLoadingGuide
+      && !interviewGuide) {
       createGuide();
     }
-  }, [deepResearchAndContextDistillationReports]);
+  }, [deepResearchAndContextDistillationReports, hasParsedSelectedJobListing]);
+
+  useEffect(() => {
+    if (interviewGuide && deepResearchAndContextDistillationReports) {
+      setHasCompletedResearch(true);
+    }
+  }, [interviewGuide, deepResearchAndContextDistillationReports]);
 
   return (
     <div className="research-job-container">

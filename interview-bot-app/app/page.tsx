@@ -45,6 +45,8 @@ export default function Home() {
   const [attachedFiles, setAttachedFiles] = useState<FileItem[]>([]);
   // State to store job listings for the sidebar
   const [jobListings, setJobListings] = useState<JobListingWithId[]>([]);
+  // State to track the current job listing being explored
+  const [currentJobListing, setCurrentJobListing] = useState<JobListingWithId | null>(null);
 
   /**
    * Effect hook that checks if the user is on a mobile device on component mount.
@@ -87,6 +89,8 @@ export default function Home() {
     setScreen(ScreenName.ResearchJob);
     
     const jobListingWithId = createJobListingWithIdFromScrapedListing(jobListingParsedData);
+    // Set the current job listing reference
+    setCurrentJobListing(jobListingWithId);
     saveJobListing(jobListingWithId).then(() => {
       setJobListings(jobListingsWithUpdatedListing(jobListings, jobListingWithId));
     }).catch((error) => {
@@ -151,6 +155,49 @@ export default function Home() {
     setInterviewGuide(null);
     setTranscript(null);
     setAttachedFiles([]);
+    setCurrentJobListing(null);
+  };
+
+  /**
+   * Callback function to handle selection of a job listing from the sidebar.
+   * Called when the user clicks on a job listing or interview in the sidebar.
+   * Updates the current job listing reference and navigates to the appropriate screen.
+   * 
+   * @param selection - The sidebar selection containing job listing ID and optionally interview ID
+   */
+  const handleSelectJobListing = (selectedListing: JobListingWithId) => {
+    // Do nothing if we're just selecting the same thing again
+    if (selectedListing.id === currentJobListing?.id) {
+      return
+    }
+    // Set the current job listing reference
+    setCurrentJobListing(selectedListing);
+
+    setJobListingParsedData(selectedListing.data["listing-scrape-results"]);
+    setDeepResearchReports(selectedListing.data["deep-research-report"]);
+    setInterviewGuide(selectedListing.data["interview-guide"]);
+
+    setScreen(ScreenName.ResearchJob);
+  };
+
+  /**
+   * Callback function to handle updates to the current job listing.
+   * Called when the current job listing data is modified (e.g., deep research reports or interview guide are added).
+   * Updates the current job listing state and saves it to the database.
+   */
+  const handleCurrentListingUpdated = () => {
+    // Save the updated listing to IndexedDB
+    saveJobListing(currentJobListing!)
+      .then(() => {
+        // Update the job listings array to reflect the changes
+        setJobListings((currentListings) =>
+          jobListingsWithUpdatedListing(currentListings, currentJobListing!)
+        );
+      })
+      .catch((error) => {
+        // Error is already logged by saveJobListing, but we catch to prevent unhandled promise rejection
+        console.error("Error saving updated job listing:", error);
+      });
   };
 
   /**
@@ -166,6 +213,10 @@ export default function Home() {
     setJobListings((currentListings) =>
       jobListingsWithRemovedListing(currentListings, deletedJobListing)
     );
+    // If the deleted job listing is the current one, reset the current job listing reference
+    if (currentJobListing?.id === deletedJobListing.id) {
+      handleNewJobListing();
+    }
   };
 
   /**
@@ -188,6 +239,8 @@ export default function Home() {
           <ResearchJobScreen 
             jobListingParsedData={jobListingParsedData}
             attachedFiles={attachedFiles}
+            currentJobListing={currentJobListing!}
+            onCurrentListingUpdated={handleCurrentListingUpdated}
             onStartMockInterview={handleNavigateToMockInterview}
           />
         ) : null;
@@ -196,6 +249,7 @@ export default function Home() {
           <MockInterviewScreen 
             jobListingResearchResponse={jobListingParsedData}
             interviewGuide={interviewGuide}
+            currentJobListing={currentJobListing}
             onPerformFinalReview={handleNavigateToPerformAnalysis} 
           />
         ) : null;
@@ -206,6 +260,7 @@ export default function Home() {
             jobListingResearchResponse={jobListingParsedData}
             deepResearchReports={deepResearchReports}
             interviewGuide={interviewGuide}
+            currentJobListing={currentJobListing}
             onNewMockInterview={handleNewMockInterview}
             onNewJobListing={handleNewJobListing}
           />
@@ -224,9 +279,11 @@ export default function Home() {
   return (
     <div className="app-container">
       <Sidebar
+        currentJobListing={currentJobListing}
         jobListings={jobListings}
         onDeleteJobListing={handleDeleteJobListing}
         onNewJobListing={handleNewJobListing}
+        onSelectJobListing={handleSelectJobListing}
       />
       <main className="app-main-content">
         {renderScreen()}

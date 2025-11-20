@@ -5,7 +5,7 @@ import "./mock-interview-screen.css";
 import Button from "@/components/button";
 import { generateNextInterviewMessageAction } from "@/app/actions";
 import CONFIG from "@/app/config";
-import type { JobListingResearchResponse, InterviewTranscript } from "@/types";
+import type { JobListingResearchResponse, InterviewTranscript, JobListingWithId } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { convertMessagesToTranscript } from "@/utils/utils";
 import { savedChatTranscript } from "@/app/saved-responses";
@@ -23,6 +23,11 @@ interface MockInterviewScreenProps {
    */
   interviewGuide: string;
   /**
+   * Reference to the current job listing being explored.
+   * Contains the job listing ID and full data structure.
+   */
+  currentJobListing: JobListingWithId | null;
+  /**
    * Callback function to navigate to the perform analysis screen.
    * Called when the user confirms the final review warning.
    * 
@@ -38,6 +43,7 @@ interface MockInterviewScreenProps {
 export default function MockInterviewScreen({ 
   jobListingResearchResponse, 
   interviewGuide,
+  currentJobListing,
   onPerformFinalReview 
 }: MockInterviewScreenProps) {
   // State to store the array of messages in the conversation
