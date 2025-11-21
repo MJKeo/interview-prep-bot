@@ -232,6 +232,39 @@
   flex: 1;
 }
 
+/* Input field for editing job listing name - matches regular text appearance */
+.sidebar-job-listing-name-input {
+  flex: 1;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 0.35rem;
+  padding-right: 0.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+}
+
+/* Input field for editing interview name - matches regular text appearance */
+.sidebar-interview-name-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 0.9375rem;
+  width: 100%;
+  padding: 0;
+}
+
 /* Selected state for interview menu container */
 .sidebar-interview.sidebar-item-selected .sidebar-menu-container {
   background-color: #266DD3; /* Sapphire Sky when selected */

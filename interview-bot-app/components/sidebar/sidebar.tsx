@@ -21,6 +21,11 @@ interface SidebarProps {
    */
   currentJobListing: JobListingWithId | null;
 
+  /**
+   * Callback function called whenever a job listing has been updated
+   */
+  onDidUpdateJobListing: (jobListing: JobListingWithId) => void;
+
 
   currentInterviewId: string | null;
 
@@ -39,6 +44,9 @@ interface SidebarProps {
    * Used to navigate back to the enter job listing URL screen and reset state.
    */
   onNewJobListing: () => void;
+
+  onNewInterview: (jobListing: JobListingWithId) => void;
+
   /**
    * Callback function called when a job listing is selected from the sidebar.
    * 
@@ -68,10 +76,12 @@ interface SidebarProps {
 export default function Sidebar({
   jobListings,
   currentJobListing,
+  onDidUpdateJobListing,
   currentInterviewId,
   onDeleteJobListing,
   onDeleteInterview,
   onNewJobListing,
+  onNewInterview,
   onSelectJobListing,
   onSelectInterview,
 }: SidebarProps) {
@@ -91,10 +101,28 @@ export default function Sidebar({
   const menuRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   // Ref to track menu container for click outside detection (interviews)
   const interviewMenuRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  // Track which item is currently being edited (null when not editing)
+  // Contains jobListingId and optionally interviewId
+  const [editingItem, setEditingItem] = useState<SidebarSelection | null>(null);
+  // Current value being edited
+  const [editValue, setEditValue] = useState<string>("");
+  // Ref for the input element to handle auto-focus and selection
+  const editInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     console.log("selected item: ", selectedItem);
   }, [selectedItem]);
+
+  /**
+   * Effect hook that handles auto-focus and text selection when entering edit mode.
+   * When an item enters edit mode, focuses the input and selects all text.
+   */
+  useEffect(() => {
+    if (editInputRef.current && editingItem) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingItem]);
 
   /**
    * Effect hook that initializes all job listings with interviews to be expanded on mount.
@@ -219,6 +247,104 @@ export default function Sidebar({
   }
 
   /**
+   * Handles completing the edit sequence.
+   * If the value is empty, reverts to the original name.
+   * Otherwise, calls the appropriate update method and resets edit state.
+   */
+  const handleEditComplete = () => {
+    if (!editingItem) return;
+
+    // If empty, cancel the rename (revert to original)
+    if (editValue.trim() === "") {
+      setEditingItem(null);
+      setEditValue("");
+      return;
+    }
+
+    // Find the job listing
+    const jobListing = jobListings.find(jl => jl.id === editingItem.jobListingId);
+    if (!jobListing) {
+      // Reset state if job listing not found
+      setEditingItem(null);
+      setEditValue("");
+      return;
+    }
+
+    // Call appropriate update method
+    if (editingItem.interviewId) {
+      interviewNameUpdated(jobListing, editingItem.interviewId, editValue.trim());
+    } else {
+      jobListingNameUpdated(jobListing, editValue.trim());
+    }
+
+    // Reset edit state
+    setEditingItem(null);
+    setEditValue("");
+  };
+
+  /**
+   * Handles changes to the edit input value.
+   * 
+   * @param e - The change event
+   */
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditValue(e.target.value);
+  };
+
+  /**
+   * Handles keyboard events in the edit input.
+   * Enter completes the edit, Escape cancels it.
+   * 
+   * @param e - The keyboard event
+   */
+  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleEditComplete();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      // Cancel edit and don't update name
+      setEditingItem(null);
+      setEditValue("");
+    }
+  };
+
+  /**
+   * Placeholder method for when a job listing name is updated.
+   * Called after the user completes editing a job listing name.
+   * 
+   * @param jobListing - The job listing whose name was updated
+   * @param newDisplayName - The new display name
+   */
+  const jobListingNameUpdated = (jobListing: JobListingWithId, newDisplayName: string) => {
+    if (jobListing.data["display-name"] === newDisplayName) {
+      return;
+    }
+
+    // Perform rename and notify parent component
+    jobListing.data["display-name"] = newDisplayName;
+    onDidUpdateJobListing(jobListing);
+  };
+
+  /**
+   * Placeholder method for when an interview name is updated.
+   * Called after the user completes editing an interview name.
+   * 
+   * @param jobListing - The job listing containing the interview
+   * @param interviewId - The ID of the interview whose name was updated
+   * @param newDisplayName - The new display name
+   */
+  const interviewNameUpdated = (jobListing: JobListingWithId, interviewId: string, newDisplayName: string) => {
+    const changedInterview = jobListing.data.interviews?.[interviewId];
+    if (!changedInterview || changedInterview["display-name"] === newDisplayName) {
+        return;
+    }
+    // TODO: Implement name update logic
+    changedInterview["display-name"] = newDisplayName;
+    onDidUpdateJobListing(jobListing);
+  };
+
+  /**
    * Handles clicking on an interview item.
    * Selects both the job listing and the specific interview.
    * 
@@ -282,31 +408,30 @@ export default function Sidebar({
   };
 
   /**
-   * Handles clicking on a menu button (Rename or Delete) for job listings.
+   * Handles clicking on a menu button (New Interview, Rename, or Delete) for job listings.
    * Prevents event propagation and closes the menu.
    * 
    * @param e - The click event
-   * @param action - The action being performed ("rename" or "delete")
-   * @param jobListingId - The ID of the job listing the action is being performed on
+   * @param action - The action being performed ("new-interview", "rename", or "delete")
+   * @param jobListing - The job listing the action is being performed on
    */
-  const handleMenuButtonClick = (e: React.MouseEvent, action: "rename" | "delete", jobListingId: string) => {
+  const handleMenuButtonClick = (e: React.MouseEvent, action: "new-interview" | "rename" | "delete", jobListing: JobListingWithId) => {
     // Stop event propagation to prevent parent handlers from firing
     e.stopPropagation();
     // Close the menu
     setOpenMenuId(null);
     
-    if (action === "rename") {
-      // Placeholder for rename functionality
+    if (action === "new-interview") {
+      // Call parent callback to create a new interview for this job listing
+      onNewInterview(jobListing);
+    } else if (action === "rename") {
+      // Enter edit mode for this job listing
+      const displayName = jobListing.data["display-name"];
+      setEditingItem({ jobListingId: jobListing.id });
+      setEditValue(displayName);
     } else if (action === "delete") {
-      // Find the job listing to delete
-      const jobListingToDelete = jobListings.find(
-        (listing) => listing.id === jobListingId
-      );
-
       // Notify parent component to update its state
-      if (jobListingToDelete) {
-        onDeleteJobListing(jobListingToDelete);
-      }
+      onDeleteJobListing(jobListing);
     }
   };
 
@@ -348,7 +473,11 @@ export default function Sidebar({
     setOpenInterviewMenuId(null);
     
     if (action === "rename") {
-      // Placeholder for rename functionality
+      // Enter edit mode for this interview
+      const interview = jobListing.data.interviews?.[interviewId];
+      const displayName = interview ? interview["display-name"] : "";
+      setEditingItem({ jobListingId: jobListing.id, interviewId });
+      setEditValue(displayName);
     } else if (action === "delete") {
       // Notify parent component after successful deletion
       onDeleteInterview(jobListing, interviewId);
@@ -382,13 +511,26 @@ export default function Sidebar({
                       {isExpanded ? "▼" : "▶"}
                     </button>
                   )}
-                  {/* Job Listing Label */}
-                  <span
-                    className="sidebar-job-listing-name"
-                    onClick={() => handleJobListingClick(jobListing)}
-                  >
-                    {displayName}
-                  </span>
+                  {/* Job Listing Label - conditionally render input or span */}
+                  {editingItem?.jobListingId === jobListingId && !editingItem?.interviewId ? (
+                    <input
+                      ref={editInputRef}
+                      type="text"
+                      className="sidebar-job-listing-name-input"
+                      value={editValue}
+                      onChange={handleEditChange}
+                      onKeyDown={handleEditKeyDown}
+                      onBlur={handleEditComplete}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <span
+                      className="sidebar-job-listing-name"
+                      onClick={() => handleJobListingClick(jobListing)}
+                    >
+                      {displayName}
+                    </span>
+                  )}
                   {/* Three-dot menu icon */}
                   <div
                     className="sidebar-menu-container"
@@ -418,14 +560,21 @@ export default function Sidebar({
                         <button
                           type="button"
                           className="sidebar-menu-button"
-                          onClick={(e) => handleMenuButtonClick(e, "rename", jobListingId)}
+                          onClick={(e) => handleMenuButtonClick(e, "new-interview", jobListing)}
+                        >
+                          New Interview
+                        </button>
+                        <button
+                          type="button"
+                          className="sidebar-menu-button"
+                          onClick={(e) => handleMenuButtonClick(e, "rename", jobListing)}
                         >
                           Rename
                         </button>
                         <button
                           type="button"
                           className="sidebar-menu-button"
-                          onClick={(e) => handleMenuButtonClick(e, "delete", jobListingId)}
+                          onClick={(e) => handleMenuButtonClick(e, "delete", jobListing)}
                         >
                           Delete
                         </button>
@@ -458,10 +607,23 @@ export default function Sidebar({
                               handleInterviewClick(jobListing, interviewId)
                             }
                           >
-                            {/* Interview Display Name */}
-                            <span className="sidebar-interview-name">
-                              {interviewDisplayName}
-                            </span>
+                            {/* Interview Display Name - conditionally render input or span */}
+                            {editingItem?.jobListingId === jobListingId && editingItem?.interviewId === interviewId ? (
+                              <input
+                                ref={editInputRef}
+                                type="text"
+                                className="sidebar-interview-name-input"
+                                value={editValue}
+                                onChange={handleEditChange}
+                                onKeyDown={handleEditKeyDown}
+                                onBlur={handleEditComplete}
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            ) : (
+                              <span className="sidebar-interview-name">
+                                {interviewDisplayName}
+                              </span>
+                            )}
                             {/* Three-dot menu icon for interview */}
                             <div
                               className="sidebar-menu-container"

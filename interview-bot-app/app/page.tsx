@@ -144,9 +144,10 @@ export default function Home() {
    * Called when the user confirms the "new mock interview" warning.
    * Resets the conversation messages but keeps the job listing research response and interview guide.
    */
-  const handleNewMockInterview = () => {
-    // Reset conversation messages to start fresh
-    setTranscript(null);
+  const handleNewMockInterview = (jobListing: JobListingWithId) => {
+    // Reset variables and stuff
+    updateStateVariablesForSelectedJobListing(jobListing);
+
     // Navigate back to mock interview screen (jobListingResearchResponse and interviewGuide are still set)
     setScreen(ScreenName.MockInterview);
   };
@@ -166,6 +167,7 @@ export default function Home() {
     setAttachedFiles([]);
     setCurrentJobListing(null);
     setCurrentInterviewId(null);
+    console.log("Set aggregated to null here")
   };
 
   /**
@@ -176,16 +178,24 @@ export default function Home() {
    * @param selection - The sidebar selection containing job listing ID and optionally interview ID
    */
   const handleSelectJobListing = (selectedListing: JobListingWithId) => {
-    // Set the current job listing reference
-    setCurrentJobListing(selectedListing);
-    setCurrentInterviewId(null);
-
-    setJobListingParsedData(selectedListing.data["listing-scrape-results"]);
-    setDeepResearchReports(selectedListing.data["deep-research-report"]);
-    setInterviewGuide(selectedListing.data["interview-guide"]);
+    // Reset variables and stuff
+    updateStateVariablesForSelectedJobListing(selectedListing);
 
     setScreen(ScreenName.ResearchJob);
   };
+
+  const updateStateVariablesForSelectedJobListing = (jobListing: JobListingWithId) => {
+    // Set the current job listing reference
+    setCurrentJobListing(jobListing);
+    setCurrentInterviewId(null);
+
+    setJobListingParsedData(jobListing.data["listing-scrape-results"]);
+    setDeepResearchReports(jobListing.data["deep-research-report"]);
+    setInterviewGuide(jobListing.data["interview-guide"]);
+
+    setTranscript(null);
+    console.log("Set aggregated to null here")
+  }
 
   const handleSelectInterview = (jobListing: JobListingWithId, interviewId: string) => {
     if (interviewId === currentInterviewId) {
@@ -226,6 +236,24 @@ export default function Home() {
         console.error("Error saving updated job listing:", error);
       });
   };
+
+  const handleDidUpdateJobListing = (jobListing: JobListingWithId) => {
+    // Save the updated listing to IndexedDB
+    saveJobListing(jobListing)
+      .then(() => {
+        setJobListings((currentListings) =>
+          jobListingsWithUpdatedListing(currentListings, jobListing)
+        );
+    
+        if (currentJobListing?.id === jobListing.id) {
+          setCurrentJobListing(jobListing);
+        }
+      })
+      .catch((error) => {
+        // Error is already logged by saveJobListing, but we catch to prevent unhandled promise rejection
+        console.error("Error saving updated job listing:", error);
+      });
+  }
 
   /**
    * Callback function to handle deletion of a job listing.
@@ -341,7 +369,7 @@ export default function Home() {
             deepResearchReports={deepResearchReports}
             interviewGuide={interviewGuide}
             currentJobListing={currentJobListing}
-            onNewMockInterview={handleNewMockInterview}
+            onNewMockInterview={() => handleNewMockInterview(currentJobListing!)}
             onNewJobListing={handleNewJobListing}
           />
         ) : null;
@@ -361,10 +389,12 @@ export default function Home() {
       <Sidebar
         jobListings={jobListings}
         currentJobListing={currentJobListing}
+        onDidUpdateJobListing={handleDidUpdateJobListing}
         currentInterviewId={currentInterviewId}
         onDeleteJobListing={handleDeleteJobListing}
         onDeleteInterview={handleDeleteInterview}
         onNewJobListing={handleNewJobListing}
+        onNewInterview={handleNewMockInterview}
         onSelectJobListing={handleSelectJobListing}
         onSelectInterview={handleSelectInterview}
       />
