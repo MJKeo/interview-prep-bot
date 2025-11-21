@@ -74,3 +74,13 @@ body {
   font-weight: 600;
   margin: 1rem 0 0.5rem;
 }
+
+:root {
+  /* Global brand palette */
+  --color-ink-black:   #011627;
+  --color-vintage-grape: #443850;
+  --color-slate-grey:  #7D8491;
+  --color-text-on-media: #E0E0E0;
+  --color-white-smoke: #F5F5F5;
+  --color-white:       #FFFFFF;
+}

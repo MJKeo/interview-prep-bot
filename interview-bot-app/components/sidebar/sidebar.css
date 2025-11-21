@@ -4,13 +4,29 @@
 .sidebar {
   width: 280px;
   height: 100vh;
-  background-color: #344055; /* Charcoal Blue background */
-  border-right: 1px solid #888098; /* Lavender Grey border */
+  background-color: var(--color-ink-black);
+  /* border-right: 1px solid var(--color-ink-black); */
   overflow-y: auto; /* allow scrolling if content exceeds height */
   position: fixed;
   left: 0;
   top: 0;
   z-index: 10;
+}
+
+/* Sidebar header container */
+.sidebar-header {
+  padding: 1.5rem 1rem 0rem 1.25rem;
+  cursor: pointer;
+}
+
+/* Sidebar title - App Name label */
+.sidebar-title {
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-on-media);
+  font-size: 1.5rem;
+  font-weight: 700;
+  transition: opacity 0.15s ease-in-out;
 }
 
 /* Navigation container within sidebar */
@@ -29,6 +45,19 @@
 .sidebar-list-item {
   margin: 0;
   padding: 0;
+  position: relative;
+  font-size: 0.9rem;
+}
+
+/* Divider line between job listings - inset with padding */
+.sidebar-list-item:not(.sidebar-list-item-expanded)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 1rem;
+  right: 1rem;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Job listing item - top level hstack container */
@@ -36,14 +65,17 @@
   display: flex;
   align-items: stretch; /* Stretch children to full height */
   padding: 0;
+  border-top: 0.5px solid var(--color-ink-black);
+  border-bottom: 0.5px solid var(--color-ink-black);
   transition: background-color 0.15s ease-in-out;
-  color: white; /* white text on dark background */
+  color: var(--color-text-on-media);
   position: relative; /* Enable absolute positioning for tooltip */
 }
 
-/* Hover state for entire job listing item - Lavender Grey background */
+/* Hover state for entire job listing item */
 .sidebar-job-listing:hover {
-  background-color: #888098; /* Lavender Grey on hover */
+  background-color: var(--color-white-smoke);
+  color: var(--color-ink-black);
 }
 
 /* Selected state styling is handled by child elements */
@@ -56,16 +88,16 @@
   padding-left: 0.35rem;
   padding-right: 0.5rem;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 590;
   display: flex;
   align-items: center;
   background: transparent; /* Allow parent background to show through */
 }
 
 /* Selected state for job listing label - Sapphire Sky background */
-.sidebar-job-listing.sidebar-item-selected .sidebar-job-listing-name {
-  background-color: #266DD3; /* Sapphire Sky when selected */
-  color: white;
+.sidebar-job-listing.sidebar-item-selected {
+  background-color: var(--color-white-smoke);
+  color: var(--color-ink-black);
 }
 
 /* Expand/collapse button - full height with 8px horizontal padding */
@@ -86,23 +118,6 @@
   flex-shrink: 0;
 }
 
-/* Selected state for expand button */
-.sidebar-job-listing.sidebar-item-selected .sidebar-expand-button {
-  background-color: #266DD3; /* Sapphire Sky when selected */
-  color: white;
-}
-
-/* Selected state for menu container */
-.sidebar-job-listing.sidebar-item-selected .sidebar-menu-container {
-  background-color: #266DD3; /* Sapphire Sky when selected */
-}
-
-/* Selected state for menu icon */
-.sidebar-job-listing.sidebar-item-selected .sidebar-menu-icon {
-  background-color: #266DD3; /* Sapphire Sky when selected */
-  color: white;
-}
-
 /* Menu container - positioned relative for tooltip positioning */
 .sidebar-menu-container {
   position: relative;
@@ -110,6 +125,7 @@
   align-items: stretch; /* Stretch to fill full height */
   flex-shrink: 0;
   background: transparent; /* Allow parent background to show through */
+  padding-right: 0.5rem;
 }
 
 /* Three-dot menu icon button */
@@ -192,8 +208,6 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  padding-left: 1.5rem; /* indent from parent */
-  background-color: #eaeaea; /* Light Thistle background for sublist */
 }
 
 /* Individual interview item */
@@ -204,27 +218,45 @@
 
 /* Interview item - second level */
 .sidebar-interview {
+  background-color: var(--color-vintage-grape);
   display: flex;
   align-items: center;
-  padding: 0.625rem 1rem;
-  padding-left: 2rem; /* additional indentation for interview items */
-  margin-left: -1.5rem; /* Extend to left edge to cover parent padding */
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-right: 0;
+  padding-left: 3.25rem;
+  margin-bottom: 0; /* Reset margin */
+  border-top: 0.5px solid var(--color-vintage-grape);
+  border-bottom: 0.5px solid var(--color-vintage-grape);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
-  color: #344055; /* Charcoal Blue text for sub-items on light background */
+  color: var(--color-text-on-media);
   font-weight: 400;
   font-size: 0.9375rem; /* slightly smaller font */
+  position: relative;
+}
+
+/* Divider line between interviews - inset with padding */
+.sidebar-interview-item:not(:last-child) .sidebar-interview::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 1.25rem;
+  right: 1.25rem;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Hover state for interview - extends full width */
 .sidebar-interview:hover {
-  background-color: #c3c3c3; /* Thistle on hover */
+  background-color: var(--color-white-smoke);
+  color: var(--color-vintage-grape);
 }
 
 /* Selected state for interview - Sapphire Sky background */
 .sidebar-interview.sidebar-item-selected {
-  background-color: #266DD3; /* Sapphire Sky when selected */
-  color: white;
+  background-color: var(--color-white-smoke);
+  color: var(--color-vintage-grape);
 }
 
 /* Interview display name */
@@ -265,36 +297,37 @@
   padding: 0;
 }
 
-/* Selected state for interview menu container */
-.sidebar-interview.sidebar-item-selected .sidebar-menu-container {
-  background-color: #266DD3; /* Sapphire Sky when selected */
-}
-
-/* Selected state for interview menu icon */
-.sidebar-interview.sidebar-item-selected .sidebar-menu-icon {
-  background-color: #266DD3; /* Sapphire Sky when selected */
-  color: white;
-}
-
 /* New Listing button - appears below all job listings */
 .sidebar-new-listing-button {
   width: 100%;
-  padding: 0.75rem 1rem;
-  margin-top: 1rem;
-  background-color: transparent;
-  border: 1px solid #888098; /* Lavender Grey border */
-  border-radius: 0.25rem;
-  color: white;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 0.9375rem;
-  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
-  text-align: center;
+  padding: 1.25rem 0;
+  border: none;
+  margin: 0;
+  /* Flexbox container to center text vertically and horizontally */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* Text element inside the button */
+.sidebar-new-listing-text {
+  color: var(--color-white-smoke);
+  margin-left: -1.5rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+  /* Transition for smooth hover effects */
+  transition: transform 0.15s ease-in-out, text-shadow 0.15s ease-in-out;
 }
 
 /* Hover state for New Listing button */
 .sidebar-new-listing-button:hover {
-  background-color: #888098; /* Lavender Grey on hover */
-  border-color: #888098;
+  cursor: pointer;
+}
+
+/* Hover state for text - glow and move up */
+.sidebar-new-listing-button:hover .sidebar-new-listing-text {
+  /* transform: translateY(-2px); Move up slightly */
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.6), 0 0 8px rgba(255, 255, 255, 0.4); /* Glow effect */
 }
 

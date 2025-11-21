@@ -486,6 +486,16 @@ export default function Sidebar({
 
   return (
     <aside className="sidebar">
+      <div className="sidebar-header" onClick={() => {
+            // Reset selected item to nothing
+            setSelectedItem(null);
+            // Call parent callback to handle navigation and state reset
+            onNewJobListing();
+          }}>
+        <h1 className="sidebar-title">
+          App Name
+        </h1>
+      </div>
       <nav className="sidebar-nav">
         <ul className="sidebar-list">
           {jobListings.map((jobListing) => {
@@ -498,19 +508,17 @@ export default function Sidebar({
             const isSelected = isJobListingSelected(jobListingId);
 
             return (
-              <li key={jobListingId} className="sidebar-list-item">
+              <li key={jobListingId} className={`sidebar-list-item ${isExpanded ? "sidebar-list-item-expanded" : ""}`}>
                 {/* Job Listing Item - hstack with collapse button, label, and menu icon */}
                 <div className={`sidebar-job-listing ${isSelected ? "sidebar-item-selected" : ""}`}>
-                  {/* Expand/Collapse Button */}
-                  {hasInterviews && (
-                    <button
-                      type="button"
-                      className="sidebar-expand-button"
-                      onClick={(e) => handleCollapseIconClick(e, jobListingId)}
-                    >
-                      {isExpanded ? "▼" : "▶"}
-                    </button>
-                  )}
+                  {/* Expand/Collapse Button - always visible */}
+                  <button
+                    type="button"
+                    className="sidebar-expand-button"
+                    onClick={(e) => handleCollapseIconClick(e, jobListingId)}
+                  >
+                    {isExpanded ? "▼" : "▶"}
+                  </button>
                   {/* Job Listing Label - conditionally render input or span */}
                   {editingItem?.jobListingId === jobListingId && !editingItem?.interviewId ? (
                     <input
@@ -688,7 +696,7 @@ export default function Sidebar({
             onNewJobListing();
           }}
         >
-          New Listing
+          <span className="sidebar-new-listing-text">+ New Listing</span>
         </button>
       </nav>
     </aside>
