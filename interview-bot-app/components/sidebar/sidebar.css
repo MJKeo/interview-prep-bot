@@ -232,6 +232,17 @@
   flex: 1;
 }
 
+/* Selected state for interview menu container */
+.sidebar-interview.sidebar-item-selected .sidebar-menu-container {
+  background-color: #266DD3; /* Sapphire Sky when selected */
+}
+
+/* Selected state for interview menu icon */
+.sidebar-interview.sidebar-item-selected .sidebar-menu-icon {
+  background-color: #266DD3; /* Sapphire Sky when selected */
+  color: white;
+}
+
 /* New Listing button - appears below all job listings */
 .sidebar-new-listing-button {
   width: 100%;

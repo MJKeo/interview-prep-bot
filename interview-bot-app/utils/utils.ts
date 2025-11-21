@@ -5,7 +5,8 @@ import type {
   ConsolidatedFeedbackInput, 
   PerformanceFeedback,
   JobListingResearchResponse,
-  JobListingWithId
+  JobListingWithId,
+  JobListingInterview,
 } from "@/types";
 
 /**
@@ -170,6 +171,41 @@ export function createJobListingWithIdFromScrapedListing(jobListing: JobListingR
           interviews: null,
       },
   };
+}
+
+/**
+ * Creates a new interview object with a unique ID from a transcript.
+ * Generates an ID using the current timestamp and creates a display name
+ * based on the number of existing interviews for the job listing.
+ * Attaches this interview to the provided job listing and returns the new ID.
+ * 
+ * @param transcript - The interview transcript containing question-answer pairs
+ * @param jobListing - The job listing to count existing interviews from
+ */
+export function addInterviewToJobListingFromTranscript(transcript: InterviewTranscript, jobListing: JobListingWithId): string {
+  // Generate unique ID using current timestamp
+  const timestamp = Date.now();
+  const interviewId = `interview-${timestamp}`;
+
+  // Count existing interviews for this job listing
+  const existingInterviews: JobListingInterview = jobListing.data.interviews ?? {};
+  const existingInterviewsCount = Object.keys(existingInterviews).length;
+
+  // Calculate the interview number (existing count + 1 for this new interview)
+  const interviewNumber = existingInterviewsCount + 1;
+
+  // Create display name in format "Interview <x>"
+  const displayName = `Interview ${interviewNumber}`;
+
+  existingInterviews[interviewId] = {
+    "display-name": displayName,
+    transcript: transcript,
+    evaluation: null,
+  };
+
+  jobListing.data.interviews = existingInterviews;
+
+  return interviewId;
 }
 
 /**

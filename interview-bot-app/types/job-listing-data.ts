@@ -11,7 +11,7 @@ export type JobListingInterview = {
   [internalInterviewId: string]: {
     "display-name": string;
     transcript: InterviewTranscript;
-    evaluation: AggregatedEvaluation;
+    evaluation: AggregatedEvaluation | null;
   };
 };
 

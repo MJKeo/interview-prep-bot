@@ -26,7 +26,12 @@ interface MockInterviewScreenProps {
    * Reference to the current job listing being explored.
    * Contains the job listing ID and full data structure.
    */
-  currentJobListing: JobListingWithId | null;
+  currentJobListing: JobListingWithId;
+  /**
+   * Callback function called when the current job listing is updated.
+   * Used to save updated job listing data (e.g., deep research reports, interview guide) to the database.
+   */
+  onCurrentListingUpdated: () => void;
   /**
    * Callback function to navigate to the perform analysis screen.
    * Called when the user confirms the final review warning.
@@ -44,7 +49,8 @@ export default function MockInterviewScreen({
   jobListingResearchResponse, 
   interviewGuide,
   currentJobListing,
-  onPerformFinalReview 
+  onPerformFinalReview,
+  onCurrentListingUpdated,
 }: MockInterviewScreenProps) {
   // State to store the array of messages in the conversation
   const [messages, setMessages] = useState<EasyInputMessage[]>([]);
@@ -226,12 +232,12 @@ export default function MockInterviewScreen({
     // Close the modal
     setShowWarningModal(false);
     // Navigate to perform analysis screen with conversation history
+    var transcript: InterviewTranscript = convertMessagesToTranscript(messages);
     if (CONFIG.useCachedTranscript) {
-      onPerformFinalReview(savedChatTranscript as InterviewTranscript);
-    } else {
-      // Convert messages to transcript format
-      onPerformFinalReview(convertMessagesToTranscript(messages));
+      transcript = savedChatTranscript as InterviewTranscript;
     }
+
+    onPerformFinalReview(transcript);
   };
 
   /**

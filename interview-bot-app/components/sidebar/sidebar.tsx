@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./sidebar.css";
 import type { JobListingWithId, SidebarSelection } from "@/types";
-import { deleteJobListing } from "@/utils/local-database";
+import { deleteJobListing, saveJobListing } from "@/utils/local-database";
 
 /**
  * Props for the Sidebar component.
@@ -21,6 +21,9 @@ interface SidebarProps {
    */
   currentJobListing: JobListingWithId | null;
 
+
+  currentInterviewId: string | null;
+
   /**
    * Callback function called when a job listing is deleted.
    * Receives the deleted job listing as a parameter.
@@ -28,6 +31,9 @@ interface SidebarProps {
    * @param deletedJobListing - The job listing that was deleted
    */
   onDeleteJobListing: (deletedJobListing: JobListingWithId) => void;
+
+  onDeleteInterview: (jobListing: JobListingWithId, interviewId: string) => void;
+
   /**
    * Callback function called when the "New Listing" button is clicked.
    * Used to navigate back to the enter job listing URL screen and reset state.
@@ -39,6 +45,9 @@ interface SidebarProps {
    * @param selection - The job listing that was clicked
    */
   onSelectJobListing: (selectedListing: JobListingWithId) => void;
+
+  // Called when an interview is selected from the sidebar.
+  onSelectInterview: (jobListing: JobListingWithId, interviewId: string) => void;
 }
 
 /**
@@ -59,9 +68,12 @@ interface SidebarProps {
 export default function Sidebar({
   jobListings,
   currentJobListing,
+  currentInterviewId,
   onDeleteJobListing,
+  onDeleteInterview,
   onNewJobListing,
   onSelectJobListing,
+  onSelectInterview,
 }: SidebarProps) {
   // Track which job listings have their interview lists expanded
   // Key is jobListingId, value is boolean (true = expanded, false = collapsed)
@@ -72,8 +84,17 @@ export default function Sidebar({
   const [selectedItem, setSelectedItem] = useState<SidebarSelection | null>(null);
   // Track which job listing's menu is currently open (null if none)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-  // Ref to track menu container for click outside detection
+  // Track which interview's menu is currently open (null if none)
+  // Format: "${jobListingId}-${interviewId}"
+  const [openInterviewMenuId, setOpenInterviewMenuId] = useState<string | null>(null);
+  // Ref to track menu container for click outside detection (job listings)
   const menuRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  // Ref to track menu container for click outside detection (interviews)
+  const interviewMenuRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  useEffect(() => {
+    console.log("selected item: ", selectedItem);
+  }, [selectedItem]);
 
   /**
    * Effect hook that initializes all job listings with interviews to be expanded on mount.
@@ -92,16 +113,19 @@ export default function Sidebar({
   }, [jobListings]);
 
   useEffect(() => {
-    if (currentJobListing) {
+    if (currentJobListing && currentInterviewId) {
+        setSelectedItem({ jobListingId: currentJobListing.id, interviewId: currentInterviewId });
+    } else if (currentJobListing) {
         setSelectedItem({ jobListingId: currentJobListing.id });
     } else {
         setSelectedItem(null);
     }
-  }, [currentJobListing]);
+  }, [currentJobListing, currentInterviewId]);
 
   /**
    * Effect hook that handles clicking outside the menu to close it.
    * Closes the menu when a click occurs outside the menu container.
+   * Handles both job listing menus and interview menus.
    */
   useEffect(() => {
     /**
@@ -110,16 +134,25 @@ export default function Sidebar({
      * @param event - The click event
      */
     const handleClickOutside = (event: MouseEvent) => {
-      if (openMenuId === null) return;
+      // Handle job listing menu
+      if (openMenuId !== null) {
+        const menuElement = menuRefs.current.get(openMenuId);
+        if (menuElement && !menuElement.contains(event.target as Node)) {
+          setOpenMenuId(null);
+        }
+      }
       
-      const menuElement = menuRefs.current.get(openMenuId);
-      if (menuElement && !menuElement.contains(event.target as Node)) {
-        setOpenMenuId(null);
+      // Handle interview menu
+      if (openInterviewMenuId !== null) {
+        const menuElement = interviewMenuRefs.current.get(openInterviewMenuId);
+        if (menuElement && !menuElement.contains(event.target as Node)) {
+          setOpenInterviewMenuId(null);
+        }
       }
     };
 
     // Add event listener when a menu is open
-    if (openMenuId !== null) {
+    if (openMenuId !== null || openInterviewMenuId !== null) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
@@ -127,7 +160,7 @@ export default function Sidebar({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [openMenuId]);
+  }, [openMenuId, openInterviewMenuId]);
 
   /**
    * Toggles the expanded state of a job listing's interview list.
@@ -168,7 +201,8 @@ export default function Sidebar({
    */
   const handleJobListingClick = (jobListing: JobListingWithId) => {
     // Do nothing if this is the same thing already clicked
-    if (jobListing.id === selectedItem?.jobListingId) {
+    // (if we clicked on an interview within this job listing, clicking on the listing should cause an action)
+    if (jobListing.id === selectedItem?.jobListingId && !selectedItem?.interviewId) {
       return;
     }
 
@@ -191,16 +225,19 @@ export default function Sidebar({
    * @param jobListingId - The ID of the parent job listing
    * @param interviewId - The ID of the clicked interview
    */
-  const handleInterviewClick = (jobListingId: string, interviewId: string) => {
+  const handleInterviewClick = (jobListing: JobListingWithId, interviewId: string) => {
     // Expand the parent job listing if it's collapsed
     setExpandedJobListings((prev) => {
       const next = new Set(prev);
-      next.add(jobListingId);
+      next.add(jobListing.id);
       return next;
     });
     // Update local state to select the interview
-    const selection: SidebarSelection = { jobListingId, interviewId };
+    const selection: SidebarSelection = { jobListingId: jobListing.id, interviewId };
     setSelectedItem(selection);
+
+    // Notify parent component of the selection
+    onSelectInterview(jobListing, interviewId);
   };
 
   /**
@@ -212,7 +249,7 @@ export default function Sidebar({
   const isJobListingSelected = (jobListingId: string): boolean => {
     return (
       selectedItem?.jobListingId === jobListingId &&
-      selectedItem?.interviewId === undefined
+      !selectedItem?.interviewId
     );
   };
 
@@ -245,7 +282,7 @@ export default function Sidebar({
   };
 
   /**
-   * Handles clicking on a menu button (Rename or Delete).
+   * Handles clicking on a menu button (Rename or Delete) for job listings.
    * Prevents event propagation and closes the menu.
    * 
    * @param e - The click event
@@ -265,20 +302,56 @@ export default function Sidebar({
       const jobListingToDelete = jobListings.find(
         (listing) => listing.id === jobListingId
       );
-      
-      // If the job listing exists, delete it from the database and notify parent
+
+      // Notify parent component to update its state
       if (jobListingToDelete) {
-        // Delete from IndexedDB
-        deleteJobListing(jobListingToDelete)
-          .then(() => {
-            // Notify parent component to update its state
-            onDeleteJobListing(jobListingToDelete);
-          })
-          .catch((error) => {
-            // Log error but don't crash the component
-            console.error("Failed to delete job listing:", error);
-          });
+        onDeleteJobListing(jobListingToDelete);
       }
+    }
+  };
+
+  /**
+   * Handles clicking on the three-dot menu icon for interviews.
+   * Toggles the menu open/closed state for the specified interview.
+   * 
+   * @param e - The click event
+   * @param jobListingId - The ID of the parent job listing
+   * @param interviewId - The ID of the interview
+   */
+  const handleInterviewMenuIconClick = (e: React.MouseEvent, jobListingId: string, interviewId: string) => {
+    // Stop event propagation to prevent the parent click handler from firing
+    e.stopPropagation();
+    // Create composite key for interview menu
+    const menuKey = `${jobListingId}-${interviewId}`;
+    // Toggle menu: if already open, close it; otherwise, open it
+    setOpenInterviewMenuId((prev) => (prev === menuKey ? null : menuKey));
+  };
+
+  /**
+   * Handles clicking on a menu button (Rename or Delete) for interviews.
+   * Prevents event propagation and closes the menu.
+   * 
+   * @param e - The click event
+   * @param action - The action being performed ("rename" or "delete")
+   * @param jobListing - The job listing containing the interview
+   * @param interviewId - The ID of the interview the action is being performed on
+   */
+  const handleInterviewMenuButtonClick = (
+    e: React.MouseEvent,
+    action: "rename" | "delete",
+    jobListing: JobListingWithId,
+    interviewId: string
+  ) => {
+    // Stop event propagation to prevent parent handlers from firing
+    e.stopPropagation();
+    // Close the menu
+    setOpenInterviewMenuId(null);
+    
+    if (action === "rename") {
+      // Placeholder for rename functionality
+    } else if (action === "delete") {
+      // Notify parent component after successful deletion
+      onDeleteInterview(jobListing, interviewId);
     }
   };
 
@@ -371,6 +444,8 @@ export default function Sidebar({
                         jobListingId,
                         interviewId
                       );
+                      const interviewMenuKey = `${jobListingId}-${interviewId}`;
+                      const isInterviewMenuOpen = openInterviewMenuId === interviewMenuKey;
 
                       return (
                         <li
@@ -380,13 +455,56 @@ export default function Sidebar({
                           <div
                             className={`sidebar-interview ${interviewIsSelected ? "sidebar-item-selected" : ""}`}
                             onClick={() =>
-                              handleInterviewClick(jobListingId, interviewId)
+                              handleInterviewClick(jobListing, interviewId)
                             }
                           >
                             {/* Interview Display Name */}
                             <span className="sidebar-interview-name">
                               {interviewDisplayName}
                             </span>
+                            {/* Three-dot menu icon for interview */}
+                            <div
+                              className="sidebar-menu-container"
+                              ref={(el) => {
+                                if (el) {
+                                  interviewMenuRefs.current.set(interviewMenuKey, el);
+                                } else {
+                                  interviewMenuRefs.current.delete(interviewMenuKey);
+                                }
+                              }}
+                            >
+                              <button
+                                type="button"
+                                className="sidebar-menu-icon"
+                                onClick={(e) => handleInterviewMenuIconClick(e, jobListingId, interviewId)}
+                                aria-label="Menu"
+                              >
+                                <span className="sidebar-menu-dots">
+                                  <span className="sidebar-menu-dot"></span>
+                                  <span className="sidebar-menu-dot"></span>
+                                  <span className="sidebar-menu-dot"></span>
+                                </span>
+                              </button>
+                              {/* Tooltip menu dropdown */}
+                              {isInterviewMenuOpen && (
+                                <div className="sidebar-menu-tooltip">
+                                  <button
+                                    type="button"
+                                    className="sidebar-menu-button"
+                                    onClick={(e) => handleInterviewMenuButtonClick(e, "rename", jobListing, interviewId)}
+                                  >
+                                    Rename
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="sidebar-menu-button"
+                                    onClick={(e) => handleInterviewMenuButtonClick(e, "delete", jobListing, interviewId)}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </li>
                       );

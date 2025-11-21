@@ -13,15 +13,17 @@ import {
   type FileItem, 
   type InterviewTranscript,
   type JobListingWithId,
-  type SidebarSelection
+  type SidebarSelection,
+  type JobListingInterview,
 } from "@/types";
 import { isUserOnMobile } from "@/app/actions";
 import Sidebar from "@/components/sidebar";
-import { saveJobListing, fetchAllJobListings } from "@/utils/local-database";
+import { saveJobListing, fetchAllJobListings, deleteJobListing } from "@/utils/local-database";
 import { 
   createJobListingWithIdFromScrapedListing, 
   jobListingsWithUpdatedListing, 
-  jobListingsWithRemovedListing 
+  jobListingsWithRemovedListing,
+  addInterviewToJobListingFromTranscript,
 } from "@/utils/utils";
 
 /**
@@ -47,6 +49,8 @@ export default function Home() {
   const [jobListings, setJobListings] = useState<JobListingWithId[]>([]);
   // State to track the current job listing being explored
   const [currentJobListing, setCurrentJobListing] = useState<JobListingWithId | null>(null);
+  // State to track if the current job listing being explored
+  const [currentInterviewId, setCurrentInterviewId] = useState<string | null>(null);
 
   /**
    * Effect hook that checks if the user is on a mobile device on component mount.
@@ -128,6 +132,11 @@ export default function Home() {
     // Store the conversation messages and navigate to perform analysis screen
     setTranscript(transcript);
     setScreen(ScreenName.PerformAnalysis);
+
+    // Update the job listing with the new interview and trigger a save to the database
+    const newInterviewId = addInterviewToJobListingFromTranscript(transcript, currentJobListing!);
+    handleCurrentListingUpdated();
+    setCurrentInterviewId(newInterviewId);
   };
 
   /**
@@ -156,6 +165,7 @@ export default function Home() {
     setTranscript(null);
     setAttachedFiles([]);
     setCurrentJobListing(null);
+    setCurrentInterviewId(null);
   };
 
   /**
@@ -166,18 +176,35 @@ export default function Home() {
    * @param selection - The sidebar selection containing job listing ID and optionally interview ID
    */
   const handleSelectJobListing = (selectedListing: JobListingWithId) => {
-    // Do nothing if we're just selecting the same thing again
-    if (selectedListing.id === currentJobListing?.id) {
-      return
-    }
     // Set the current job listing reference
     setCurrentJobListing(selectedListing);
+    setCurrentInterviewId(null);
 
     setJobListingParsedData(selectedListing.data["listing-scrape-results"]);
     setDeepResearchReports(selectedListing.data["deep-research-report"]);
     setInterviewGuide(selectedListing.data["interview-guide"]);
 
     setScreen(ScreenName.ResearchJob);
+  };
+
+  const handleSelectInterview = (jobListing: JobListingWithId, interviewId: string) => {
+    if (interviewId === currentInterviewId) {
+      return;
+    }
+
+    setCurrentJobListing(jobListing);
+    setCurrentInterviewId(interviewId);
+
+    // Update state variables based on selected job listing's data
+    setJobListingParsedData(jobListing.data["listing-scrape-results"]);
+    setDeepResearchReports(jobListing.data["deep-research-report"]);
+    setInterviewGuide(jobListing.data["interview-guide"]);
+
+    // Update the transcript with the selected interview's data
+    setTranscript(jobListing.data["interviews"]?.[interviewId]?.transcript ?? null);
+    console.log("TODO - 5678");
+
+    setScreen(ScreenName.PerformAnalysis);
   };
 
   /**
@@ -209,15 +236,67 @@ export default function Home() {
    * @param deletedJobListing - The job listing that was deleted
    */
   const handleDeleteJobListing = (deletedJobListing: JobListingWithId) => {
-    // Update local state to remove the deleted job listing
-    setJobListings((currentListings) =>
-      jobListingsWithRemovedListing(currentListings, deletedJobListing)
-    );
-    // If the deleted job listing is the current one, reset the current job listing reference
-    if (currentJobListing?.id === deletedJobListing.id) {
-      handleNewJobListing();
-    }
+    // Delete from IndexedDB
+    deleteJobListing(deletedJobListing)
+    .then(() => {
+      // Update local state to remove the deleted job listing
+      setJobListings((currentListings) =>
+        jobListingsWithRemovedListing(currentListings, deletedJobListing)
+      );
+      // If the deleted job listing is the current one, reset the current job listing reference
+      if (currentJobListing?.id === deletedJobListing.id) {
+        handleNewJobListing();
+      }
+    })
+    .catch((error) => {
+      // Log error but don't crash the component
+      console.error("Failed to delete job listing:", error);
+    });
   };
+
+  const handleDeleteInterview = (jobListing: JobListingWithId, interviewId: string) => {
+    console.log("Before: ", jobListing.data.interviews);
+    // Create a copy of the job listing with the interview removed
+    const updatedJobListing: JobListingWithId = {
+      ...jobListing,
+      data: {
+        ...jobListing.data,
+        interviews: (() => {
+          // If no interviews exist, return null
+          if (!jobListing.data.interviews) {
+            return null;
+          }
+          // Create a new object without the deleted interview key
+          const { [interviewId]: deletedInterview, ...remainingInterviews } = jobListing.data.interviews;
+          // Return null if no interviews remain, otherwise return the remaining interviews
+          return Object.keys(remainingInterviews).length > 0 ? remainingInterviews : null;
+        })(),
+      },
+    };
+    console.log("Before: ", updatedJobListing.data.interviews);
+
+    // Save the updated job listing to the database
+    saveJobListing(updatedJobListing)
+      .then(() => {
+        // Update the job listings array to reflect the changes
+        setJobListings((currentListings) =>
+          jobListingsWithUpdatedListing(currentListings, updatedJobListing)
+        );
+        
+        if (currentJobListing?.id === updatedJobListing.id) {
+          setCurrentJobListing(updatedJobListing);
+        }
+
+        if (currentInterviewId === interviewId) {
+          setCurrentInterviewId(null);
+          setScreen(ScreenName.ResearchJob);
+        }        
+      })
+      .catch((error) => {
+        // Log error but don't crash the component
+        console.error("Failed to delete interview:", error);
+      });
+  }
 
   /**
    * Renders the appropriate screen component based on the current screen state.
@@ -249,7 +328,8 @@ export default function Home() {
           <MockInterviewScreen 
             jobListingResearchResponse={jobListingParsedData}
             interviewGuide={interviewGuide}
-            currentJobListing={currentJobListing}
+            currentJobListing={currentJobListing!}
+            onCurrentListingUpdated={handleCurrentListingUpdated}
             onPerformFinalReview={handleNavigateToPerformAnalysis} 
           />
         ) : null;
@@ -279,11 +359,14 @@ export default function Home() {
   return (
     <div className="app-container">
       <Sidebar
-        currentJobListing={currentJobListing}
         jobListings={jobListings}
+        currentJobListing={currentJobListing}
+        currentInterviewId={currentInterviewId}
         onDeleteJobListing={handleDeleteJobListing}
+        onDeleteInterview={handleDeleteInterview}
         onNewJobListing={handleNewJobListing}
         onSelectJobListing={handleSelectJobListing}
+        onSelectInterview={handleSelectInterview}
       />
       <main className="app-main-content">
         {renderScreen()}
