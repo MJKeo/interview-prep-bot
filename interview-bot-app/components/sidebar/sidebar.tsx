@@ -106,39 +106,30 @@ export default function Sidebar({
   const [editingItem, setEditingItem] = useState<SidebarSelection | null>(null);
   // Current value being edited
   const [editValue, setEditValue] = useState<string>("");
-  // Ref for the input element to handle auto-focus and selection
-  const editInputRef = useRef<HTMLInputElement | null>(null);
+  // Ref for the input/textarea element to handle auto-focus and selection
+  const editInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     console.log("selected item: ", selectedItem);
   }, [selectedItem]);
 
   /**
-   * Effect hook that handles auto-focus and text selection when entering edit mode.
-   * When an item enters edit mode, focuses the input and selects all text.
+   * Effect hook that handles auto-focus and cursor positioning when entering edit mode.
+   * When an item enters edit mode, focuses the textarea, sets cursor to end, and auto-resizes.
    */
   useEffect(() => {
-    if (editInputRef.current && editingItem) {
+    if (editInputRef.current && editingItem && editInputRef.current instanceof HTMLTextAreaElement) {
       editInputRef.current.focus();
-      editInputRef.current.select();
+      // Set cursor to end and auto-resize textarea to fit content
+      editInputRef.current.setSelectionRange(
+        editInputRef.current.value.length,
+        editInputRef.current.value.length
+      );
+      // Auto-resize textarea to fit content
+      editInputRef.current.style.height = "auto";
+      editInputRef.current.style.height = `${editInputRef.current.scrollHeight}px`;
     }
   }, [editingItem]);
-
-  /**
-   * Effect hook that initializes all job listings with interviews to be expanded on mount.
-   * All collapsible items start in their non-collapsed (expanded) form.
-   */
-  useEffect(() => {
-    // Initialize all job listings with interviews as expanded
-    const initialExpanded = new Set<string>();
-    jobListings.forEach((jobListing) => {
-      const interviewIds = Object.keys(jobListing.data.interviews ?? {});
-      if (interviewIds.length > 0) {
-        initialExpanded.add(jobListing.id);
-      }
-    });
-    setExpandedJobListings(initialExpanded);
-  }, [jobListings]);
 
   useEffect(() => {
     if (currentJobListing && currentInterviewId) {
@@ -283,22 +274,27 @@ export default function Sidebar({
   };
 
   /**
-   * Handles changes to the edit input value.
+   * Handles changes to the edit textarea value.
+   * Also handles auto-resizing for the textarea element.
    * 
    * @param e - The change event
    */
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditValue(e.target.value);
+    // Auto-resize textarea to fit content
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
   /**
-   * Handles keyboard events in the edit input.
+   * Handles keyboard events in the edit textarea.
    * Enter completes the edit, Escape cancels it.
    * 
    * @param e - The keyboard event
    */
-  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
+      // Enter completes the edit for both textareas
       e.preventDefault();
       handleEditComplete();
     } else if (e.key === "Escape") {
@@ -519,17 +515,17 @@ export default function Sidebar({
                   >
                     {isExpanded ? "▼" : "▶"}
                   </button>
-                  {/* Job Listing Label - conditionally render input or span */}
+                  {/* Job Listing Label - conditionally render textarea or span */}
                   {editingItem?.jobListingId === jobListingId && !editingItem?.interviewId ? (
-                    <input
-                      ref={editInputRef}
-                      type="text"
+                    <textarea
+                      ref={editInputRef as React.RefObject<HTMLTextAreaElement>}
                       className="sidebar-job-listing-name-input"
                       value={editValue}
                       onChange={handleEditChange}
                       onKeyDown={handleEditKeyDown}
                       onBlur={handleEditComplete}
                       onClick={(e) => e.stopPropagation()}
+                      rows={1}
                     />
                   ) : (
                     <span
@@ -549,11 +545,11 @@ export default function Sidebar({
                         menuRefs.current.delete(jobListingId);
                       }
                     }}
+                    onClick={(e) => handleMenuIconClick(e, jobListingId)}
                   >
                     <button
                       type="button"
                       className="sidebar-menu-icon"
-                      onClick={(e) => handleMenuIconClick(e, jobListingId)}
                       aria-label="Menu"
                     >
                       <span className="sidebar-menu-dots">
@@ -615,17 +611,17 @@ export default function Sidebar({
                               handleInterviewClick(jobListing, interviewId)
                             }
                           >
-                            {/* Interview Display Name - conditionally render input or span */}
+                            {/* Interview Display Name - conditionally render textarea or span */}
                             {editingItem?.jobListingId === jobListingId && editingItem?.interviewId === interviewId ? (
-                              <input
-                                ref={editInputRef}
-                                type="text"
+                              <textarea
+                                ref={editInputRef as React.RefObject<HTMLTextAreaElement>}
                                 className="sidebar-interview-name-input"
                                 value={editValue}
                                 onChange={handleEditChange}
                                 onKeyDown={handleEditKeyDown}
                                 onBlur={handleEditComplete}
                                 onClick={(e) => e.stopPropagation()}
+                                rows={1}
                               />
                             ) : (
                               <span className="sidebar-interview-name">
@@ -642,11 +638,11 @@ export default function Sidebar({
                                   interviewMenuRefs.current.delete(interviewMenuKey);
                                 }
                               }}
+                              onClick={(e) => handleInterviewMenuIconClick(e, jobListingId, interviewId)}
                             >
                               <button
                                 type="button"
                                 className="sidebar-menu-icon"
-                                onClick={(e) => handleInterviewMenuIconClick(e, jobListingId, interviewId)}
                                 aria-label="Menu"
                               >
                                 <span className="sidebar-menu-dots">
@@ -696,7 +692,7 @@ export default function Sidebar({
             onNewJobListing();
           }}
         >
-          <span className="sidebar-new-listing-text">+ New Listing</span>
+          <span className="sidebar-new-listing-text">+ New Job</span>
         </button>
       </nav>
     </aside>
