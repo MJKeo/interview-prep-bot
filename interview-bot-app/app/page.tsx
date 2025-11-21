@@ -13,8 +13,7 @@ import {
   type FileItem, 
   type InterviewTranscript,
   type JobListingWithId,
-  type SidebarSelection,
-  type JobListingInterview,
+  type AggregatedEvaluation,
 } from "@/types";
 import { isUserOnMobile } from "@/app/actions";
 import Sidebar from "@/components/sidebar";
@@ -41,6 +40,8 @@ export default function Home() {
   const [interviewGuide, setInterviewGuide] = useState<string | null>(null);
   // State to store the conversation messages when transitioning to perform analysis screen
   const [transcript, setTranscript] = useState<InterviewTranscript | null>(null);
+  // State to store aggregated evaluation for navigating to interviews that have already fully finished
+  const [aggregatedEvaluation, setAggregatedEvaluation] = useState<AggregatedEvaluation | null>(null);
   // State to track if the user is on a mobile device
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   // State to store the attached files when transitioning to research screen
@@ -167,7 +168,7 @@ export default function Home() {
     setAttachedFiles([]);
     setCurrentJobListing(null);
     setCurrentInterviewId(null);
-    console.log("Set aggregated to null here")
+    setAggregatedEvaluation(null);
   };
 
   /**
@@ -194,7 +195,7 @@ export default function Home() {
     setInterviewGuide(jobListing.data["interview-guide"]);
 
     setTranscript(null);
-    console.log("Set aggregated to null here")
+    setAggregatedEvaluation(null);
   }
 
   const handleSelectInterview = (jobListing: JobListingWithId, interviewId: string) => {
@@ -212,7 +213,7 @@ export default function Home() {
 
     // Update the transcript with the selected interview's data
     setTranscript(jobListing.data["interviews"]?.[interviewId]?.transcript ?? null);
-    console.log("TODO - 5678");
+    setAggregatedEvaluation(jobListing.data["interviews"]?.[interviewId]?.evaluation ?? null);
 
     setScreen(ScreenName.PerformAnalysis);
   };
@@ -283,7 +284,6 @@ export default function Home() {
   };
 
   const handleDeleteInterview = (jobListing: JobListingWithId, interviewId: string) => {
-    console.log("Before: ", jobListing.data.interviews);
     // Create a copy of the job listing with the interview removed
     const updatedJobListing: JobListingWithId = {
       ...jobListing,
@@ -301,7 +301,6 @@ export default function Home() {
         })(),
       },
     };
-    console.log("Before: ", updatedJobListing.data.interviews);
 
     // Save the updated job listing to the database
     saveJobListing(updatedJobListing)
@@ -317,6 +316,8 @@ export default function Home() {
 
         if (currentInterviewId === interviewId) {
           setCurrentInterviewId(null);
+          setTranscript(null);
+          setAggregatedEvaluation(null);
           setScreen(ScreenName.ResearchJob);
         }        
       })
@@ -368,9 +369,12 @@ export default function Home() {
             jobListingResearchResponse={jobListingParsedData}
             deepResearchReports={deepResearchReports}
             interviewGuide={interviewGuide}
-            currentJobListing={currentJobListing}
+            currentJobListing={currentJobListing!}
+            currentInterviewId={currentInterviewId!}
+            savedAggregatedEvaluation={aggregatedEvaluation}
             onNewMockInterview={() => handleNewMockInterview(currentJobListing!)}
             onNewJobListing={handleNewJobListing}
+            onCurrentListingUpdated={handleCurrentListingUpdated}
           />
         ) : null;
       default:

@@ -44,7 +44,15 @@ interface PerformAnalysisScreenProps {
    * Reference to the current job listing being explored.
    * Contains the job listing ID and full data structure.
    */
-  currentJobListing: JobListingWithId | null;
+  currentJobListing: JobListingWithId;
+  /**
+   * The ID of the current interview being explored.
+   */
+  currentInterviewId: string;
+  /**
+   * The aggregated evaluation for the current interview (if it was already calculated for this interview).
+   */
+  savedAggregatedEvaluation: AggregatedEvaluation | null;
   /**
    * Callback function to navigate back to the mock interview screen with a fresh conversation.
    * Called when the user confirms the "new mock interview" warning.
@@ -55,6 +63,11 @@ interface PerformAnalysisScreenProps {
    * Called when the user confirms the "new job listing" warning.
    */
   onNewJobListing: () => void;
+  /**
+   * Callback function called when the current job listing is updated.
+   * Used to save updated job listing data (e.g., deep research reports, interview guide) to the database.
+   */
+  onCurrentListingUpdated: () => void;
 }
 
 /**
@@ -231,10 +244,13 @@ export default function PerformAnalysisScreen({
   transcript, 
   jobListingResearchResponse,
   deepResearchReports,
-  interviewGuide,
   currentJobListing,
+  currentInterviewId,
+  interviewGuide,
+  savedAggregatedEvaluation,
   onNewMockInterview, 
-  onNewJobListing 
+  onNewJobListing,
+  onCurrentListingUpdated,
 }: PerformAnalysisScreenProps) {
   // State to control the visibility of the "new mock interview" warning modal
   const [showNewMockInterviewModal, setShowNewMockInterviewModal] = useState<boolean>(false);
@@ -315,13 +331,9 @@ export default function PerformAnalysisScreen({
     }
   };
 
-  /**
-   * Handler function for the "export results" button.
-   * Currently does nothing as per requirements.
-   */
-  const handleExportResults = () => {
-    // Placeholder for future export functionality
-  };
+  useEffect(() => {
+    console.log("currentJobListing", currentJobListing);
+  }, []);
 
   /**
    * Effect hook to fetch or use cached evaluation reports based on config.
@@ -336,25 +348,19 @@ export default function PerformAnalysisScreen({
       setError(null);
 
       try {
-        if (CONFIG.useCachedEvaluations) {
-          // Use cached evaluation reports (with type assertion to handle string literals)
-          setEvaluationReports(savedEvaluationReports as EvaluationReports);
-        } else {
-          
-          // Fetch evaluation reports from server action
-          const result = await performEvaluationsAction(
-            transcript,
-            jobListingResearchResponse,
-            deepResearchReports,
-            interviewGuide
-          );
+        // Fetch evaluation reports from server action
+        const result = await performEvaluationsAction(
+          transcript,
+          jobListingResearchResponse,
+          deepResearchReports,
+          interviewGuide
+        );
 
-          if (result.success && result.evaluations) {
-            console.log("result.evaluations", result.evaluations);
-            setEvaluationReports(result.evaluations);
-          } else {
-            setError(result.error || "Failed to fetch evaluation reports");
-          }
+        if (result.success && result.evaluations) {
+          console.log("result.evaluations", result.evaluations);
+          setEvaluationReports(result.evaluations);
+        } else {
+          setError(result.error || "Failed to fetch evaluation reports");
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
@@ -363,10 +369,10 @@ export default function PerformAnalysisScreen({
       }
     };
 
-    if (!isLoadingEvaluations) {
+    if (!savedAggregatedEvaluation && !isLoadingEvaluations) {
       fetchEvaluationReports();
     }
-  }, [transcript, jobListingResearchResponse, deepResearchReports, interviewGuide]);
+  }, [savedAggregatedEvaluation, transcript, jobListingResearchResponse, deepResearchReports, interviewGuide]);
 
   /**
    * Effect hook to fetch or use cached aggregated evaluation based on config.
@@ -386,24 +392,26 @@ export default function PerformAnalysisScreen({
       setError(null);
 
       try {
-        if (CONFIG.useCachedAggregatedEvaluations) {
-          // Use cached aggregated evaluation
-          setAggregatedEvaluation(savedAggregatedEvaluation as AggregatedEvaluation);
-        } else {
-          // Fetch aggregated evaluation from server action
-          const result = await performEvaluationAggregationAction(
-            evaluationReports,
-            transcript,
-            jobListingResearchResponse
-          );
+        // Fetch aggregated evaluation from server action
+        const result = await performEvaluationAggregationAction(
+          evaluationReports,
+          transcript,
+          jobListingResearchResponse
+        );
 
 
-          if (result.success && result.result) {
-            console.log("result.aggregated", result.result);
-            setAggregatedEvaluation(result.result);
-          } else {
-            setError(result.error || "Failed to fetch aggregated evaluation");
+        if (result.success && result.result) {
+          console.log("result.aggregated", result.result);
+          setAggregatedEvaluation(result.result);
+
+          // Update the current interview/listing
+          const interviewToUpdate = currentJobListing.data.interviews?.[currentInterviewId];
+          if (interviewToUpdate) {
+            interviewToUpdate.evaluation = result.result;
+            onCurrentListingUpdated();
           }
+        } else {
+          setError(result.error || "Failed to fetch aggregated evaluation");
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
@@ -412,10 +420,12 @@ export default function PerformAnalysisScreen({
       }
     };
 
-    if (!isLoadingAggregated) {
+    if (!savedAggregatedEvaluation && !isLoadingAggregated) {
       fetchAggregatedEvaluation();
+    } else if (savedAggregatedEvaluation) {
+      setAggregatedEvaluation(savedAggregatedEvaluation);
     }
-  }, [evaluationReports, jobListingResearchResponse]);
+  }, [savedAggregatedEvaluation, evaluationReports, jobListingResearchResponse]);
 
   return (
     <div className="perform-analysis-container">
@@ -499,9 +509,6 @@ export default function PerformAnalysisScreen({
         <div className="perform-analysis-buttons">
           <Button type="button" onClick={handleNewMockInterview}>
             new mock interview
-          </Button>
-          <Button type="button" onClick={handleExportResults}>
-            export results
           </Button>
           <Button type="button" onClick={handleNewJobListing}>
             new job listing

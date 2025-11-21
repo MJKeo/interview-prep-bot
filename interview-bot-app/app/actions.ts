@@ -15,11 +15,18 @@ import type {
   DeepResearchReports, 
   EvaluationReports, 
   InterviewTranscript, 
-  FileItem 
+  FileItem,
+  AggregatedEvaluation,
 } from '@/types';
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import CONFIG from "@/app/config";
-import { savedJobParseResponse, savedDeepResearchReports, savedInterviewGuide } from "@/app/saved-responses";
+import { 
+  savedJobParseResponse, 
+  savedDeepResearchReports, 
+  savedInterviewGuide,
+  savedEvaluationReports,
+  savedAggregatedEvaluation,
+} from "@/app/saved-responses";
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { headers } from 'next/headers';
@@ -211,6 +218,10 @@ export async function performEvaluationsAction(
   interview_guideline: string
 ) {
   try {
+    if (CONFIG.useCachedEvaluations) {
+      await new Promise(r => setTimeout(r, 1500));
+      return { success: true, evaluations: savedEvaluationReports as EvaluationReports };
+    }
     // Call the performEvaluations function - this runs on the server where process.env is available
     const evaluations = await performEvaluations(
       transcript,
@@ -245,6 +256,11 @@ export async function performEvaluationAggregationAction(
   jobListingData: JobListingResearchResponse
 ) {
   try {
+    if (CONFIG.useCachedAggregatedEvaluations) {
+      await new Promise(r => setTimeout(r, 1500));
+      return { success: true, result: savedAggregatedEvaluation as AggregatedEvaluation };
+    }
+
     // Call the performEvaluationAggregation function - this runs on the server where process.env is available
     const result = await performEvaluationAggregation(
       evaluations,
