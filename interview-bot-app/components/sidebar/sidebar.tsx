@@ -492,6 +492,11 @@ export default function Sidebar({
           App Name
         </h1>
       </div>
+      {jobListings.length > 0 && (
+        <h2 className="sidebar-subtitle">
+          My Saved Jobs
+        </h2>
+      )}
       <nav className="sidebar-nav">
         <ul className="sidebar-list">
           {jobListings.map((jobListing) => {

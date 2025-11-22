@@ -2,7 +2,7 @@
 
 /* Base sidebar container - fixed width, full height, positioned on left */
 .sidebar {
-  width: 280px;
+  width: 20rem;
   height: 100vh;
   background-color: var(--color-ink-black);
   /* border-right: 1px solid var(--color-ink-black); */
@@ -15,23 +15,39 @@
 
 /* Sidebar header container */
 .sidebar-header {
-  padding: 1.5rem 1rem 0rem 1.25rem;
+  padding: 1.65rem 1.1rem 0rem 1.375rem;
   cursor: pointer;
 }
 
 /* Sidebar title - App Name label */
 .sidebar-title {
+  color: white;
   margin: 0;
+  margin-bottom: 1.1rem;
   padding: 0;
-  color: var(--color-text-on-media);
-  font-size: 1.5rem;
+  font-size: 1.65rem;
   font-weight: 700;
   transition: opacity 0.15s ease-in-out;
 }
 
+/* Sidebar subtitle - My Saved Jobs label */
+.sidebar-subtitle {
+  color: #657187;
+  margin: 0;
+  margin-top: 2.2rem;
+  padding: 0 1.1rem 0.55rem 1.375rem;
+  font-size: 1.32rem;
+  font-weight: 500;
+  position: relative;
+}
+
+.sidebar-subtitle:hover {
+  cursor: default;
+}
+
 /* Navigation container within sidebar */
 .sidebar-nav {
-  padding: 1rem 0; /* vertical padding */
+  padding: 0; /* vertical padding */
 }
 
 /* Main list container */
@@ -46,7 +62,7 @@
   margin: 0;
   padding: 0;
   position: relative;
-  font-size: 0.9rem;
+  font-size: 0.99rem;
 }
 
 /* Divider line between job listings - inset with padding */
@@ -54,8 +70,8 @@
   content: "";
   position: absolute;
   bottom: 0;
-  left: 1rem;
-  right: 1rem;
+  left: 1.1rem;
+  right: 1.1rem;
   height: 1px;
   background-color: rgba(255, 255, 255, 0.1);
 }
@@ -83,12 +99,12 @@
 /* Job listing display name - takes up remaining space */
 .sidebar-job-listing-name {
   flex: 1;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 0.35rem;
-  padding-right: 0.35rem;
+  padding-top: 0.825rem;
+  padding-bottom: 0.825rem;
+  padding-left: 0.385rem;
+  padding-right: 0.385rem;
   cursor: pointer;
-  font-weight: 590;
+  font-weight: 500;
   display: flex;
   align-items: center;
   background: transparent; /* Allow parent background to show through */
@@ -102,11 +118,11 @@
 
 /* Expand/collapse button - full height with 8px horizontal padding */
 .sidebar-expand-button {
-  width: 2rem;
+  width: 2.2rem;
   padding-top: 0;
   padding-bottom: 0;
-  padding-left: 1rem;
-  padding-right: 0.65rem;
+  padding-left: 1.1rem;
+  padding-right: 0.715rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,7 +130,7 @@
   border: none;
   color: inherit;
   cursor: pointer;
-  font-size: 0.65rem;
+  font-size: 0.715rem;
   flex-shrink: 0;
 }
 
@@ -125,13 +141,13 @@
   align-items: stretch; /* Stretch to fill full height */
   flex-shrink: 0;
   background: transparent; /* Allow parent background to show through */
-  padding-right: 0.5rem;
-  padding-left: 0.25rem;
+  padding-right: 0.55rem;
+  padding-left: 0.275rem;
 }
 
 .sidebar-interview-item .sidebar-menu-container {
-  padding-top: 0.625rem;
-  padding-bottom: 0.625rem;
+  padding-top: 0.6875rem;
+  padding-bottom: 0.6875rem;
   margin: 0;
 }
 
@@ -139,8 +155,8 @@
 .sidebar-menu-icon {
   padding-top: 0;
   padding-bottom: 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.55rem;
+  padding-right: 0.55rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,13 +174,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem; /* Space between dots */
+  gap: 0.275rem; /* Space between dots */
 }
 
 /* Individual dot styling */
 .sidebar-menu-dot {
-  width: 0.25rem;
-  height: 0.25rem;
+  width: 0.275rem;
+  height: 0.275rem;
   border-radius: 50%;
   background-color: currentColor; /* Inherit text color */
   display: block;
@@ -172,19 +188,19 @@
 
 /* Interview menu icon - 15% smaller than job listing menu icon */
 .sidebar-interview .sidebar-menu-icon {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.55rem;
+  padding-right: 0.55rem;
 }
 
 /* Interview menu dots - 15% smaller gap */
 .sidebar-interview .sidebar-menu-dots {
-  gap: 0.20rem;
+  gap: 0.22rem;
 }
 
 /* Interview menu dots - 15% smaller dot size */
 .sidebar-interview .sidebar-menu-dot {
-  width: 0.20rem;
-  height: 0.20rem;
+  width: 0.22rem;
+  height: 0.22rem;
 }
 
 /* Tooltip menu dropdown */
@@ -194,12 +210,12 @@
   right: 0; /* Align to right edge of menu icon */
   background-color: white;
   border: 1px solid #c3c3c3; /* Thistle border */
-  border-radius: 0.25rem;
+  border-radius: 0.275rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000; /* Ensure it appears above other content */
   width: fit-content; /* Grow based on content */
   min-width: fit-content; /* Ensure it fits content */
-  margin-top: -0.25rem;
+  margin-top: -0.275rem;
   overflow: hidden; /* Clip button backgrounds to rounded corners */
 }
 
@@ -207,13 +223,13 @@
 .sidebar-menu-button {
   display: block;
   width: 100%;
-  padding: 0.625rem 1rem;
+  padding: 0.6875rem 1.1rem;
   text-align: left;
   background: none;
   border: none;
   color: #344055; /* Charcoal Blue text */
   cursor: pointer;
-  font-size: 0.8125rem; /* Smaller font size */
+  font-size: 0.89375rem; /* Smaller font size */
   white-space: nowrap; /* Keep button text on one line */
   transition: background-color 0.15s ease-in-out; /* Smooth hover transition */
 }
@@ -241,14 +257,14 @@
   background-color: var(--color-vintage-grape);
   display: flex;
   align-items: center;
-  padding-left: 2.4rem;
+  padding-left: 2.64rem;
   border-top: 0.5px solid var(--color-vintage-grape);
   border-bottom: 0.5px solid var(--color-vintage-grape);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
   color: var(--color-text-on-media);
   font-weight: 500;
-  font-size: 0.9375rem; /* slightly smaller font */
+  font-size: 1.03125rem; /* slightly smaller font */
   position: relative;
 }
 
@@ -257,8 +273,8 @@
   content: "";
   position: absolute;
   bottom: 0;
-  left: 1.25rem;
-  right: 1.25rem;
+  left: 1.375rem;
+  right: 1.375rem;
   height: 1px;
   background-color: rgba(255, 255, 255, 0.1);
 }
@@ -278,10 +294,10 @@
 /* Interview display name */
 .sidebar-interview-name {
   flex: 1;
-  padding-top: 0.625rem;
-  padding-bottom: 0.625rem;
-  padding-left: 0.35rem;
-  padding-right: 0.35rem;
+  padding-top: 0.6875rem;
+  padding-bottom: 0.6875rem;
+  padding-left: 0.385rem;
+  padding-right: 0.385rem;
 }
 
 /* Textarea field for editing interview name - matches regular text appearance */
@@ -293,16 +309,16 @@
   color: inherit;
   font-family: inherit;
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 1.03125rem;
   width: 100%;
-  padding-top: 0.625rem;
-  padding-bottom: 0.625rem;
-  padding-left: 0.35rem;
-  padding-right: 0.35rem;
+  padding-top: 0.6875rem;
+  padding-bottom: 0.6875rem;
+  padding-left: 0.385rem;
+  padding-right: 0.385rem;
   resize: none; /* Disable manual resize handle */
   overflow: hidden; /* Hide scrollbar as content grows */
-  min-height: 1.5rem; /* Minimum height to match single line */
-  line-height: 1.5; /* Match line height for consistent appearance */
+  min-height: 1.65rem; /* Minimum height to match single line */
+  line-height: 1.65; /* Match line height for consistent appearance */
 }
 
 /* Hover state for interview name input - black background when parent is hovered */
@@ -318,10 +334,10 @@
 /* Textarea field for editing job listing name - matches regular text appearance */
 .sidebar-job-listing-name-input {
   flex: 1;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 0.35rem;
-  padding-right: 0.35rem;
+  padding-top: 0.825rem;
+  padding-bottom: 0.825rem;
+  padding-left: 0.385rem;
+  padding-right: 0.385rem;
   font-weight: 590;
   background-color: rgba(255, 255, 255, 0.1);
   border: none;
@@ -332,8 +348,8 @@
   width: 100%;
   resize: none; /* Disable manual resize handle */
   overflow: hidden; /* Hide scrollbar as content grows */
-  min-height: 1.5rem; /* Minimum height to match single line */
-  line-height: 1.5; /* Match line height for consistent appearance */
+  min-height: 1.65rem; /* Minimum height to match single line */
+  line-height: 1.65; /* Match line height for consistent appearance */
 }
 
 /* Hover state for job listing name input - black background when parent is hovered */
@@ -374,12 +390,13 @@
 /* Text element inside the button - matches .sidebar-job-listing-name styles exactly */
 .sidebar-new-listing-text {
   flex: 1;
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-  padding-left: 1.5rem;
-  padding-right: 0.5rem;
+  padding-top: 1.375rem;
+  padding-bottom: 1.375rem;
+  padding-left: 1.65rem;
+  padding-right: 0.55rem;
   cursor: pointer;
   font-weight: 600;
+  font-size: 1.15rem;
   display: flex;
   align-items: center;
   background: transparent;
