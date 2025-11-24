@@ -46,7 +46,7 @@ import { UAParser } from "ua-parser-js";
 export async function scrapeJobListingAction(url: string) {
   try {
     if (CONFIG.useCachedScrape) {
-      await new Promise(r => setTimeout(r, 6000));
+      await new Promise(r => setTimeout(r, 15000));
       return { success: true, content: "Cached data" };
     }
     // Call the scrape function - this runs on the server where process.env is available
@@ -74,7 +74,7 @@ export async function parseJobListingAttributesAction(jobListingScrapeContent: s
   try {
     if (CONFIG.useCachedListingAttributes) {
       console.log("SCRAPE START")
-      await new Promise(r => setTimeout(r, 6000));
+      await new Promise(r => setTimeout(r, 13000));
       console.log("SCRAPE DONE")
       return { success: true, data: savedJobParseResponse };
     }

@@ -7,9 +7,10 @@ import { ButtonType } from "@/types";
 import { parseJobListingAttributesAction, scrapeJobListingAction } from "@/app/actions";
 import { isValidURL } from "@/utils/utils";
 import { APP_NAME, HOW_THIS_WORKS_POPUP_CONTENT } from "@/utils/constants";
-import AttachFiles from "@/components/attach-files/attach-files";
+import AttachFiles from "@/components/attach-files";
 import { FileItem, FileStatus, type JobListingResearchResponse } from "@/types";
 import ScreenPopup from "@/components/screen-popup";
+import LoadingBar from "@/components/loading-bar";
 
 /**
  * Props for the EnterJobListingUrlScreen component.
@@ -35,8 +36,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   const [url, setUrl] = useState("");
   // State for loading status
   const [isLoading, setIsLoading] = useState(false);
-  // State for displaying loading progress
-  const [loadingPhase, setLoadingPhase] = useState<string | null>(null);
   // State for loading status
   const [isScraping, setIsScraping] = useState(false);
   // State for scraped job listing website content
@@ -51,8 +50,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   const [isSkipAttachingFiles, setIsSkipAttachingFiles] = useState(false);
   // State for controlling the visibility of the "How this works" popup
   const [isHowItWorksPopupOpen, setIsHowItWorksPopupOpen] = useState(false);
-  // Ref to track the current loadingPhase value for the interval callback
-  const loadingPhaseRef = useRef<string | null>(null);
 
   useEffect(() => {
     // Check if any files have a status other than SUCCESS or SAVED
@@ -75,42 +72,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   }, [url, attachedFiles, isScraping, isSkipAttachingFiles]);
 
   /**
-   * Effect hook that syncs the loadingPhase ref with the loadingPhase state.
-   * This allows the interval callback to access the current value without causing re-renders.
-   */
-  useEffect(() => {
-    loadingPhaseRef.current = loadingPhase;
-  }, [loadingPhase]);
-
-  /**
-   * Effect hook that adds a "." to loadingPhase every second while isLoading is true.
-   * Only modifies loadingPhase if it is not null.
-   */
-  useEffect(() => {
-    // Don't do anything if isLoading is false
-    if (!isLoading) {
-      return;
-    }
-
-    // Set up an interval to append a "." every second
-    const intervalId = setInterval(() => {
-      // Check the current value from the ref (without causing re-render)
-      const currentPhase = loadingPhaseRef.current;
-      
-      // Only modify if the phase is not null
-      if (currentPhase !== null) {
-        // Append a "." to the current loading phase
-        setLoadingPhase(currentPhase + ".");
-      }
-    }, 1000);
-
-    // Clean up the interval when isLoading becomes false or component unmounts
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isLoading]);
-
-  /**
    * Effect hook that runs when the component mounts or when jobListingScrapeContent changes.
    * Calls the server action to parse the job listing attributes.
    */
@@ -126,7 +87,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         }
 
         setIsParsingAttributes(true);
-        setLoadingPhase("Extracting job listing attributes...");
 
         // Call the server action to parse the job listing attributes
         const result = await parseJobListingAttributesAction(scrapedJobListingWebsiteContent);
@@ -176,7 +136,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
     // Reset error and set loading state
     setError(null);
     setIsScraping(true);
-    setLoadingPhase("Fetching job listing website content...");
     setIsLoading(true);
 
     try {
@@ -293,8 +252,35 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         {/* Display error message if something went wrong */}
         {error && <div className="error-message">{error}</div>}
 
-        {/* Display loading phase if it is set */}
-        {loadingPhase && <div className="url-loading-phase">{loadingPhase}</div>}
+        {/* Show loading bar while we're scraping the website */}
+        {isScraping && <div className="loading-bar-container">
+          <LoadingBar timeToLoad={12} waitingMessages={[
+              "Fetching job listing content...",
+              "Analyzing page structure and requirements...",
+              "Retrieving job details from the URL...",
+              "Reading through the fine print so you don't have to...",
+              "Solving captchas...",
+              "Hacking into the mainframe...",
+            ]} 
+          />
+        </div>}
+
+        {/* Show loading bar for extracting job listing content */}
+        {isParsingAttributes && 
+          <div className="loading-bar-container">
+            <p className="finished-fetching-website-content-text">Finished fetching website content</p>
+            <LoadingBar timeToLoad={6} waitingMessages={[
+                "Extracting job title and location...",
+                "Parsing job description and work schedule...",
+                "Identifying company name and key details...",
+                "Extracting expectations and responsibilities...",
+                "Parsing requirements from the job listing...",
+                "Cleaning off the dust...",
+                "Seeing what twitter has to say about this...",
+              ]} 
+            />
+          </div>
+        }
 
         <div className="attach-files-wrapper">
           <AttachFiles 

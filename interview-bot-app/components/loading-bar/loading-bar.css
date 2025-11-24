@@ -1,0 +1,80 @@
+/* Styles for the LoadingBar component */
+
+/* Main container for the loading bar */
+.loading-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Container for the message label */
+.loading-bar__message-container {
+  position: relative;
+  height: 1.5rem; /* Fixed height to prevent layout shift during transitions */
+  overflow: hidden;
+}
+
+/* Message label - left-aligned, secondary text, 1rem font */
+.loading-bar__message {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5rem;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Fade out animation */
+.loading-bar__message--fade-out {
+  opacity: 0;
+}
+
+/* Fade in animation */
+.loading-bar__message--fade-in {
+  opacity: 1;
+}
+
+/* Progress bar container - full width, rounded corners, medium height */
+.loading-bar__progress-container {
+  width: 100%;
+  height: 0.75rem; /* 12px - medium height */
+  background-color: var(--color-white-smoke);
+  border-radius: 0.375rem; /* rounded corners */
+  overflow: hidden;
+  position: relative;
+}
+
+/* Progress bar fill - vintage-grape colored with shimmer effect */
+.loading-bar__progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: var(--color-vintage-grape);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 0.375rem;
+  transition: width ease-out; /* Ease-out timing for logarithmic-like deceleration */
+  animation: shimmer 2s linear infinite;
+}
+
+/* Active state - animates to 90% width */
+.loading-bar__progress-fill--active {
+  width: 90%;
+}
+
+/* Shimmer animation - moves the gradient across the progress bar seamlessly */
+@keyframes shimmer {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
