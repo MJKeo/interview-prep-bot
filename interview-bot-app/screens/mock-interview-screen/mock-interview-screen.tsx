@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import "./mock-interview-screen.css";
 import Button from "@/components/button";
+import { ButtonType } from "@/types";
 import { generateNextInterviewMessageAction } from "@/app/actions";
 import CONFIG from "@/app/config";
 import type { JobListingResearchResponse, InterviewTranscript, JobListingWithId } from "@/types";
@@ -305,16 +306,16 @@ export default function MockInterviewScreen({
               }
             }}
           />
-          <Button type="button" onClick={handleSendUserMessage} disabled={isGenerating}>
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleSendUserMessage} disabled={isGenerating}>
             {isGenerating ? "Generating response..." : "Send"}
           </Button>
         </div>
         {/* Other buttons centered below */}
         <div className="mock-interview-buttons">
-          <Button type="button" onClick={handleStartOver} disabled={isGenerating || messages.length === 0}>
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleStartOver} disabled={isGenerating || messages.length === 0}>
             Start Over
           </Button>
-          <Button type="button" onClick={handlePerformFinalReview} disabled={isGenerating || (!CONFIG.bypassMockInterview && messages.length <= 3)}>
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handlePerformFinalReview} disabled={isGenerating || (!CONFIG.bypassMockInterview && messages.length <= 3)}>
             Perform Final Review
           </Button>
         </div>
@@ -328,10 +329,10 @@ export default function MockInterviewScreen({
               Hey, continuing on to the final review will end the conversation and you can't go back.
             </p>
             <div className="modal-buttons">
-              <Button type="button" onClick={handleCloseModal}>
+              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleCloseModal}>
                 cancel
               </Button>
-              <Button type="button" onClick={handleConfirmFinalReview}>
+              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleConfirmFinalReview}>
                 confirm
               </Button>
             </div>

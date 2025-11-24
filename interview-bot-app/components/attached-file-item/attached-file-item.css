@@ -2,109 +2,110 @@
 .attached-file-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid rgb(229 231 235); /* border-gray-200 */
-  border-radius: 0.375rem; /* rounded-md */
-  background-color: rgb(249 250 251); /* bg-gray-50 */
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
 }
 
-/* Status icons (checkmark, exclamation, and spinner) */
+/* Status icon styles */
 .status-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  font-size: 0.875rem;
-  font-weight: bold;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Success status - green circular badge with checkmark */
-.success-icon {
-  color: rgb(34 197 94); /* text-green-600 */
-  background-color: rgb(220 252 231); /* bg-green-100 */
-}
-
-/* Error status - red circular badge with exclamation */
-.error-icon {
-  color: rgb(239 68 68); /* text-red-600 */
-  background-color: rgb(254 226 226); /* bg-red-100 */
-}
-
-/* Loading status - spinning circular animation */
-.loading-spinner {
-  border: 2px solid rgb(229 231 235); /* border-gray-200 */
-  border-top: 2px solid rgb(107 114 128); /* border-gray-500 */
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  background-color: transparent;
-}
-
-/* Spinning animation for loading indicator */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Container for file name and error message - vertical stack */
-.file-info {
-  flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-/* File name text - black color */
-.file-name {
-  font-size: 0.875rem;
-  color: rgb(17 24 39); /* text-gray-900 */
-  word-break: break-word;
-}
-
-/* Error message displayed below file name - red color */
-.error-message {
-  font-size: 0.75rem;
-  color: rgb(239 68 68); /* text-red-600 */
-  word-break: break-word;
-}
-
-/* Delete button for removing files from the list */
-.delete-button {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  padding: 0;
-  margin-left: auto;
-  border: none;
-  border-radius: 0.25rem;
-  background-color: transparent;
-  color: rgb(107 114 128); /* text-gray-500 */
-  font-size: 1.25rem;
+  border-radius: 50%;
+  font-size: 0.875rem;
   font-weight: bold;
-  line-height: 1;
-  cursor: pointer;
-  transition: color 0.2s, background-color 0.2s;
   flex-shrink: 0;
 }
 
-/* Hover state for delete button */
+.success-icon {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.error-icon {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+/* Loading spinner animation */
+.loading-spinner {
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* File info container */
+.file-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* Allows text truncation to work */
+}
+
+.file-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Button styles */
+.remove-button,
+.delete-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.remove-button {
+  color: rgb(245 158 11); /* text-amber-500 */
+}
+
+.remove-button:hover {
+  color: rgb(217 119 6); /* text-amber-600 */
+  background-color: rgb(254 243 199); /* bg-amber-100 */
+}
+
+.delete-button {
+  color: #9ca3af;
+}
+
 .delete-button:hover {
-  color: rgb(239 68 68); /* text-red-600 */
-  background-color: rgb(254 226 226); /* bg-red-100 */
+  color: #dc2626;
+  background-color: #fee2e2;
 }
-
-/* Focus state for accessibility */
-.delete-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgb(59 130 246); /* focus:ring-2 focus:ring-blue-500 */
-}
-

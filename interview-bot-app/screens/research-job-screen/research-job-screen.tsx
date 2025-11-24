@@ -7,6 +7,7 @@ import "./research-job-screen.css";
 import { parseJobListingAttributesAction, performDeepResearchAndContextDistillationAction, createInterviewGuideAction } from "@/app/actions";
 import type { JobListingResearchResponse, DeepResearchReports, FileItem, JobListingWithId } from "@/types";
 import Button from "@/components/button";
+import { ButtonType } from "@/types";
 
 /**
  * Props for the ResearchJobScreen component.
@@ -247,7 +248,8 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         {hasCompletedResearch && deepResearchAndContextDistillationReports && interviewGuide && (
           <div className="button-section">
             <Button 
-              type="button" 
+              htmlType="button"
+              type={ButtonType.PRIMARY}
               onClick={() => onStartMockInterview(deepResearchAndContextDistillationReports, interviewGuide)}
             >
               start mock interview

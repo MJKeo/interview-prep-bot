@@ -16,6 +16,7 @@ import type {
   JobListingWithId
 } from "@/types";
 import Button from "@/components/button";
+import { ButtonType } from "@/types";
 import CONFIG from "@/app/config";
 import { performEvaluationsAction, performEvaluationAggregationAction } from "@/app/actions";
 
@@ -507,10 +508,10 @@ export default function PerformAnalysisScreen({
 
         {/* Action buttons section */}
         <div className="perform-analysis-buttons">
-          <Button type="button" onClick={handleNewMockInterview}>
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleNewMockInterview}>
             new mock interview
           </Button>
-          <Button type="button" onClick={handleNewJobListing}>
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleNewJobListing}>
             new job listing
           </Button>
         </div>
@@ -527,10 +528,10 @@ export default function PerformAnalysisScreen({
               Hey, if you start a new interview your current evaluation will be deleted.
             </p>
             <div className="modal-buttons">
-              <Button type="button" onClick={handleCloseNewMockInterviewModal}>
+              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleCloseNewMockInterviewModal}>
                 cancel
               </Button>
-              <Button type="button" onClick={handleConfirmNewMockInterview}>
+              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleConfirmNewMockInterview}>
                 confirm
               </Button>
             </div>
@@ -549,10 +550,10 @@ export default function PerformAnalysisScreen({
               Hey, you will lose all your progress so you better save.
             </p>
             <div className="modal-buttons">
-              <Button type="button" onClick={handleCloseNewJobListingModal}>
+              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleCloseNewJobListingModal}>
                 cancel
               </Button>
-              <Button type="button" onClick={handleConfirmNewJobListing}>
+              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleConfirmNewJobListing}>
                 confirm
               </Button>
             </div>

@@ -1,0 +1,219 @@
+/* Styles for the ScreenPopup component */
+
+/* Overlay backdrop - covers main content area (excluding sidebar), dark semi-transparent background */
+.screen-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width); /* Start after the sidebar */
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* High z-index to appear above other content */
+}
+
+/* Main popup container - centered, white smoke background, rounded corners */
+.screen-popup-container {
+  background-color: var(--color-white-smoke); /* White smoke background */
+  border-radius: 0.5rem; /* Slightly rounded corners */
+  padding: 1.5rem;
+  max-width: 90%; /* Maximum 90% of parent width */
+  max-height: 90%; /* Maximum 90% of parent height */
+  display: flex;
+  flex-direction: column; /* Vertical layout: header, content, footer */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Subtle shadow */
+  overflow: hidden; /* Prevent content from overflowing rounded corners */
+}
+
+/* Header section - contains the close button */
+.screen-popup-header {
+  display: flex;
+  justify-content: flex-end; /* Align close button to the right */
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+/* Close button (X) - positioned in top right */
+.screen-popup-close-button {
+  margin: -1rem -1rem 0rem 0;
+  background: none;
+  border: none;
+  font-size: 1.75rem; /* Large X character */
+  line-height: 1;
+  color: var(--color-text-secondary); /* Secondary text color */
+  cursor: pointer;
+  padding: 0.25rem 0.5rem; /* Padding for clickable area */
+  transition: color 0.15s ease-in-out; /* Smooth color transition */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover state for close button */
+.screen-popup-close-button:hover {
+  color: var(--color-text-primary); /* Darker color on hover */
+}
+
+/* Focus state for close button - accessibility */
+.screen-popup-close-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Focus ring */
+}
+
+/* Content area - scrollable markdown content */
+.screen-popup-content {
+  flex: 1; /* Take up remaining space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  padding: 0 1.5rem; /* Horizontal padding */
+  min-height: 0; /* Allow flex item to shrink below content size */
+  /* Firefox scrollbar styling - hide by default */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease; /* Smooth fade transition */
+}
+
+/* Show scrollbar in Firefox when scrolling */
+.screen-popup-content-scrolling {
+  scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05); /* thumb track */
+}
+
+/* Markdown content styling - appropriate size for popup */
+.screen-popup-markdown {
+  padding-bottom: 1rem; /* Vertical padding */
+}
+
+/* Markdown typography within popup - smaller, more compact sizing */
+.screen-popup-markdown h1 {
+  font-size: 1.5rem; /* Smaller than default markdown h1 */
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+  color: var(--color-text-primary);
+}
+
+.screen-popup-markdown h2 {
+  font-size: 1.25rem; /* Smaller than default markdown h2 */
+  font-weight: 600;
+  margin: 0.875rem 0 0.5rem;
+  color: var(--color-text-primary);
+}
+
+.screen-popup-markdown h3 {
+  font-size: 1.125rem; /* Smaller than default markdown h3 */
+  font-weight: 600;
+  margin: 0.75rem 0 0.375rem;
+  color: var(--color-text-primary);
+}
+
+.screen-popup-markdown p {
+  font-size: 0.9375rem; /* 15px - readable but compact */
+  line-height: 1.6;
+  margin: 0.5rem 0;
+  color: var(--color-text-primary);
+}
+
+.screen-popup-markdown ul,
+.screen-popup-markdown ol {
+  margin-left: 1rem;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.screen-popup-markdown ul {
+  list-style: disc;
+}
+
+.screen-popup-markdown ol {
+  list-style: decimal;
+}
+
+.screen-popup-markdown li {
+  font-size: 0.9375rem; /* 15px - matches paragraph size */
+  line-height: 1.6;
+  margin: 0.25rem 0;
+  color: var(--color-text-primary);
+}
+
+.screen-popup-markdown code {
+  font-size: 0.875rem; /* 14px - slightly smaller for code */
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.screen-popup-markdown pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+
+.screen-popup-markdown pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.screen-popup-markdown blockquote {
+  border-left: 3px solid var(--color-slate-grey);
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.screen-popup-markdown a {
+  color: rgb(37 99 235); /* Blue link color */
+  text-decoration: underline;
+}
+
+.screen-popup-markdown a:hover {
+  color: rgb(29 78 216); /* Darker blue on hover */
+}
+
+/* Footer section - contains action buttons */
+.screen-popup-footer {
+  display: flex;
+  flex-direction: row; /* Horizontal button layout */
+  justify-content: center; /* Center buttons horizontally */
+  align-items: center;
+  gap: 0.75rem; /* Space between buttons */
+  padding: 1rem 1.5rem; /* Padding around footer */
+  padding-bottom: 0;
+  flex-shrink: 0; /* Prevent footer from shrinking */
+  border-top: 1px solid rgba(0, 0, 0, 0.1); /* Subtle top border */
+}
+
+/* Custom scrollbar styling for better aesthetics */
+/* Hide scrollbar by default */
+.screen-popup-content::-webkit-scrollbar {
+  width: 8px; /* Narrow scrollbar */
+}
+
+.screen-popup-content::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track when hidden */
+  border-radius: 4px;
+  transition: background 0.3s ease; /* Smooth fade transition */
+}
+
+.screen-popup-content::-webkit-scrollbar-thumb {
+  background: transparent; /* Transparent thumb when hidden */
+  border-radius: 4px;
+  transition: background 0.3s ease; /* Smooth fade transition */
+}
+
+.screen-popup-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3); /* Darker on hover */
+}
+
+/* Show scrollbar when scrolling */
+.screen-popup-content-scrolling::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05); /* Light track when visible */
+}
+
+.screen-popup-content-scrolling::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* Semi-transparent thumb when visible */
+}
+

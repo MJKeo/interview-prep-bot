@@ -6,7 +6,10 @@ import { parseFile, supportedFileTypes } from "@/utils/file-parser";
 import { FileStatus, type FileItem, type UploadedFileItem } from "@/types";
 import AttachedFileItem from "@/components/attached-file-item";
 import SavedFileItem from "@/components/saved-file-item";
+import InfoButton from "@/components/info-button";
+import ScreenPopup from "@/components/screen-popup";
 import { fetchAllSavedFiles, saveUploadedFile, deleteSavedFileItem } from "@/utils/local-database";
+import { ATTACH_FILES_INFO_POPUP_CONTENT } from "@/utils/constants";
 
 /**
  * Props for the AttachFiles component.
@@ -17,6 +20,11 @@ interface AttachFilesProps {
      * Receives the current array of attached file items.
      */
     attachedFilesDidChange?: (fileItems: FileItem[]) => void;
+    /**
+     * Callback function called whenever the "skip attaching files" checkbox state changes.
+     * Receives the current boolean value indicating whether files are skipped.
+     */
+    skipStatusDidChange?: (isSkipped: boolean) => void;
 }
 
 /**
@@ -24,9 +32,12 @@ interface AttachFilesProps {
  * Displays a vertical stack with a file input and a label for existing files.
  * @param props Component props including optional callback for when attached files change
  */
-export default function AttachFiles({ attachedFilesDidChange }: AttachFilesProps = {}) {
+export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChange }: AttachFilesProps = {}) {
     const [attachedFileItems, setAttachedFileItems] = useState<FileItem[]>([]);
     const [savedFileItems, setSavedFileItems] = useState<FileItem[]>([]);
+    const [isSkipped, setIsSkipped] = useState(false);
+    const [showInfoPopup, setShowInfoPopup] = useState(false);
+    
     // Ref to the file input element to reset its value after deletion
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -49,6 +60,13 @@ export default function AttachFiles({ attachedFilesDidChange }: AttachFilesProps
             attachedFilesDidChange(attachedFileItems);
         }
     }, [attachedFileItems]);
+
+    // Call the callback whenever isSkipped changes
+    useEffect(() => {
+        if (skipStatusDidChange) {
+            skipStatusDidChange(isSkipped);
+        }
+    }, [isSkipped]);
 
     const saveFileItem = async (fileItem: FileItem) => {
         try {
@@ -138,7 +156,7 @@ export default function AttachFiles({ attachedFilesDidChange }: AttachFilesProps
                 fileName: file.name,
                 status: FileStatus.LOADING,
                 errorMessage: undefined,
-              }));
+            }));
 
             return [...prev, ...uniqueNewFileItems];
         });
@@ -236,58 +254,96 @@ export default function AttachFiles({ attachedFilesDidChange }: AttachFilesProps
 
     return (
         <div className="attach-file-container">
-        <div className="attach-file-stack">
-            <h1>Attached Files</h1>
-            {/* List of attached files */}
-            {attachedFileItems.map((item) => (
-                item.status === FileStatus.SAVED ? (
-                    <SavedFileItem
-                        key={item.id}
-                        fileItem={item}
-                        isAttached={true}
-                        attachSavedFileItem={handleAttachSavedFileItem}
-                        removeSavedFileItemFromAttached={handleRemoveSavedFileItemFromAttached}
-                        deleteSavedFileItem={() => handleDeleteFile(item)}
-                    />
-                ) : (
-                    <AttachedFileItem
-                        key={item.id}
-                        fileItem={item}
-                        deleteFileItem={() => handleDeleteFile(item)}
-                    />
-                )
-            ))}
-            {/* File input component for uploading new files */}
-            <label className="attach-file-input-label">
-            <input
-                ref={fileInputRef}
-                className="attach-file-input"
-                type="file"
-                accept={supportedFileTypes}
-                onChange={handleFileChange}
-                multiple={true}
-                aria-label="Upload a new file"
-            />
-            <span className="attach-file-input-text">Upload a new file</span>
-            </label>
-            <p className="file-size-note">Note: Uploaded files must be under 10MB each</p>
-            
-            {/* Label for choosing existing files */}
-            {savedFileItems.length > 0 && <p className="attach-file-existing-label">
-            Or choose one of your existing files
-            </p>}
-            {/* List of saved files */}
-            {savedFileItems.map((item) => (
-                <SavedFileItem
-                    key={item.id}
-                    fileItem={item}
-                    isAttached={false}
-                    attachSavedFileItem={handleAttachSavedFileItem}
-                    removeSavedFileItemFromAttached={handleRemoveSavedFileItemFromAttached}
-                    deleteSavedFileItem={() => handleDeleteFile(item)}
+            <div className="attach-file-header">
+                <p className="attach-file-header-text">Attach career files for better results</p>
+                <InfoButton 
+                    tooltip="Attaching files helps the AI personalize the interview guide." 
+                    onClick={() => setShowInfoPopup(true)}
                 />
-            ))}
-        </div>
+                
+                <label className="skip-checkbox-label">
+                    <input 
+                        type="checkbox" 
+                        className="skip-checkbox"
+                        checked={isSkipped}
+                        onChange={(e) => setIsSkipped(e.target.checked)}
+                    />
+                    Skip attaching files
+                </label>
+            </div>
+
+            {!isSkipped && (
+                <div className="file-lists-container">
+                    
+                    {/* Attached Files Section */}
+                    {attachedFileItems.length > 0 && (
+                        <div className="attached-section">
+                            {attachedFileItems.map((item) => (
+                                item.status === FileStatus.SAVED ? (
+                                    <SavedFileItem
+                                        key={item.id}
+                                        fileItem={item}
+                                        isAttached={true}
+                                        attachSavedFileItem={handleAttachSavedFileItem}
+                                        removeSavedFileItemFromAttached={handleRemoveSavedFileItemFromAttached}
+                                        deleteSavedFileItem={() => handleDeleteFile(item)}
+                                    />
+                                ) : (
+                                    <AttachedFileItem
+                                        key={item.id}
+                                        fileItem={item}
+                                        deleteFileItem={() => handleDeleteFile(item)}
+                                        detachFileItem={handleRemoveSavedFileItemFromAttached}
+                                    />
+                                )
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Upload Section */}
+                    <div className="upload-section">
+                        <label className="attach-file-input-label">
+                            <input
+                                ref={fileInputRef}
+                                className="attach-file-input"
+                                type="file"
+                                accept={supportedFileTypes}
+                                onChange={handleFileChange}
+                                multiple={true}
+                                aria-label="Upload a new file"
+                            />
+                            <span className="attach-file-input-text">Upload a new file</span>
+                        </label>
+                        <p className="upload-subtitle">Note: Uploaded files must be under 10MB each</p>
+                    </div>
+                    
+                    {/* Saved Files Section */}
+                    <div className="saved-section">
+                        <p className="saved-files-label">
+                        Previously saved files
+                        </p>
+                        {savedFileItems.map((item) => (
+                            <SavedFileItem
+                                key={item.id}
+                                fileItem={item}
+                                isAttached={false}
+                                attachSavedFileItem={handleAttachSavedFileItem}
+                                removeSavedFileItemFromAttached={handleRemoveSavedFileItemFromAttached}
+                                deleteSavedFileItem={() => handleDeleteFile(item)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Info popup explaining why to attach files */}
+            {showInfoPopup && (
+                <ScreenPopup
+                    markdownText={ATTACH_FILES_INFO_POPUP_CONTENT}
+                    onClose={() => setShowInfoPopup(false)}
+                    className="attach-files-info-popup"
+                />
+            )}
         </div>
     );
 }

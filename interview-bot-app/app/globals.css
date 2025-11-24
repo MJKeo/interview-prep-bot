@@ -37,7 +37,7 @@ body {
 /* Main content area - takes remaining space after sidebar */
 .app-main-content {
   flex: 1;
-  margin-left: 280px; /* Match sidebar width */
+  margin-left: var(--sidebar-width);
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -75,12 +75,29 @@ body {
   margin: 1rem 0 0.5rem;
 }
 
+.error-message {
+  color: rgb(220 38 38) !important; /* text-red-600 */
+  font-size: 1rem !important; /* text-sm */
+  padding: 0.5rem !important;
+  max-width: 100% !important;
+  font-weight: 600 !important;
+}
+
 :root {
   /* Global brand palette */
   --color-ink-black:   #011627;
   --color-vintage-grape: #443850;
   --color-slate-grey:  #7D8491;
+  --color-blue-grey: #6f7d97;
   --color-text-on-media: #d5d5d5;
   --color-white-smoke: #F5F5F5;
   --color-white:       #FFFFFF;
+
+  /* Text hierarchy */
+  --color-text-primary: #171717;
+  --color-text-secondary: #4a4a4a;
+  --color-text-tertiary: #757575;
+
+  /* Sizing */
+  --sidebar-width: 20rem;
 }

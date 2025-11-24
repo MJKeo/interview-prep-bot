@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import "./sidebar.css";
 import type { JobListingWithId, SidebarSelection } from "@/types";
 import { deleteJobListing, saveJobListing } from "@/utils/local-database";
+import { APP_NAME } from "@/utils/constants";
 
 /**
  * Props for the Sidebar component.
@@ -489,7 +490,7 @@ export default function Sidebar({
             onNewJobListing();
           }}>
         <h1 className="sidebar-title">
-          App Name
+          {APP_NAME}
         </h1>
       </div>
       {jobListings.length > 0 && (

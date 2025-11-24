@@ -88,6 +88,7 @@ export default function Home() {
    * @param attachedFiles - List of successfully attached files (with SUCCESS or SAVED status)
    */
   const handleNavigateToResearch = (jobListingParsedData: JobListingResearchResponse, attachedFiles: FileItem[]) => {
+    console.log(attachedFiles.length);
     // Store the new listing and navigate to research screen
     setJobListingParsedData(jobListingParsedData);
     setAttachedFiles(attachedFiles);

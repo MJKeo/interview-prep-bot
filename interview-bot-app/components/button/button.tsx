@@ -1,4 +1,5 @@
 import "./button.css";
+import { ButtonType } from "@/types";
 
 /**
  * Props for the Button component.
@@ -9,10 +10,15 @@ interface ButtonProps {
    */
   children: React.ReactNode;
   /**
-   * The type of button (button, submit, reset).
+   * The HTML type of button (button, submit, reset).
    * Defaults to "button".
    */
-  type?: "button" | "submit" | "reset";
+  htmlType?: "button" | "submit" | "reset";
+  /**
+   * The visual variant type of the button (primary or secondary).
+   * Defaults to "primary".
+   */
+  type?: ButtonType;
   /**
    * Optional click handler function.
    */
@@ -26,6 +32,10 @@ interface ButtonProps {
    * Optional additional CSS classes to apply.
    */
   className?: string;
+  /**
+   * Optional tooltip text to display when hovering over the button.
+   */
+  tooltip?: string;
 }
 
 /**
@@ -33,30 +43,37 @@ interface ButtonProps {
  * 
  * Provides a reusable button with default styling that can be customized
  * through props. Supports click handlers, disabled state, and custom classes.
+ * Supports primary and secondary visual variants.
  * 
  * @param children - The content to display inside the button
- * @param type - The button type (button, submit, reset)
+ * @param htmlType - The HTML button type (button, submit, reset)
+ * @param type - The visual variant type (primary or secondary)
  * @param onClick - Optional click handler function
  * @param disabled - Whether the button is disabled
  * @param className - Optional additional CSS classes
+ * @param tooltip - Optional tooltip text to display when hovering over the button
  * @returns A styled button element
  */
 export default function Button({
   children,
-  type = "button",
+  htmlType = "button",
+  type = ButtonType.PRIMARY,
   onClick,
   disabled = false,
   className = "",
+  tooltip,
 }: ButtonProps) {
-  // Combine default button class with any additional classes
-  const combinedClassName = `button ${className}`.trim();
+  // Combine default button class with variant class and any additional classes
+  const variantClass = type === ButtonType.PRIMARY ? "button--primary" : "button--secondary";
+  const combinedClassName = `button ${variantClass} ${className}`.trim();
 
   return (
     <button
-      type={type}
+      type={htmlType}
       onClick={onClick}
       disabled={disabled}
       className={combinedClassName}
+      title={tooltip}
     >
       {children}
     </button>

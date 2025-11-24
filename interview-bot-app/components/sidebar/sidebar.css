@@ -2,7 +2,7 @@
 
 /* Base sidebar container - fixed width, full height, positioned on left */
 .sidebar {
-  width: 20rem;
+  width: var(--sidebar-width);
   height: 100vh;
   background-color: var(--color-ink-black);
   /* border-right: 1px solid var(--color-ink-black); */
@@ -15,7 +15,7 @@
 
 /* Sidebar header container */
 .sidebar-header {
-  padding: 1.65rem 1.1rem 0rem 1.375rem;
+  padding: 2rem 1.1rem 0rem 1.5rem;
   cursor: pointer;
 }
 
@@ -25,17 +25,17 @@
   margin: 0;
   margin-bottom: 1.1rem;
   padding: 0;
-  font-size: 1.65rem;
+  font-size: 2rem;
   font-weight: 700;
   transition: opacity 0.15s ease-in-out;
 }
 
 /* Sidebar subtitle - My Saved Jobs label */
 .sidebar-subtitle {
-  color: #657187;
+  color: var(--color-blue-grey);
   margin: 0;
-  margin-top: 2.2rem;
-  padding: 0 1.1rem 0.55rem 1.375rem;
+  margin-top: 2.25rem;
+  padding: 0 1.1rem 0.55rem 1.5rem;
   font-size: 1.32rem;
   font-weight: 500;
   position: relative;
@@ -209,7 +209,7 @@
   top: 100%; /* Position below the menu icon */
   right: 0; /* Align to right edge of menu icon */
   background-color: white;
-  border: 1px solid #c3c3c3; /* Thistle border */
+  border: 1px solid #c3c3c3;
   border-radius: 0.275rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000; /* Ensure it appears above other content */
@@ -227,7 +227,7 @@
   text-align: left;
   background: none;
   border: none;
-  color: #344055; /* Charcoal Blue text */
+  color: var(--color-ink-black);
   cursor: pointer;
   font-size: 0.89375rem; /* Smaller font size */
   white-space: nowrap; /* Keep button text on one line */

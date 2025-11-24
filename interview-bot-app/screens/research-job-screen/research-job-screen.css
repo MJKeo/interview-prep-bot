@@ -68,14 +68,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Styles for error message display */
-.error-message {
-  color: rgb(220 38 38); /* text-red-600 */
-  font-size: 0.875rem; /* text-sm */
-  padding: 0.5rem;
-  max-width: 100%;
-}
-
 /* Styles for parsed data section */
 .parsed-data-section {
   width: 100%;

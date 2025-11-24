@@ -15,11 +15,16 @@ interface AttachedFileItemProps {
    * Takes the FileItem instance as its only parameter.
    */
   deleteFileItem: (item: FileItem) => void;
+  /**
+   * Optional callback to detach the file (move to saved files).
+   * If provided, a "-" button will be shown.
+   */
+  detachFileItem?: (item: FileItem) => void;
 }
 
 /**
  * Component for displaying a single attached file item.
- * Shows status indicator, file name, optional error message, and delete button.
+ * Shows status indicator, file name, optional error message, and delete/detach buttons.
  * 
  * Status indicators:
  * - Success: Green circular badge with checkmark
@@ -28,11 +33,13 @@ interface AttachedFileItemProps {
  * 
  * @param fileItem - The file item to display
  * @param deleteFileItem - Function to call when delete button is clicked
+ * @param detachFileItem - Optional function to call when detach button is clicked
  * @returns A styled file item component
  */
 export default function AttachedFileItem({
   fileItem,
   deleteFileItem,
+  detachFileItem,
 }: AttachedFileItemProps) {
   return (
     <div className="attached-file-item">
@@ -55,16 +62,31 @@ export default function AttachedFileItem({
         )}
       </div>
 
-      {/* Delete button - calls deleteFileItem when clicked */}
-      <button
-        type="button"
-        className="delete-button"
-        onClick={() => deleteFileItem(fileItem)}
-        aria-label={`Delete ${fileItem.fileName}`}
-      >
-        ×
-      </button>
+      {/* Action buttons */}
+      <div className="action-buttons">
+        {/* Detach button - visible if detachFileItem is provided */}
+        {detachFileItem && (
+          <button
+            type="button"
+            className="remove-button"
+            onClick={() => detachFileItem(fileItem)}
+            title="Remove from attachments"
+            aria-label={`Detach ${fileItem.fileName}`}
+          >
+            −
+          </button>
+        )}
+
+        {/* Delete button - calls deleteFileItem when clicked */}
+        <button
+          type="button"
+          className="delete-button"
+          onClick={() => deleteFileItem(fileItem)}
+          aria-label={`Delete ${fileItem.fileName}`}
+        >
+          ×
+        </button>
+      </div>
     </div>
   );
 }
-
