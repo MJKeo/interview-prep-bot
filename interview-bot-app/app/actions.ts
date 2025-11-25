@@ -46,7 +46,7 @@ import { UAParser } from "ua-parser-js";
 export async function scrapeJobListingAction(url: string) {
   try {
     if (CONFIG.useCachedScrape) {
-      await new Promise(r => setTimeout(r, 15000));
+      await new Promise(r => setTimeout(r, 1500));
       return { success: true, content: "Cached data" };
     }
     // Call the scrape function - this runs on the server where process.env is available
@@ -74,7 +74,7 @@ export async function parseJobListingAttributesAction(jobListingScrapeContent: s
   try {
     if (CONFIG.useCachedListingAttributes) {
       console.log("SCRAPE START")
-      await new Promise(r => setTimeout(r, 13000));
+      await new Promise(r => setTimeout(r, 1500));
       console.log("SCRAPE DONE")
       return { success: true, data: savedJobParseResponse };
     }
@@ -107,7 +107,7 @@ export async function performDeepResearchAndContextDistillationAction(
   try {
     // If using cached data, simply return cached reports and null userContext
     if (CONFIG.useCachedDeepResearch) {
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 16000));
       return { success: true, reports: savedDeepResearchReports };
     }
     
@@ -139,7 +139,7 @@ export async function createInterviewGuideAction(
 ) {
   try {
     if (CONFIG.useCachedInterviewGuide) {
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 16000));
       return { success: true, guide: savedInterviewGuide };
     }
 

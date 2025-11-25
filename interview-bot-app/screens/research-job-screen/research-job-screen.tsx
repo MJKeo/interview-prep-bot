@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import "./research-job-screen.css";
 import { parseJobListingAttributesAction, performDeepResearchAndContextDistillationAction, createInterviewGuideAction } from "@/app/actions";
 import type { JobListingResearchResponse, DeepResearchReports, FileItem, JobListingWithId } from "@/types";
 import Button from "@/components/button";
 import { ButtonType } from "@/types";
+import LoadingBar from "@/components/loading-bar";
+import ResearchReportSection from "@/components/research-report-section";
 
 /**
  * Props for the ResearchJobScreen component.
@@ -188,74 +188,156 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
     }
   }, [interviewGuide, deepResearchAndContextDistillationReports]);
 
+  // Loading messages for deep research loading bar
+  const deepResearchMessages = [
+    "Scouring the web for company insights and data...",
+    "Analyzing recent financial reports and press releases...",
+    "Mapping out the company's strategic landscape...",
+    "Identifying core competitors and market challenges...",
+    "Decoding the role's success metrics and KPIs...",
+    "Investigating team dynamics and company culture...",
+    "Researching industry trends and domain-specific tools...",
+    "Synthesizing thousands of data points into key insights...",
+    "Distilling findings into clear, actionable reports...",
+    "Finalizing your comprehensive deep research profile...",
+    "Greasing the axels...",
+    "Turning on cheat codes...",
+    "Phoning a friend...",
+    "Dotting \"i\"s and crossing \"t\"s...",
+  ];
+
+  // Loading messages for interview guide loading bar
+  const interviewGuideMessages = [
+    "Synthesizing company research with job requirements...",
+    "Extracting key success metrics and performance indicators...",
+    "Identifying high-yield areas for exploration...",
+    "Drafting role-specific situational challenges...",
+    "Formulating targeted behavioral questions...",
+    "Mapping candidate background to role expectations...",
+    "Designing culture fit and motivation probes...",
+    "Structuring the strategic interview roadmap...",
+    "Refining interviewer context and guidelines...",
+    "Finalizing your custom interview guide...",
+    "Predicting plot twists...",
+    "Translating from sanskrit...",
+    "Getting into the flow state...",
+  ];
+
+  // Check if the button should be enabled
+  const canStartInterview = hasCompletedResearch && deepResearchAndContextDistillationReports && interviewGuide;
+
   return (
     <div className="research-job-container">
-      {/* Display loading state in top left corner with shimmer animation */}
-      {loadingStage && (
-        <div className="loading-state">
-          <div className="loading-text shimmer">{loadingStage}</div>
-        </div>
-      )}
-      
       <div className="research-job-content">
-        <h1 className="research-job-title">Job Listing Research</h1>
-        
+        {/* Job Listing Information Section */}
+        {jobListingParsedData && (
+          <div className="research-job-section">
+            <h2 className="research-job-section-title">Job Listing Information</h2>
+            <div className="research-job-header">
+              <div className="research-job-detail-row">
+                <span className="research-job-detail-label">Role Title:</span>
+                <span className="research-job-detail-value">{jobListingParsedData.job_title}</span>
+              </div>
+              <div className="research-job-detail-row">
+                <span className="research-job-detail-label">Company:</span>
+                <span className="research-job-detail-value">{jobListingParsedData.company_name}</span>
+              </div>
+              <div className="research-job-detail-column">
+                <span className="research-job-detail-label">Description:</span>
+                <span className="research-job-detail-value description-value">{jobListingParsedData.job_description}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Deep Research Loading Bar */}
+        {isLoadingDeepResearch && (
+          <div className="research-job-loading-bar">
+            <LoadingBar
+              timeToLoad={30}
+              initialLoadingMessage="Beginning deep research..."
+              waitingMessages={deepResearchMessages}
+            />
+          </div>
+        )}
+
         {/* Display error message if parsing failed */}
         {error && <div className="error-message">{error}</div>}
-        
-        {/* Display parsed job listing data as text labels */}
-        {jobListingParsedData && (
-          <div className="parsed-data-section">
-            <div className="data-label">
-              <span className="label-text">Role Title:</span>
-              <span className="label-value">{jobListingParsedData.job_title}</span>
-            </div>
-            <div className="data-label">
-              <span className="label-text">Company Name:</span>
-              <span className="label-value">{jobListingParsedData.company_name}</span>
-            </div>
-            <div className="data-label">
-              <span className="label-text">Job Location:</span>
-              <span className="label-value">{jobListingParsedData.job_location}</span>
-            </div>
-            <div className="data-label">
-              <span className="label-text">Job Description:</span>
-              <span className="label-value">{jobListingParsedData.job_description}</span>
-            </div>
-          </div>
-        )}
-        
-        {/* Display deep research reports as rendered markdown */}
+
+        {/* Deep Research Reports Section */}
         {deepResearchAndContextDistillationReports && (
-          <div className="deep-research-section">
-            <h2 className="research-report-title">Deep Research Reports</h2>
-            <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.companyStrategyReport}</ReactMarkdown>
+          <div className="research-job-section reports-section">
+            <div className="research-job-section-header">
+              <h2 className="research-job-section-title">Deep Research Reports</h2>
+              <div className="research-job-section-subtitle">
+                <p>
+                  These deep research reports are designed to give you a significant competitive advantage. They go far beyond the job description to help you understand the company's strategic priorities, business model, and current challenges. You'll gain clarity on what "success" looks like for this specific role, including the necessary skills, key team collaborations, and relevant industry jargon.
+                </p>
+                <p>
+                  By internalizing this context, you can view the opportunity through the lens of your interviewers; understanding what they truly value and what problems they need you to solve. Use these insights to craft tailored, impactful responses that demonstrate deep industry awareness and prove you're ready to hit the ground running.
+                </p>
+              </div>
             </div>
-            <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.roleSuccessReport}</ReactMarkdown>
-            </div>
-            <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.teamCultureReport}</ReactMarkdown>
-            </div>
-            <div className="markdown">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{deepResearchAndContextDistillationReports.domainKnowledgeReport}</ReactMarkdown>
+            
+            <div className="research-job-reports">
+              <ResearchReportSection
+                title="Company Strategy Report"
+                objective="This report analyzes the company's mission and market positioning to provide a clear view of their overall business strategy and competitive landscape. It highlights key milestones and objectives so you can understand the broader context in which the company operates."
+                usage="Use these insights to demonstrate your commercial awareness by aligning your answers with the company's business goals. It will also help you ask strategic questions that show you understand the 'big picture' beyond just the job description."
+                reportContent={deepResearchAndContextDistillationReports.companyStrategyReport}
+              />
+              <ResearchReportSection
+                title="Role Success Report"
+                objective="This report defines the role's core purpose and breaks down the specific responsibilities and metrics the company uses to measure success. It clarifies the essential competencies required, giving you a precise understanding of what they are looking for in a top performer."
+                usage="This knowledge enables you to tailor your pitch to their exact needs, showing clearly how your experience will drive the results they value. It helps you move beyond generic answers to articulate specifically how you will solve their problems."
+                reportContent={deepResearchAndContextDistillationReports.roleSuccessReport}
+              />
+              <ResearchReportSection
+                title="Team Culture Report"
+                objective="This section investigates the team's structure, operational workflows, and communication styles to give you a sense of the day-to-day work environment. It explores the organization's core values and cultural norms to help you understand how work actually gets done."
+                usage="Leverage these insights to demonstrate a strong cultural fit and navigate behavioral questions with confidence. It allows you to show that you understand their collaboration style and have the right mindset to thrive in their specific team dynamic."
+                reportContent={deepResearchAndContextDistillationReports.teamCultureReport}
+              />
+              <ResearchReportSection
+                title="Domain Knowledge Report"
+                objective="This report outlines the strategic function of this role within the broader industry, covering standard tools, key concepts, and current domain challenges. It provides a focused overview of the technical landscape and trends relevant to this specific position."
+                usage="Use this to ensure you are speaking the industry language fluently and can discuss technical trends with authority. It equips you to demonstrate your subject matter expertise and specific problem areas you'd be able to help solve."
+                reportContent={deepResearchAndContextDistillationReports.domainKnowledgeReport}
+              />
             </div>
           </div>
         )}
-        
-        {/* Display start mock interview button when research has been completed */}
-        {hasCompletedResearch && deepResearchAndContextDistillationReports && interviewGuide && (
-          <div className="button-section">
-            <Button 
-              htmlType="button"
-              type={ButtonType.PRIMARY}
-              onClick={() => onStartMockInterview(deepResearchAndContextDistillationReports, interviewGuide)}
-            >
-              start mock interview
-            </Button>
+
+        {/* Interview Guide Loading Bar */}
+        {isLoadingGuide && (
+          <div className="research-job-loading-bar">
+            <LoadingBar
+              timeToLoad={17}
+              initialLoadingMessage="Creating interview guide..."
+              waitingMessages={interviewGuideMessages}
+            />
           </div>
         )}
+
+        {interviewGuide && (
+          <p className="loading-progress-text">Interview Guide completed! You can begin your practice interview whenever you're ready.</p>
+        )}
+      </div>
+
+      {/* Sticky Footer Button */}
+      <div className="research-job-footer">
+        <Button
+          htmlType="button"
+          type={ButtonType.PRIMARY}
+          disabled={!canStartInterview}
+          onClick={() => {
+            if (canStartInterview) {
+              onStartMockInterview(deepResearchAndContextDistillationReports!, interviewGuide!);
+            }
+          }}
+        >
+          Begin Practice Interview
+        </Button>
       </div>
     </div>
   );

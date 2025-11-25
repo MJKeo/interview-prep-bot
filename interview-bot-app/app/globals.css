@@ -83,6 +83,11 @@ body {
   font-weight: 600 !important;
 }
 
+.loading-progress-text {
+  color: var(--color-text-tertiary);
+  font-size: 1rem;
+}
+
 :root {
   /* Global brand palette */
   --color-ink-black:   #011627;
@@ -91,6 +96,7 @@ body {
   --color-blue-grey: #6f7d97;
   --color-text-on-media: #d5d5d5;
   --color-white-smoke: #F5F5F5;
+  --color-light-grape: #44385023;
   --color-white:       #FFFFFF;
 
   /* Text hierarchy */

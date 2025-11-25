@@ -254,7 +254,10 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
 
         {/* Show loading bar while we're scraping the website */}
         {isScraping && <div className="loading-bar-container">
-          <LoadingBar timeToLoad={12} waitingMessages={[
+          <LoadingBar 
+            timeToLoad={12} 
+            initialLoadingMessage="Fetching url content..."
+            waitingMessages={[
               "Fetching job listing content...",
               "Analyzing page structure and requirements...",
               "Retrieving job details from the URL...",
@@ -268,8 +271,11 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         {/* Show loading bar for extracting job listing content */}
         {isParsingAttributes && 
           <div className="loading-bar-container">
-            <p className="finished-fetching-website-content-text">Finished fetching website content</p>
-            <LoadingBar timeToLoad={6} waitingMessages={[
+            <p className="loading-progress-text">Finished fetching website content</p>
+            <LoadingBar 
+            timeToLoad={6} 
+            initialLoadingMessage="Extracting job listing details from url content..."
+            waitingMessages={[
                 "Extracting job title and location...",
                 "Parsing job description and work schedule...",
                 "Identifying company name and key details...",

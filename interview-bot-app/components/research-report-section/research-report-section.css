@@ -1,0 +1,177 @@
+/* Styles for the ResearchReportSection component */
+
+
+/* Container for the entire report section */
+.research-report-section {
+  width: 100%;
+  border: 1px solid rgb(209 213 219); /* border-gray-300 */
+  background-color: white;
+  border-radius: 0.375rem; /* rounded-md */
+  margin-bottom: 1rem;
+  overflow: hidden; /* Prevent content from overflowing rounded corners */
+}
+
+/* Header button - clickable to toggle section */
+.research-report-section__header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease-in-out;
+  gap: 0.75rem;
+}
+
+/* Hover state for header */
+.research-report-section__header:hover {
+  background-color: var(--color-light-grape);
+}
+
+/* Chevron icon - indicates expand/collapse state */
+.research-report-section__chevron {
+  font-size: 0.75rem;
+  color: rgb(75 85 99); /* text-gray-600 */
+  flex-shrink: 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Title text in header */
+.research-report-section__title {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  color: rgb(17 24 39); /* text-gray-900 */
+}
+
+/* Content area - visible when section is open */
+.research-report-section__content {
+  padding: 1.25rem;
+  border-top: 1px solid rgb(229 231 235); /* border-gray-200 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Metadata container for objective and usage sections */
+.research-report-section__metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Label for objective and usage sections */
+.research-report-section__label {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600; /* font-semibold */
+  color: rgb(75 85 99); /* text-gray-600 */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Text content for objective and usage */
+.research-report-section__text {
+  font-size: 0.9375rem; /* text-base */
+  color: rgb(17 24 39); /* text-gray-900 */
+  line-height: 1.6;
+}
+
+/* Report content area - markdown rendering */
+.research-report-section__report {
+  padding-top: 1rem;
+  border-top: 1px solid rgb(229 231 235); /* border-gray-200 */
+}
+
+/* Markdown styling within report section */
+.research-report-section__report .markdown {
+  font-size: 0.9375rem; /* text-base */
+  line-height: 1.6;
+  color: rgb(17 24 39); /* text-gray-900 */
+}
+
+/* Ensure markdown headings are styled appropriately */
+.research-report-section__report h1,
+.research-report-section__report h2,
+.research-report-section__report h3,
+.research-report-section__report h4,
+.research-report-section__report h5,
+.research-report-section__report h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: rgb(17 24 39); /* text-gray-900 */
+}
+
+.research-report-section__report h1 {
+  font-size: 1.5rem;
+}
+
+.research-report-section__report h2 {
+  font-size: 1.25rem;
+}
+
+.research-report-section__report h3 {
+  font-size: 1.125rem;
+}
+
+.research-report-section__report p {
+  margin: 0.5rem 0;
+}
+
+.research-report-section__report ul,
+.research-report-section__report ol {
+  margin-left: 1rem;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.research-report-section__report ul {
+  list-style: disc;
+}
+
+.research-report-section__report ol {
+  list-style: decimal;
+}
+
+.research-report-section__report li {
+  margin: 0.25rem 0;
+}
+
+.research-report-section__report code {
+  font-size: 0.875rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.research-report-section__report pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+
+.research-report-section__report pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.research-report-section__report blockquote {
+  border-left: 3px solid rgb(107 114 128); /* border-gray-500 */
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+  color: rgb(75 85 99); /* text-gray-600 */
+  font-style: italic;
+}
+
+.research-report-section__report a {
+  color: rgb(37 99 235); /* text-blue-600 */
+  text-decoration: underline;
+}
+
+.research-report-section__report a:hover {
+  color: rgb(29 78 216); /* text-blue-700 */
+}
+

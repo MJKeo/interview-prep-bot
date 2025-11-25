@@ -12,6 +12,10 @@ interface LoadingBarProps {
    */
   timeToLoad: number;
   /**
+   * First message to display while loading.
+   */
+  initialLoadingMessage: string | null;
+  /**
    * Array of messages to display while loading. Messages will be rotated every 5 seconds.
    */
   waitingMessages: string[];
@@ -32,6 +36,7 @@ interface LoadingBarProps {
  */
 export default function LoadingBar({
   timeToLoad,
+  initialLoadingMessage,
   waitingMessages,
 }: LoadingBarProps) {
   // Shuffled array of messages (shuffled once on mount)
@@ -89,7 +94,7 @@ export default function LoadingBar({
     if (waitingMessages.length === 0) return;
 
     // Shuffle the messages once on mount
-    const shuffled = shuffleArray(waitingMessages);
+    const shuffled = initialLoadingMessage ? [initialLoadingMessage, ...shuffleArray(waitingMessages)] : shuffleArray(waitingMessages);
     setShuffledMessages(shuffled);
     shuffledMessagesRef.current = shuffled;
     setCurrentIndex(0);
