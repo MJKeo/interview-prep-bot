@@ -360,7 +360,8 @@ export default function Home() {
             interviewGuide={interviewGuide}
             currentJobListing={currentJobListing!}
             onCurrentListingUpdated={handleCurrentListingUpdated}
-            onPerformFinalReview={handleNavigateToPerformAnalysis} 
+            onPerformFinalReview={handleNavigateToPerformAnalysis}
+            onReturnToResearch={() => setScreen(ScreenName.ResearchJob)}
           />
         ) : null;
       case ScreenName.PerformAnalysis:

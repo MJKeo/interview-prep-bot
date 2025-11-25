@@ -195,7 +195,7 @@ export function addInterviewToJobListingFromTranscript(transcript: InterviewTran
   const interviewNumber = existingInterviewsCount + 1;
 
   // Create display name in format "Interview <x>"
-  const displayName = `Interview ${interviewNumber}`;
+  const displayName = `Interview Analysis ${interviewNumber}`;
 
   existingInterviews[interviewId] = {
     "display-name": displayName,

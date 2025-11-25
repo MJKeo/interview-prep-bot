@@ -142,6 +142,17 @@ export default function Sidebar({
     }
   }, [currentJobListing, currentInterviewId]);
 
+  useEffect(() => {
+    // Expand the job listing if an interview inside is selected
+    if (selectedItem?.interviewId) {
+      setExpandedJobListings((prev) => {
+        const next = new Set(prev);
+        next.add(selectedItem.jobListingId);
+        return next;
+      });
+    }
+  }, [selectedItem]);
+
   /**
    * Effect hook that handles clicking outside the menu to close it.
    * Closes the menu when a click occurs outside the menu container.

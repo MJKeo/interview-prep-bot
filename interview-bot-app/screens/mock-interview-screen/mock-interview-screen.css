@@ -29,10 +29,10 @@
   font-size: 0.875rem;
 }
 
-/* Styles for user messages - blue bubbles, right-aligned */
+/* Styles for user messages - vintage-grape bubbles, right-aligned */
 .message-user {
-  background-color: rgb(59 130 246); /* blue-600 */
-  color: white;
+  background-color: var(--color-icy-aqua);
+  color: var(--color-ink-black);
   margin-left: auto;
   align-self: flex-end;
 }
@@ -40,7 +40,7 @@
 /* Styles for assistant messages - gray bubbles, left-aligned */
 .message-assistant {
   background-color: rgb(243 244 246); /* gray-100 */
-  color: rgb(17 24 39); /* gray-900 */
+  color: var(--color-ink-black); /* gray-900 */
   margin-right: auto;
   align-self: flex-start;
 }
@@ -125,7 +125,7 @@
 
 .mock-interview-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgb(59 130 246); /* focus:ring-2 focus:ring-blue-500 */
+  box-shadow: 0 0 0 2px var(--color-light-grape); /* focus ring with light-grape color */
 }
 
 /* Styles for error message display */

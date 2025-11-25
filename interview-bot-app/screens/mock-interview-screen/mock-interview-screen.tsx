@@ -10,6 +10,8 @@ import type { JobListingResearchResponse, InterviewTranscript, JobListingWithId 
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { convertMessagesToTranscript } from "@/utils/utils";
 import { savedChatTranscript } from "@/app/saved-responses";
+import ScreenPopup from "@/components/screen-popup";
+import { PERFORM_FINAL_REVIEW_WARNING_POPUP_CONTENT } from "@/utils/constants";
 
 /**
  * Props for the MockInterviewScreen component.
@@ -40,6 +42,11 @@ interface MockInterviewScreenProps {
    * @param messages - The conversation history to pass to the analysis screen (in EasyInputMessage format)
    */
   onPerformFinalReview: (messages: InterviewTranscript) => void;
+  /**
+   * Callback function to navigate back to the research job screen.
+   * Called when the user confirms the return to research warning.
+   */
+  onReturnToResearch: () => void;
 }
 
 /**
@@ -52,13 +59,18 @@ export default function MockInterviewScreen({
   currentJobListing,
   onPerformFinalReview,
   onCurrentListingUpdated,
+  onReturnToResearch,
 }: MockInterviewScreenProps) {
   // State to store the array of messages in the conversation
   const [messages, setMessages] = useState<EasyInputMessage[]>([]);
   // State to store the current input field value
   const [inputValue, setInputValue] = useState<string>("");
-  // State to control the visibility of the warning modal
+  // State to control the visibility of the warning modal for final review
   const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
+  // State to control the visibility of the warning modal for returning to research
+  const [showReturnToResearchModal, setShowReturnToResearchModal] = useState<boolean>(false);
+  // State to control the visibility of the warning modal for starting over
+  const [showStartOverModal, setShowStartOverModal] = useState<boolean>(false);
   // State to track if a message is being generated (to prevent multiple simultaneous requests)
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   // State to store error messages to display to the user
@@ -194,11 +206,31 @@ export default function MockInterviewScreen({
   };
 
   /**
-   * Handler function to start over and clear the entire conversation history.
+   * Handler function to show the warning modal when start over is clicked.
+   * Opens the warning popup to confirm starting over.
+   */
+  const handleStartOver = () => {
+    // Show the warning modal
+    setShowStartOverModal(true);
+  };
+
+  /**
+   * Handler function to close the start over warning modal.
+   * Called when cancel is clicked or when clicking outside the modal.
+   */
+  const handleCloseStartOverModal = () => {
+    // Hide the warning modal
+    setShowStartOverModal(false);
+  };
+
+  /**
+   * Handler function to confirm starting over and clear the entire conversation history.
    * Resets the messages array to empty, clears any error messages, and sends
    * a new initial "Hello" message to trigger the bot's first response.
    */
-  const handleStartOver = () => {
+  const handleConfirmStartOver = () => {
+    // Close the modal
+    setShowStartOverModal(false);
     // Clear all messages from the conversation
     setMessages([]);
     // Clear any error messages
@@ -241,17 +273,40 @@ export default function MockInterviewScreen({
     onPerformFinalReview(transcript);
   };
 
+
   /**
-   * Handler function to handle clicks on the modal overlay.
-   * Closes the modal when clicking outside the modal content.
-   * 
-   * @param e - The click event
+   * Handler function to handle return to research button click.
+   * If no messages have been sent, navigates directly without showing a warning.
+   * Otherwise, opens the warning popup to confirm navigation back to research screen.
    */
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Only close if clicking directly on the overlay, not on the modal content
-    if (e.target === e.currentTarget) {
-      handleCloseModal();
+  const handleReturnToResearch = () => {
+    // If no messages have been sent, navigate directly without showing warning
+    if (messages.length === 0) {
+      onReturnToResearch();
+      return;
     }
+    // Show the warning modal if there are messages to lose
+    setShowReturnToResearchModal(true);
+  };
+
+  /**
+   * Handler function to close the return to research warning modal.
+   * Called when cancel is clicked or when clicking outside the modal.
+   */
+  const handleCloseReturnToResearchModal = () => {
+    // Hide the warning modal
+    setShowReturnToResearchModal(false);
+  };
+
+  /**
+   * Handler function to confirm navigation back to research screen.
+   * Closes the modal and navigates to the research screen.
+   */
+  const handleConfirmReturnToResearch = () => {
+    // Close the modal
+    setShowReturnToResearchModal(false);
+    // Navigate back to research screen
+    onReturnToResearch();
   };
 
   return (
@@ -312,7 +367,10 @@ export default function MockInterviewScreen({
         </div>
         {/* Other buttons centered below */}
         <div className="mock-interview-buttons">
-          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleStartOver} disabled={isGenerating || messages.length === 0}>
+          <Button htmlType="button" type={ButtonType.SECONDARY} onClick={handleReturnToResearch} disabled={isGenerating}>
+            Return to Research
+          </Button>
+          <Button htmlType="button" type={ButtonType.SECONDARY} onClick={handleStartOver} disabled={isGenerating || messages.length === 1}>
             Start Over
           </Button>
           <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handlePerformFinalReview} disabled={isGenerating || (!CONFIG.bypassMockInterview && messages.length <= 3)}>
@@ -321,23 +379,64 @@ export default function MockInterviewScreen({
         </div>
       </div>
 
-      {/* Warning modal overlay */}
+      {/* Warning modal for final review */}
       {showWarningModal && (
-        <div className="modal-overlay" onClick={handleOverlayClick}>
-          <div className="modal-content">
-            <p className="modal-message">
-              Hey, continuing on to the final review will end the conversation and you can't go back.
-            </p>
-            <div className="modal-buttons">
-              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleCloseModal}>
-                cancel
-              </Button>
-              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleConfirmFinalReview}>
-                confirm
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ScreenPopup
+          markdownText={PERFORM_FINAL_REVIEW_WARNING_POPUP_CONTENT}
+          buttons={[
+            {
+              label: "Cancel",
+              type: ButtonType.SECONDARY,
+              onClick: handleCloseModal,
+            },
+            {
+              label: "Perform Final Review",
+              type: ButtonType.PRIMARY,
+              onClick: handleConfirmFinalReview,
+            },
+          ]}
+          onClose={handleCloseModal}
+        />
+      )}
+
+      {/* Warning modal for returning to research */}
+      {showReturnToResearchModal && (
+        <ScreenPopup
+          markdownText="**Warning:** Leaving during an interview will cause all progress to be lost."
+          buttons={[
+            {
+              label: "Cancel",
+              type: ButtonType.SECONDARY,
+              onClick: handleCloseReturnToResearchModal,
+            },
+            {
+              label: "Return to Research",
+              type: ButtonType.PRIMARY,
+              onClick: handleConfirmReturnToResearch,
+            },
+          ]}
+          onClose={handleCloseReturnToResearchModal}
+        />
+      )}
+
+      {/* Warning modal for starting over */}
+      {showStartOverModal && (
+        <ScreenPopup
+          markdownText="**Warning:** All current progress will be lost. Are you sure you want to start over?"
+          buttons={[
+            {
+              label: "Cancel",
+              type: ButtonType.SECONDARY,
+              onClick: handleCloseStartOverModal,
+            },
+            {
+              label: "Start Over",
+              type: ButtonType.PRIMARY,
+              onClick: handleConfirmStartOver,
+            },
+          ]}
+          onClose={handleCloseStartOverModal}
+        />
       )}
     </div>
   );

@@ -39,3 +39,5 @@ All files are saved locally on your device only. This app doesn't store or track
 #
   
 **Don't want to attach any files? Just click the "Skip attaching files" checkbox and you can move forward without them**.`;
+
+export const PERFORM_FINAL_REVIEW_WARNING_POPUP_CONTENT = `**Warning:** This will finalize your interview; you cannot come back and make any changes after this.`;
