@@ -307,7 +307,6 @@ export async function performEvaluations(
   const riskJudgeAgent = createEvaluationAgent(riskJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Risk Judge Agent");
 
   const input = JSON.stringify(transcript);
-  console.log("=== input", input);
 
   return await withTrace("InterviewEvaluationWorkflow", async () => {
     // Launch all agent runs immediately so they can execute in parallel

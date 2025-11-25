@@ -229,6 +229,9 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
   return (
     <div className="research-job-container">
       <div className="research-job-content">
+        {/* Main Title */}
+        <h1 className="page-title research-job-title">Perform Research</h1>
+        
         {/* Job Listing Information Section */}
         {jobListingParsedData && (
           <div className="research-job-section">
@@ -268,7 +271,7 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         {deepResearchAndContextDistillationReports && (
           <div className="research-job-section reports-section">
             <div className="research-job-section-header">
-              <h2 className="research-job-section-title">Deep Research Reports</h2>
+              <h2 className="research-job-section-title">Research Reports</h2>
               <div className="research-job-section-subtitle">
                 <p>
                   These deep research reports are designed to give you a significant competitive advantage. They go far beyond the job description to help you understand the company's strategic priorities, business model, and current challenges. You'll gain clarity on what "success" looks like for this specific role, including the necessary skills, key team collaborations, and relevant industry jargon.

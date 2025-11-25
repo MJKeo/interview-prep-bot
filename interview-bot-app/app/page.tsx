@@ -375,7 +375,6 @@ export default function Home() {
             currentInterviewId={currentInterviewId!}
             savedAggregatedEvaluation={aggregatedEvaluation}
             onNewMockInterview={() => handleNewMockInterview(currentJobListing!)}
-            onNewJobListing={handleNewJobListing}
             onCurrentListingUpdated={handleCurrentListingUpdated}
           />
         ) : null;

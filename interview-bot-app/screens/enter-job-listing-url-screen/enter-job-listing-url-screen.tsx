@@ -222,7 +222,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   return (
     <div className="job-listing-url-container">
       <div className="screen-content">
-        <h1 className="app-title">{APP_NAME}</h1>
+        <h1 className="page-title">{APP_NAME}</h1>
         <div className="app-subtitle-container">
           <p className="app-subtitle"><i>Become an expert and crush your next interview</i></p>
           <p className="app-subtitle-info" onClick={handleHowItWorksClick}>How this works</p>

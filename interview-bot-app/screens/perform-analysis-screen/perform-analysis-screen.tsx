@@ -2,23 +2,19 @@
 
 import { useState, useEffect } from "react";
 import "./perform-analysis-screen.css";
-import { convertEvaluationsToFeedbackByMessage } from "@/utils/utils";
-import { savedEvaluationReports, savedAggregatedEvaluation } from "@/app/saved-responses";
 import type { 
-  PerformanceFeedback, 
-  PerformanceEvaluationResponse, 
   JobListingResearchResponse, 
   DeepResearchReports, 
   EvaluationReports, 
   InterviewTranscript,
   AggregatedEvaluation,
-  ConsolidatedFeedback,
   JobListingWithId
 } from "@/types";
 import Button from "@/components/button";
 import { ButtonType } from "@/types";
-import CONFIG from "@/app/config";
 import { performEvaluationsAction, performEvaluationAggregationAction } from "@/app/actions";
+import LoadingBar from "@/components/loading-bar";
+import TranscriptFeedbackItem from "@/components/transcript-feedback-item";
 
 /**
  * Props for the PerformAnalysisScreen component.
@@ -60,186 +56,16 @@ interface PerformAnalysisScreenProps {
    */
   onNewMockInterview: () => void;
   /**
-   * Callback function to navigate back to the enter job listing URL screen and reset all stored attributes.
-   * Called when the user confirms the "new job listing" warning.
-   */
-  onNewJobListing: () => void;
-  /**
    * Callback function called when the current job listing is updated.
    * Used to save updated job listing data (e.g., deep research reports, interview guide) to the database.
    */
   onCurrentListingUpdated: () => void;
 }
 
-/**
- * Converts a judge key to a readable title.
- * @param key - The judge evaluation key (e.g., "contentJudgeEvaluation")
- * @returns A formatted title (e.g., "Content Judge")
- */
-function getJudgeTitle(key: string): string {
-  // Remove "Evaluation" suffix and convert camelCase to Title Case
-  const withoutSuffix = key.replace("Evaluation", "");
-  // Split camelCase and capitalize each word
-  return withoutSuffix
-    .replace(/([A-Z])/g, " $1")
-    .trim()
-    .split(" ")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
-}
-
-/**
- * Type guard function to check if an evaluation entry has a non-null value.
- * @param entry - A tuple of [key, evaluation] from Object.entries
- * @returns True if the evaluation is not null or undefined
- */
-function isNonNullEvaluation(
-  entry: [string, PerformanceEvaluationResponse | null | undefined]
-): entry is [string, PerformanceEvaluationResponse] {
-  return entry[1] != null;
-}
-
-/**
- * Component for rendering a single feedback card.
- * @param feedback - The feedback item to display
- */
-function FeedbackCard({ feedback }: { feedback: PerformanceFeedback[number] }) {
-  return (
-    <div className={`feedback-card feedback-card--${feedback.type}`}>
-      <div className="feedback-card-header">
-        <span className={`feedback-badge feedback-badge--${feedback.type}`}>
-          {feedback.type === "good" ? "Good" : "Bad"}
-        </span>
-        <h3 className="feedback-card-title">{feedback.title}</h3>
-      </div>
-      <div className="feedback-card-content">
-        <div className="feedback-field">
-          <strong>Relevant Quotes:</strong>
-          <p>{feedback.transcript_message_id}</p>
-        </div>
-        <div className="feedback-field">
-          <strong>Evaluation Explanation:</strong>
-          <p>{feedback.evaluation_explanation}</p>
-        </div>
-        <div className="feedback-field">
-          <strong>Context & Best Practices:</strong>
-          <p>{feedback.context_best_practices}</p>
-        </div>
-        <div className="feedback-field">
-          <strong>Improved Example:</strong>
-          <p>{feedback.improved_example}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/**
- * Component for rendering an evaluation section (judge or aggregated).
- * @param title - The title of the evaluation section
- * @param summary - The summary text
- * @param feedback - Array of feedback items to display
- */
-function EvaluationSection({ 
-  title, 
-  summary, 
-  feedback 
-}: { 
-  title: string; 
-  summary: string; 
-  feedback: PerformanceFeedback;
-}) {
-  return (
-    <div className="evaluation-section">
-      <h2 className="evaluation-section-title">{title}</h2>
-      <p className="evaluation-section-summary">{summary}</p>
-      <div className="feedback-cards-container">
-        {feedback.map((item, index) => (
-          <FeedbackCard key={index} feedback={item} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/**
- * Component for rendering consolidated feedback for a single message.
- * Displays the message ID and the consolidated feedback (reasons why good/bad, ways to improve).
- * @param consolidatedFeedback - The consolidated feedback item to display
- * @param transcript - The interview transcript to find the question/answer pair
- */
-function ConsolidatedFeedbackCard({ 
-  consolidatedFeedback,
-  transcript
-}: { 
-  consolidatedFeedback: ConsolidatedFeedback;
-  transcript: InterviewTranscript;
-}) {
-  // Find the transcript entry for this message ID
-  const transcriptEntry = transcript.find(pair => pair.id === consolidatedFeedback.message_id);
-  
-  return (
-    <div className="feedback-card consolidated-feedback-card">
-      <div className="feedback-card-header">
-        <span className="feedback-badge consolidated-feedback-badge">
-          Message {consolidatedFeedback.message_id}
-        </span>
-        {transcriptEntry && (
-          <div>
-            <h3 className="feedback-card-title">
-              Q: {transcriptEntry.interviewer_question}
-            </h3>
-            <h3 className="feedback-card-title">
-              A: {transcriptEntry.candidate_answer}
-            </h3>
-          </div>
-        )}
-      </div>
-      <div className="feedback-card-content">
-        {/* Reasons why this is good */}
-        {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_good.length > 0 && (
-          <div className="feedback-field">
-            <strong>What Went Well:</strong>
-            <ul className="feedback-list">
-              {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_good.map((reason, index) => (
-                <li key={index}>{reason}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
-        {/* Reasons why this is bad */}
-        {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_bad.length > 0 && (
-          <div className="feedback-field">
-            <strong>Areas for Improvement:</strong>
-            <ul className="feedback-list">
-              {consolidatedFeedback.consolidated_feedback.reasons_why_this_is_bad.map((reason, index) => (
-                <li key={index}>{reason}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
-        {/* Ways to improve */}
-        {consolidatedFeedback.consolidated_feedback.ways_to_improve_response.length > 0 && (
-          <div className="feedback-field">
-            <strong>Ways to Improve:</strong>
-            <ul className="feedback-list">
-              {consolidatedFeedback.consolidated_feedback.ways_to_improve_response.map((improvement, index) => (
-                <li key={index}>{improvement}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 /**
  * Screen component for performing analysis.
- * Displays individual judge evaluations and aggregated evaluation results
- * in a structured format with horizontally scrollable feedback cards.
+ * Displays evaluation summary and interactive transcript with feedback.
  */
 export default function PerformAnalysisScreen({ 
   transcript, 
@@ -249,14 +75,11 @@ export default function PerformAnalysisScreen({
   currentInterviewId,
   interviewGuide,
   savedAggregatedEvaluation,
-  onNewMockInterview, 
-  onNewJobListing,
+  onNewMockInterview,
   onCurrentListingUpdated,
 }: PerformAnalysisScreenProps) {
   // State to control the visibility of the "new mock interview" warning modal
   const [showNewMockInterviewModal, setShowNewMockInterviewModal] = useState<boolean>(false);
-  // State to control the visibility of the "new job listing" warning modal
-  const [showNewJobListingModal, setShowNewJobListingModal] = useState<boolean>(false);
   // State to store evaluation reports (either cached or fetched)
   const [evaluationReports, setEvaluationReports] = useState<EvaluationReports | null>(null);
   // State to store aggregated evaluation (either cached or fetched)
@@ -268,54 +91,40 @@ export default function PerformAnalysisScreen({
   // State to store any error messages
   const [error, setError] = useState<string | null>(null);
 
+  // Loading messages for evaluation phase
+  const evaluationMessages = [
+    "Analyzing your responses against job requirements...",
+    "Evaluating communication clarity and structure...",
+    "Assessing technical accuracy and depth...",
+    "Reviewing behavioral response quality...",
+    "Comparing answers to industry best practices...",
+    "Identifying strengths and improvement areas...",
+    "Preparing detailed performance insights...",
+    "Discovering who let the dogs out...",
+    "Initiating self destruct (just kidding)...",
+    "Taking off blindfold...",
+  ];
+
+  // Loading messages for aggregation phase
+  const aggregationMessages = [
+    "Consolidating feedback from all evaluators...",
+    "Identifying common themes and patterns...",
+    "Prioritizing key improvement opportunities...",
+    "Synthesizing strengths and weaknesses...",
+    "Creating actionable feedback summaries...",
+    "Organizing insights by message...",
+    "Finalizing consolidated evaluation...",
+    "Preparing your personalized feedback report...",
+    "Does anyone even read these?..",
+    "Chimp bonobo ape...",
+  ];
+
   /**
    * Handler function to show the "new mock interview" warning modal.
    * Opens the warning popup to confirm navigation to a new mock interview.
    */
   const handleNewMockInterview = () => {
-    setShowNewMockInterviewModal(true);
-  };
-
-  /**
-   * Handler function to close the "new mock interview" warning modal.
-   * Called when cancel is clicked or when clicking outside the modal.
-   */
-  const handleCloseNewMockInterviewModal = () => {
-    setShowNewMockInterviewModal(false);
-  };
-
-  /**
-   * Handler function to confirm navigation to a new mock interview.
-   * Closes the modal and navigates to the mock interview screen with a fresh conversation.
-   */
-  const handleConfirmNewMockInterview = () => {
-    setShowNewMockInterviewModal(false);
     onNewMockInterview();
-  };
-
-  /**
-   * Handler function to show the "new job listing" warning modal.
-   * Opens the warning popup to confirm navigation to the job listing entry screen.
-   */
-  const handleNewJobListing = () => {
-    setShowNewJobListingModal(true);
-  };
-
-  /**
-   * Handler function to close the "new job listing" warning modal.
-   * Called when cancel is clicked or when clicking outside the modal.
-   */
-  const handleCloseNewJobListingModal = () => {
-    setShowNewJobListingModal(false);
-  };
-
-  /**
-   * Handler function to confirm navigation to a new job listing.
-   * Closes the modal and navigates to the enter job listing URL screen, resetting all stored attributes.
-   */
-  const handleConfirmNewJobListing = () => {
-    setShowNewJobListingModal(false);
-    onNewJobListing();
   };
 
   /**
@@ -331,10 +140,6 @@ export default function PerformAnalysisScreen({
       closeHandler();
     }
   };
-
-  useEffect(() => {
-    console.log("currentJobListing", currentJobListing);
-  }, []);
 
   /**
    * Effect hook to fetch or use cached evaluation reports based on config.
@@ -428,136 +233,95 @@ export default function PerformAnalysisScreen({
     }
   }, [savedAggregatedEvaluation, evaluationReports, jobListingResearchResponse]);
 
+  // Determine if we're in loading state
+  const isLoading = isLoadingEvaluations || isLoadingAggregated;
+
   return (
     <div className="perform-analysis-container">
       <div className="perform-analysis-content">
-        <h1 className="perform-analysis-title">perform analysis</h1>
+        {/* Centered title - always visible */}
+        <h1 className="perform-analysis-title">Evaluation & Feedback</h1>
         
-        {/* Error message display */}
-        {error && (
-          <div className="error-message" style={{ color: "red", padding: "1rem" }}>
-            Error: {error}
+        {/* Loading states - show loading bar */}
+        {isLoadingEvaluations && (
+          <LoadingBar
+            timeToLoad={30}
+            initialLoadingMessage={"Starting interview performance evaluation..."}
+            waitingMessages={evaluationMessages}
+          />
+        )}
+        {isLoadingAggregated && (
+          <div className="loading-bar-container">
+            <p className="loading-progress-text">Finished performing evaluations</p>
+            <LoadingBar
+              timeToLoad={10}
+              initialLoadingMessage={"Aggregating evaluations into a single report..."}
+              waitingMessages={aggregationMessages}
+            />
           </div>
         )}
 
-        {/* First Section: Individual Judge Evaluations */}
-        {isLoadingEvaluations ? (
-          <div className="loading-message" style={{ padding: "1rem" }}>
-            Loading evaluation reports...
-          </div>
-        ) : evaluationReports ? (
-          <div className="evaluations-section">
-            <h2 className="evaluations-section-header">Individual Judge Evaluations</h2>
-            <div className="evaluations-vstack">
-              {Object.entries(evaluationReports)
-                .filter(isNonNullEvaluation)
-                .map(([key, evaluation]) => (
-                  <EvaluationSection
-                    key={key}
-                    title={getJudgeTitle(key)}
-                    summary={evaluation.summary}
-                    feedback={evaluation.feedback as PerformanceFeedback}
-                  />
-                ))}
-            </div>
-          </div>
-        ) : null}
-
-        {/* Second Section: Aggregated Results */}
-        {isLoadingAggregated ? (
-          <div className="loading-message" style={{ padding: "1rem" }}>
-            Loading aggregated evaluation...
-          </div>
-        ) : aggregatedEvaluation ? (
-          <div className="aggregated-section">
-            <h2 className="aggregated-section-header">Aggregated Evaluation</h2>
-            
-            {/* Overall Summary Sections */}
-            <div className="evaluation-section">
-              <h2 className="evaluation-section-title">What Went Well</h2>
-              <p className="evaluation-section-summary">
-                {aggregatedEvaluation.what_went_well_summary}
-              </p>
-            </div>
-            
-            <div className="evaluation-section">
-              <h2 className="evaluation-section-title">Areas for Improvement</h2>
-              <p className="evaluation-section-summary">
-                {aggregatedEvaluation.ways_to_improve_summary}
-              </p>
-            </div>
-            
-            {/* Consolidated Feedback by Message */}
-            {aggregatedEvaluation.consolidated_feedback_by_message && 
-             aggregatedEvaluation.consolidated_feedback_by_message.length > 0 && (
-              <div className="evaluation-section">
-                <h2 className="evaluation-section-title">Feedback by Message</h2>
-                <div className="feedback-cards-container">
-                  {aggregatedEvaluation.consolidated_feedback_by_message.map((consolidatedFeedback, index) => (
-                    <ConsolidatedFeedbackCard
-                      key={consolidatedFeedback.message_id}
-                      consolidatedFeedback={consolidatedFeedback}
-                      transcript={transcript}
-                    />
-                  ))}
+            {/* Summary Section */}
+            {aggregatedEvaluation && (
+              <div className="perform-analysis-section">
+                <h2 className="perform-analysis-section-header">Overview</h2>
+                <div className="perform-analysis-summary">
+                  {/* What Went Well */}
+                  <div className="perform-analysis-summary-subsection">
+                    <h3 className="perform-analysis-summary-subsection-title">What Went Well</h3>
+                    <p className="perform-analysis-summary-subsection-content">
+                      {aggregatedEvaluation.what_went_well_summary}
+                    </p>
+                  </div>
+                  
+                  {/* Ways to Improve */}
+                  <div className="perform-analysis-summary-subsection">
+                    <h3 className="perform-analysis-summary-subsection-title">Opportunities for Improvement</h3>
+                    <p className="perform-analysis-summary-subsection-content">
+                      {aggregatedEvaluation.ways_to_improve_summary}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
-          </div>
-        ) : null}
 
-        {/* Action buttons section */}
-        <div className="perform-analysis-buttons">
-          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleNewMockInterview}>
-            new mock interview
-          </Button>
-          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleNewJobListing}>
-            new job listing
-          </Button>
-        </div>
+            {/* Interview Transcript with Feedback Section */}
+            {aggregatedEvaluation && (
+              <div className="perform-analysis-section">
+                <h2 className="perform-analysis-section-header">Interview Transcript with Feedback</h2>
+                <div className="perform-analysis-transcript-header">
+                  <p className="perform-analysis-transcript-description">
+                    Review your interview transcript below. Click on the highlighted responses to view detailed insights on what you did well and how you can improve for next time.
+                  </p>
+                </div>
+                
+                {/* Transcript List */}
+                <div className="perform-analysis-transcript-list">
+                  {transcript.map((message) => {
+                    // Find matching feedback for this message
+                    const feedback = aggregatedEvaluation.consolidated_feedback_by_message?.find(
+                      (fb) => fb.message_id === message.id
+                    );
+                    
+                    return (
+                      <TranscriptFeedbackItem
+                        key={message.id}
+                        message={message}
+                        feedback={feedback}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
       </div>
 
-      {/* Warning modal for "new mock interview" */}
-      {showNewMockInterviewModal && (
-        <div 
-          className="modal-overlay" 
-          onClick={(e) => handleOverlayClick(e, handleCloseNewMockInterviewModal)}
-        >
-          <div className="modal-content">
-            <p className="modal-message">
-              Hey, if you start a new interview your current evaluation will be deleted.
-            </p>
-            <div className="modal-buttons">
-              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleCloseNewMockInterviewModal}>
-                cancel
-              </Button>
-              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleConfirmNewMockInterview}>
-                confirm
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Warning modal for "new job listing" */}
-      {showNewJobListingModal && (
-        <div 
-          className="modal-overlay" 
-          onClick={(e) => handleOverlayClick(e, handleCloseNewJobListingModal)}
-        >
-          <div className="modal-content">
-            <p className="modal-message">
-              Hey, you will lose all your progress so you better save.
-            </p>
-            <div className="modal-buttons">
-              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleCloseNewJobListingModal}>
-                cancel
-              </Button>
-              <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleConfirmNewJobListing}>
-                confirm
-              </Button>
-            </div>
-          </div>
+      {/* Sticky bottom bar - only show when not loading */}
+      {!isLoading && (
+        <div className="perform-analysis-bottom-bar">
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleNewMockInterview}>
+            New Practice Interview
+          </Button>
         </div>
       )}
     </div>

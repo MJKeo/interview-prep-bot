@@ -1,0 +1,132 @@
+/* Container for a single transcript message pair */
+.transcript-feedback-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Container for the interviewer question */
+.transcript-feedback-item__question-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Container for the candidate answer */
+.transcript-feedback-item__answer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Label for Interviewer/You */
+.transcript-feedback-item__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Question text */
+.transcript-feedback-item__question {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Answer text - base styling */
+.transcript-feedback-item__answer {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Answer text when it has feedback - clickable with highlight */
+.transcript-feedback-item__answer--clickable {
+  background-color: rgba(193, 120, 23, 0.3); /* icy-aqua with lower opacity */
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover effect for clickable answer - darker highlight */
+.transcript-feedback-item__answer--clickable:hover {
+  background-color: rgba(193, 120, 23, 0.5); /* Slightly darker with medium opacity */
+}
+
+/* Feedback panel - collapsible section */
+.transcript-feedback-item__feedback-panel {
+  position: relative;
+  background-color: var(--color-white-smoke);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Close button in top right */
+.transcript-feedback-item__close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.transcript-feedback-item__close-button:hover {
+  color: var(--color-text-primary);
+}
+
+/* Feedback section container */
+.transcript-feedback-item__feedback-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Feedback section title */
+.transcript-feedback-item__feedback-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* Feedback list (bulleted) */
+.transcript-feedback-item__feedback-list {
+  list-style-type: disc;
+  list-style-position: inside;
+  margin: 0;
+  padding-left: 0.5rem;
+}
+
+.transcript-feedback-item__feedback-list li {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.transcript-feedback-item__feedback-list li:last-child {
+  margin-bottom: 0;
+}
+

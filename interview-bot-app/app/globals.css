@@ -88,6 +88,16 @@ body {
   font-size: 1rem;
 }
 
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  line-height: 1.2;
+}
+
 :root {
   /* Global brand palette */
   --color-ink-black:   #011627;
@@ -96,7 +106,7 @@ body {
   --color-slate-grey:  #7D8491;
   --color-blue-grey: #6f7d97;
   --color-text-on-media: #d5d5d5;
-  --color-white-smoke: #F5F5F5;
+  --color-white-smoke: rgb(245, 245, 245);
   --color-light-grape: #44385023;
   --color-white:       #FFFFFF;
 

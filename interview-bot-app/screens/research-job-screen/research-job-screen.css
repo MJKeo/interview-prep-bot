@@ -20,6 +20,11 @@
   flex: 1;
 }
 
+/* Main title for the research report screen */
+.research-job-title {
+  margin: 0 0 2rem 0 !important;
+}
+
 /* Section container */
 .research-job-section {
   width: 100%;
@@ -30,7 +35,7 @@
 
 /* Section title */
 .research-job-section-title {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--color-vintage-grape); /* Use vintage grape for section titles */
   margin: 0;

@@ -42,6 +42,7 @@ NOTE: The items within the array are in-order. Messages from index n come direct
 - transcript_message_id corresponds to the "id" of the candidate_answer that piece of feedback is about.
 - Be comprehensive in your feedback, covering all the evaluation criteria.
 - Include as much feedback as possible. Both good and bad feedback.
+- Include feedback on as many messages as possible. It is better to include too much feedback than too little.
 
 # OUTPUT (JSON)
 
@@ -124,6 +125,7 @@ NOTE: The items within the array are in-order. Messages from index n come direct
 - transcript_message_id corresponds to the "id" of the candidate_answer that piece of feedback is about.
 - Be comprehensive in your feedback, covering all the evaluation criteria.
 - Include as much feedback as possible. Both good and bad feedback.
+- Include feedback on as many messages as possible. It is better to include too much feedback than too little.
 
 # OUTPUT
 
@@ -209,6 +211,7 @@ NOTE: The items within the array are in-order. Messages from index n come direct
 - Prioritize competencies weighted higher for ${listing.job_title} per the provided context.
 - Be comprehensive in your feedback, covering all the evaluation criteria.
 - Include as much feedback as possible. Both good and bad feedback.
+- Include feedback on as many messages as possible. It is better to include too much feedback than too little.
 
 # OUTPUT
 
@@ -293,6 +296,7 @@ NOTE: The items within the array are in-order. Messages from index n come direct
 - Reward clarity, respect, and collaboration; penalize negativity and rambling.
 - Be comprehensive in your feedback, covering all the evaluation criteria.
 - Include as much feedback as possible. Both good and bad feedback.
+- Include feedback on as many messages as possible. It is better to include too much feedback than too little.
 
 # OUTPUT
 
@@ -444,6 +448,10 @@ Evaluate the interview and generate feedback according to the following criteria
   - Each piece of feedback is about ONE candidate_answer from the transcript.
   - transcript_message_id corresponds to the "id" of the candidate_answer that piece of feedback is about.
 
+- **Include as much feedback as possible.**
+  - Include feedback on as many messages as possible. Include both good and bad feedback.
+  - It is better to include too much feedback than too little.
+
 # OUTPUT (JSON)
 
 {
@@ -535,6 +543,7 @@ NOTE: The items within the array are in-order. Messages from index n come direct
 - transcript_message_id corresponds to the "id" of the candidate_answer that piece of feedback is about.
 - Be comprehensive in your feedback, covering all the evaluation criteria.
 - Include as much feedback as possible. Both good and bad feedback.
+- Include feedback on as many messages as possible. It is better to include too much feedback than too little.
 
 # OUTPUT
 

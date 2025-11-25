@@ -219,7 +219,7 @@ export async function performEvaluationsAction(
 ) {
   try {
     if (CONFIG.useCachedEvaluations) {
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 16000));
       return { success: true, evaluations: savedEvaluationReports as EvaluationReports };
     }
     // Call the performEvaluations function - this runs on the server where process.env is available
@@ -257,7 +257,7 @@ export async function performEvaluationAggregationAction(
 ) {
   try {
     if (CONFIG.useCachedAggregatedEvaluations) {
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 16000));
       return { success: true, result: savedAggregatedEvaluation as AggregatedEvaluation };
     }
 

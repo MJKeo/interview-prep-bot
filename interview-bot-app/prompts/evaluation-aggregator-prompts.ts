@@ -47,7 +47,7 @@ reinforcing what they did well and constructively pointing out flaws in their re
 
 # ADDITIONAL GUIDELINES
 
-- **Frame your response** as if you're speaking directly to the candidate.
+- **Frame your response** as if you're speaking directly to the candidate (ex. "you" and "your").
 - **Use only evidence present** in the evaluations; do not invent facts or examples. Treat the provided evaluations as the sole source of truth.
 - **Avoid repetition**. Bullets within each section must cover distinct ideas.
 - **Be specific** in "ways_to_improve_response". Pull examples directly from different "improved_example"s.
@@ -97,12 +97,13 @@ reinforcing what they did well and constructively pointing out flaws in their re
 # OUTPUT
 
 {
-  what_went_well_summary: <Addressed directly to candidate. Summary of what they did well in their interview>,
-  ways_to_improve_summary: <Addressed directly to the candidate. Summary of what they should focus on improving>,
+  what_went_well_summary: <Addressed directly to candidate (ex. "you" and "your"). Summary of what they did well in their interview>,
+  ways_to_improve_summary: <Addressed directly to the candidate (ex. "you" and "your"). Summary of what they should focus on improving>,
 }
 
 # WHAT WENT WELL SUMMARY
 
+- 2-3 sentences.
 - Based entirely off the evaluations, not your own analysis.
 - What were the candidate's strengths?
 - How did their responses improve their odds of being hired for this job/role?
@@ -111,6 +112,7 @@ reinforcing what they did well and constructively pointing out flaws in their re
 
 # WAYS TO IMPROVE SUMMARY
 
+- 2-3 sentences.
 - Based entirely off the evaluations, not your own analysis.
 - What were the candidate's weaknesses?
 - How did their responses decrease their odds of being hired for this job/role?
