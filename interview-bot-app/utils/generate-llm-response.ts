@@ -343,7 +343,7 @@ export async function performEvaluations(
         fitJudgeEvaluation: fitJudge.finalOutput,
         communicationJudgeEvaluation: communicationJudge.finalOutput,
         riskJudgeEvaluation: riskJudge.finalOutput,
-        candidateContextJudgeEvaluation: candidateContextJudge.finalOutput,
+        candidateContextJudgeEvaluation: candidateContextJudge?.finalOutput ?? null,
       };
     } catch (error) {
       // Re-throw with more context if it's not already an Error

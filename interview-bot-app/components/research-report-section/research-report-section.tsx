@@ -87,13 +87,13 @@ export default function ResearchReportSection({
         <div className="research-report-section__content">
           {/* Objective section */}
           <div className="research-report-section__metadata">
-            <div className="research-report-section__label">Objective:</div>
+            <div className="research-report-section__label">Overview:</div>
             <div className="research-report-section__text">{objective}</div>
           </div>
 
           {/* Usage section */}
           <div className="research-report-section__metadata">
-            <div className="research-report-section__label">Usage:</div>
+            <div className="research-report-section__label">How to use this report:</div>
             <div className="research-report-section__text">{usage}</div>
           </div>
 

@@ -24,17 +24,15 @@ After your interview, you'll receive detailed insights on each of your responses
 
 Run additional mock interviews to continue sharpening your skills. With each round, you'll learn and adjust based on the feedback until you feel confident and ready for the real thing.`;
 
-export const ATTACH_FILES_INFO_POPUP_CONTENT = `# Attaching Files
+export const ATTACH_FILES_INFO_POPUP_CONTENT = `## Attaching Files
 
-The files you attach should be about you: your background, experience, and qualifications. Think resumes, cover letters, LinkedIn profile exports, portfolio summaries, or anything else that tells your professional story. These materials help us personalize both the interview experience and the feedback you'll receive, tailoring everything to your specific experiences. We recommend attaching at least one file for the best experience and greatest learning opportunities.
+The files you attach should be about you: your background, experience, and qualifications. Think resumes, cover letters, LinkedIn profile exports, portfolio summaries, or anything else that tells your professional story. These materials help us personalize both the interview experience and the feedback you'll receive, tailoring everything to your specific experiences.
 
 #
 
-# Privacy & Storage
+## Privacy & Storage
 
 All files are saved locally on your device only. This app doesn't store or track your information. However, the content extracted from your files is processed using OpenAI's technology to create your personalized experience. Only attach content you'd be comfortable sharing with an application like ChatGPT.
-
-#
 
 #
   

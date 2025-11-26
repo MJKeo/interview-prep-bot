@@ -154,6 +154,7 @@ export default function PerformAnalysisScreen({
       setError(null);
 
       try {
+        console.log("Fetching evaluation reports");
         // Fetch evaluation reports from server action
         const result = await performEvaluationsAction(
           transcript,
@@ -166,14 +167,19 @@ export default function PerformAnalysisScreen({
           console.log("result.evaluations", result.evaluations);
           setEvaluationReports(result.evaluations);
         } else {
+          console.log("result.error", result);
+          console.log("Error 1")
           setError(result.error || "Failed to fetch evaluation reports");
         }
       } catch (err) {
+        console.log("Error 2")
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
       } finally {
         setIsLoadingEvaluations(false);
       }
     };
+
+    console.log("Test")
 
     if (!savedAggregatedEvaluation && !isLoadingEvaluations) {
       fetchEvaluationReports();

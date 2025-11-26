@@ -121,11 +121,8 @@ export default function Sidebar({
   useEffect(() => {
     if (editInputRef.current && editingItem && editInputRef.current instanceof HTMLTextAreaElement) {
       editInputRef.current.focus();
-      // Set cursor to end and auto-resize textarea to fit content
-      editInputRef.current.setSelectionRange(
-        editInputRef.current.value.length,
-        editInputRef.current.value.length
-      );
+      // Select all text so typing immediately replaces existing content
+      editInputRef.current.setSelectionRange(0, editInputRef.current.value.length);
       // Auto-resize textarea to fit content
       editInputRef.current.style.height = "auto";
       editInputRef.current.style.height = `${editInputRef.current.scrollHeight}px`;

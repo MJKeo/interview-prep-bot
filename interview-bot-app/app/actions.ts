@@ -69,8 +69,8 @@ export async function scrapeJobListingAction(url: string) {
  */
 export async function parseJobListingAttributesAction(jobListingScrapeContent: string) {
   try {
-    console.log("Remove the below throw");
-    throw new Error("Uhhhh");
+    // console.log("Remove the below throw");
+    // throw new Error("Uhhhh");
     if (CONFIG.useCachedListingAttributes) {
       await new Promise(r => setTimeout(r, 1500));
       return { success: true, data: savedJobParseResponse };
