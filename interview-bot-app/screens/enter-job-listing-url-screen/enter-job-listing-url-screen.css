@@ -1,16 +1,19 @@
 .job-listing-url-container {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh; /* Fixed height to enable vertical centering */
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; /* Center content vertically when there's not much content */
   padding: 4rem 2rem;
+  overflow: hidden; /* Prevent outer page scrolling */
   /* background-color: var(--color-background); */
 }
 
 .screen-content {
   width: 100%;
   max-width: 900px;
+  max-height: 100%; /* Allow growing but stop at container limit */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -102,6 +105,10 @@
   margin-top: 0.5rem;
   padding-top: 2rem;
   border-top: 1px solid #e5e7eb;
+  flex: 1; /* Allow this section to take remaining space */
+  min-height: 0; /* Required for nested flex scrolling */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Custom styling for the "How this works" popup */
