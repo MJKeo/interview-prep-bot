@@ -1,5 +1,4 @@
 import { type FileItem, FileStatus } from "@/types/file-item";
-import type { JobListingResearchResponse } from "@/types/job-listing-research-response";
 import type { JobListingWithId } from "@/types/job-listing-data";
 
 /**

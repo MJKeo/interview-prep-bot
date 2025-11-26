@@ -1,16 +1,58 @@
 /* Styles for the mobile not supported screen container */
 .mobile-not-supported-container {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Styles for the mobile not supported message */
-.mobile-not-supported-message {
-  font-size: 1.5rem; /* text-2xl */
-  font-weight: 500; /* font-medium */
-  color: rgb(31 41 55); /* text-gray-800 */
+/* Interview Pro top bar - full width at top of screen */
+.interview-pro-badge {
+  background-color: var(--color-ink-black);
+  color: var(--color-white-smoke);
+  padding: 1rem 2rem;
+  width: 100%;
+  font-size: 1.25rem;
+  font-weight: 600;
   text-align: center;
+}
+
+/* Content wrapper for vertical centering and spacing */
+.mobile-not-supported-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex: 1;
+  padding: 1.5rem;
+  max-width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Sad phone image */
+.sad-phone-image {
+  height: 100%;
+  max-height: 125px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Header text */
+.mobile-not-supported-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-vintage-grape);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Subtitle text */
+.mobile-not-supported-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+  margin: 0;
+  line-height: 1.5;
 }
 

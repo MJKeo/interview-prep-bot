@@ -318,21 +318,22 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
                     </div>
                     
                     {/* Saved Files Section */}
-                    <div className="saved-section">
-                        <p className="saved-files-label">
-                        Previously saved files
-                        </p>
-                        {savedFileItems.map((item) => (
-                            <SavedFileItem
-                                key={item.id}
-                                fileItem={item}
-                                isAttached={false}
-                                attachSavedFileItem={handleAttachSavedFileItem}
-                                removeSavedFileItemFromAttached={handleRemoveSavedFileItemFromAttached}
-                                deleteSavedFileItem={() => handleDeleteFile(item)}
-                            />
-                        ))}
-                    </div>
+                    {savedFileItems.length > 0 && (
+                        <div className="saved-section">
+                            <p className="saved-files-label">
+                            Previously saved files
+                            </p>
+                            {savedFileItems.map((item) => (
+                                <SavedFileItem
+                                    key={item.id}
+                                    fileItem={item}
+                                    isAttached={false}
+                                    attachSavedFileItem={handleAttachSavedFileItem}
+                                    removeSavedFileItemFromAttached={handleRemoveSavedFileItemFromAttached}
+                                    deleteSavedFileItem={() => handleDeleteFile(item)}
+                                />
+                            ))}
+                    </div>)}
                 </div>
             )}
 
