@@ -69,10 +69,10 @@ export async function scrapeJobListingAction(url: string) {
  */
 export async function parseJobListingAttributesAction(jobListingScrapeContent: string) {
   try {
+    console.log("Remove the below throw");
+    throw new Error("Uhhhh");
     if (CONFIG.useCachedListingAttributes) {
-      console.log("SCRAPE START")
       await new Promise(r => setTimeout(r, 1500));
-      console.log("SCRAPE DONE")
       return { success: true, data: savedJobParseResponse };
     }
     // Call the parse function - this runs on the server where process.env is available

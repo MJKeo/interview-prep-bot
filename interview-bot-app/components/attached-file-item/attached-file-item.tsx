@@ -58,14 +58,14 @@ export default function AttachedFileItem({
       <div className="file-info">
         <span className="file-name">{fileItem.fileName}</span>
         {fileItem.errorMessage && (
-          <span className="error-message">{fileItem.errorMessage}</span>
+          <span className="file-error-message">{fileItem.errorMessage}</span>
         )}
       </div>
 
       {/* Action buttons */}
       <div className="action-buttons">
         {/* Detach button - visible if detachFileItem is provided */}
-        {detachFileItem && (
+        {detachFileItem && (fileItem.status == FileStatus.SAVED) && (
           <button
             type="button"
             className="remove-button"

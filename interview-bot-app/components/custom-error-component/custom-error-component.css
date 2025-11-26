@@ -1,0 +1,59 @@
+/* Styles for the custom error component */
+
+/* Main error card container - border, low opacity background, padding, and rounded corners */
+.custom-error-component {
+  border: 1px solid var(--color-error);
+  background-color: color-mix(in srgb, var(--color-error) 10%, transparent);
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* Content container - flexbox layout for message and retry button */
+.custom-error-component__content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Error message text - uses error color and appropriate font styling */
+.custom-error-component__message {
+  color: var(--color-error);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Retry button - circular button with icon, no background, uses error color */
+.custom-error-component__retry-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin: -0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.15s ease-in-out;
+  flex-shrink: 0;
+}
+
+/* Retry button hover state - subtle background color */
+.custom-error-component__retry-button:hover {
+  background-color: color-mix(in srgb, var(--color-error) 15%, transparent);
+}
+
+/* Retry button focus state - outline for accessibility */
+.custom-error-component__retry-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-error);
+}
+
+/* Retry icon - circular arrow, uses error color, appropriate size */
+.custom-error-component__retry-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-error);
+}
+

@@ -30,7 +30,7 @@
 
 .error-icon {
   background-color: #fee2e2;
-  color: #dc2626;
+  color: var(--color-error);
 }
 
 /* Loading spinner animation */
@@ -53,6 +53,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  gap: 0.25rem;
   min-width: 0; /* Allows text truncation to work */
 }
 
@@ -63,6 +64,12 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.file-error-message {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-error);
 }
 
 /* Action buttons container */

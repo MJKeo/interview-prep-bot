@@ -1,16 +1,22 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import "./enter-job-listing-url-screen.css";
 import Button from "@/components/button";
-import { ButtonType } from "@/types";
+import AttachFiles from "@/components/attach-files";
+import ScreenPopup from "@/components/screen-popup";
+import LoadingBar from "@/components/loading-bar";
+import CustomErrorComponent from "@/components/custom-error-component";
+import { 
+  ButtonType,
+  FileItem,
+  FileStatus,
+  type JobListingResearchResponse,
+  type CustomError,
+} from "@/types";
 import { parseJobListingAttributesAction, scrapeJobListingAction } from "@/app/actions";
 import { isValidURL } from "@/utils/utils";
 import { APP_NAME, HOW_THIS_WORKS_POPUP_CONTENT } from "@/utils/constants";
-import AttachFiles from "@/components/attach-files";
-import { FileItem, FileStatus, type JobListingResearchResponse } from "@/types";
-import ScreenPopup from "@/components/screen-popup";
-import LoadingBar from "@/components/loading-bar";
 
 /**
  * Props for the EnterJobListingUrlScreen component.
@@ -43,7 +49,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   // State for parsing job listing attributes
   const [isParsingAttributes, setIsParsingAttributes] = useState(false);
   // State for error messages
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<CustomError | null>(null);
   // State for tracking if any attached files are still loading (not success or saved)
   const [attachedFiles, setAttachedFiles] = useState<FileItem[]>([]);
   // State for tracking whether the user has checked "skip attaching files"
@@ -81,6 +87,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
      * Called automatically when the component loads.
      */
     const parseAttributes = async () => {
+      console.log("PARSE ATTRIBUTES START");
       try {
         if (!scrapedJobListingWebsiteContent) {
           throw new Error("No scraped job listing website content to parse");
@@ -101,7 +108,8 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       } catch (err) {
         // Handle exceptions and display error message
         const errorMessage = err instanceof Error ? err.message : "Failed to parse job listing attributes";
-        setError(errorMessage);
+        console.log("THIS ERROR NEEDS TO BE HANDLED");
+        setError({ message: "Hey this is a test error", retryAction: parseAttributes });
       } finally {
         setIsParsingAttributes(false);
         setIsLoading(false);
@@ -129,7 +137,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
 
     // Validate URL syntax before attempting to scrape
     if (!isValidURL(cleanedUrl)) {
-      setError("Please enter a valid URL (www.<website>.com)");
+      setError({ message: "Please enter a valid URL (www.<website>.com)", retryAction: null });
       return;
     }
 
@@ -153,7 +161,8 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
     } catch (err) {
       // Handle exceptions and display error message
       const errorMessage = err instanceof Error ? err.message : "Failed to scrape job listing";
-      setError(errorMessage);
+      console.log("THIS ERROR NEEDS TO BE HANDLED");
+      setError({ message: errorMessage, retryAction: handleScrape });
       setIsLoading(false);
     } finally {
       // Always reset loading state when done
@@ -250,7 +259,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         </div>
         
         {/* Display error message if something went wrong */}
-        {error && <div className="error-message">{error}</div>}
+        {error && <CustomErrorComponent customError={error} />}
 
         {/* Show loading bar while we're scraping the website */}
         {isScraping && <div className="loading-bar-container">

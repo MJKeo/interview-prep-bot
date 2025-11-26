@@ -31,3 +31,4 @@ export type {
     JobListingWithId 
 } from "./job-listing-data";
 export { ButtonType } from "./button-type";
+export type { CustomError } from "./custom-error";

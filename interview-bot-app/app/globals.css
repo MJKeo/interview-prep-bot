@@ -109,6 +109,7 @@ body {
   --color-white-smoke: rgb(245, 245, 245);
   --color-light-grape: #44385023;
   --color-white:       #FFFFFF;
+  --color-error: #DF2935;
 
   /* Text hierarchy */
   --color-text-primary: #171717;

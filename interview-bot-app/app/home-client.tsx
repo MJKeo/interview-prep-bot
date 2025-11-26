@@ -17,7 +17,7 @@ import {
 import Sidebar from "@/components/sidebar";
 import { saveJobListing, fetchAllJobListings, deleteJobListing } from "@/utils/local-database";
 import { 
-  createJobListingWithIdFromScrapedListing, 
+  createJobListingWithIdFromScrapedListing,
   jobListingsWithUpdatedListing, 
   jobListingsWithRemovedListing,
   addInterviewToJobListingFromTranscript,
@@ -73,7 +73,6 @@ export default function HomeClient() {
    * @param attachedFiles - List of successfully attached files (with SUCCESS or SAVED status)
    */
   const handleNavigateToResearch = (jobListingParsedData: JobListingResearchResponse, attachedFiles: FileItem[]) => {
-    console.log(attachedFiles.length);
     // Store the new listing and navigate to research screen
     setJobListingParsedData(jobListingParsedData);
     setAttachedFiles(attachedFiles);
@@ -121,9 +120,13 @@ export default function HomeClient() {
     setScreen(ScreenName.PerformAnalysis);
 
     // Update the job listing with the new interview and trigger a save to the database
-    const newInterviewId = addInterviewToJobListingFromTranscript(transcript, currentJobListing!);
-    handleCurrentListingUpdated();
-    setCurrentInterviewId(newInterviewId);
+    if (currentJobListing) {
+      const newInterviewId = addInterviewToJobListingFromTranscript(transcript, currentJobListing);
+      handleCurrentListingUpdated();
+      setCurrentInterviewId(newInterviewId);
+    } else {
+      console.error("No current job listing found while navigating to perform analysis screen");
+    }
   };
 
   /**
@@ -210,12 +213,17 @@ export default function HomeClient() {
    * Updates the current job listing state and saves it to the database.
    */
   const handleCurrentListingUpdated = () => {
+    if (!currentJobListing) {
+      console.error("No current job listing found while handling current listing updated");
+      return;
+    }
+
     // Save the updated listing to IndexedDB
-    saveJobListing(currentJobListing!)
+    saveJobListing(currentJobListing)
       .then(() => {
         // Update the job listings array to reflect the changes
         setJobListings((currentListings) =>
-          jobListingsWithUpdatedListing(currentListings, currentJobListing!)
+          jobListingsWithUpdatedListing(currentListings, currentJobListing)
         );
       })
       .catch((error) => {
