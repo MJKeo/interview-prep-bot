@@ -441,7 +441,9 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         {entryMode === ListingEntryMode.URL && (
           <div className="entry-container">
             <div className="entry-input-group">
-              <label className="entry-label">Job Listing URL</label>
+              <label className="entry-label">
+                Job Listing URL <span className="entry-label-asterisk">*</span>
+              </label>
               <div className="entry-input-row">
                 <input
                   type="text"

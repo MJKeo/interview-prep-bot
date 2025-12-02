@@ -8,13 +8,16 @@ import type {
   EvaluationReports, 
   InterviewTranscript,
   AggregatedEvaluation,
-  JobListingWithId
+  JobListingWithId,
+  CustomError
 } from "@/types";
 import Button from "@/components/button";
+import CustomErrorComponent from "@/components/custom-error-component";
 import { ButtonType } from "@/types";
 import { performEvaluationsAction, performEvaluationAggregationAction } from "@/app/actions";
 import LoadingBar from "@/components/loading-bar";
 import TranscriptFeedbackItem from "@/components/transcript-feedback-item";
+import { NON_TRANSIENT_ERROR_MESSAGE, TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
 
 /**
  * Props for the PerformAnalysisScreen component.
@@ -78,8 +81,6 @@ export default function PerformAnalysisScreen({
   onNewMockInterview,
   onCurrentListingUpdated,
 }: PerformAnalysisScreenProps) {
-  // State to control the visibility of the "new mock interview" warning modal
-  const [showNewMockInterviewModal, setShowNewMockInterviewModal] = useState<boolean>(false);
   // State to store evaluation reports (either cached or fetched)
   const [evaluationReports, setEvaluationReports] = useState<EvaluationReports | null>(null);
   // State to store aggregated evaluation (either cached or fetched)
@@ -89,7 +90,7 @@ export default function PerformAnalysisScreen({
   // State to track loading status for aggregated evaluation
   const [isLoadingAggregated, setIsLoadingAggregated] = useState<boolean>(false);
   // State to store any error messages
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<CustomError | null>(null);
 
   // Loading messages for evaluation phase
   const evaluationMessages = [
@@ -128,20 +129,6 @@ export default function PerformAnalysisScreen({
   };
 
   /**
-   * Handler function to handle clicks on the modal overlay.
-   * Closes the modal when clicking outside the modal content.
-   * 
-   * @param e - The click event
-   * @param closeHandler - The function to call to close the modal
-   */
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>, closeHandler: () => void) => {
-    // Only close if clicking directly on the overlay, not on the modal content
-    if (e.target === e.currentTarget) {
-      closeHandler();
-    }
-  };
-
-  /**
    * Effect hook to fetch or use cached evaluation reports based on config.
    * Runs when the component mounts or when dependencies change.
    */
@@ -164,24 +151,22 @@ export default function PerformAnalysisScreen({
         );
 
         if (result.success && result.evaluations) {
-          console.log("result.evaluations", result.evaluations);
           setEvaluationReports(result.evaluations);
         } else {
-          console.log("result.error", result);
-          console.log("Error 1")
-          setError(result.error || "Failed to fetch evaluation reports");
+          throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
         }
       } catch (err) {
-        console.log("Error 2")
-        setError(err instanceof Error ? err.message : "An unexpected error occurred");
+        if (err instanceof Error) {
+          setError({ message: err.message, retryAction: fetchEvaluationReports });
+        } else {
+          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+        }
       } finally {
         setIsLoadingEvaluations(false);
       }
     };
 
-    console.log("Test")
-
-    if (!savedAggregatedEvaluation && !isLoadingEvaluations) {
+    if (!evaluationReports && !savedAggregatedEvaluation && !isLoadingEvaluations) {
       fetchEvaluationReports();
     }
   }, [savedAggregatedEvaluation, transcript, jobListingResearchResponse, deepResearchReports, interviewGuide]);
@@ -213,7 +198,6 @@ export default function PerformAnalysisScreen({
 
 
         if (result.success && result.result) {
-          console.log("result.aggregated", result.result);
           setAggregatedEvaluation(result.result);
 
           // Update the current interview/listing
@@ -223,16 +207,20 @@ export default function PerformAnalysisScreen({
             onCurrentListingUpdated();
           }
         } else {
-          setError(result.error || "Failed to fetch aggregated evaluation");
+          throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An unexpected error occurred");
+        if (err instanceof Error) {
+          setError({ message: err.message, retryAction: fetchAggregatedEvaluation });
+        } else {
+          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+        }
       } finally {
         setIsLoadingAggregated(false);
       }
     };
 
-    if (!savedAggregatedEvaluation && !isLoadingAggregated) {
+    if (!aggregatedEvaluation && !savedAggregatedEvaluation && !isLoadingAggregated) {
       fetchAggregatedEvaluation();
     } else if (savedAggregatedEvaluation) {
       setAggregatedEvaluation(savedAggregatedEvaluation);
@@ -320,10 +308,17 @@ export default function PerformAnalysisScreen({
                 </div>
               </div>
             )}
+
+        {/* Display error message if something went wrong */}
+        {error && 
+          <div className="error-message-container">
+            <CustomErrorComponent customError={error} />
+          </div>
+        }
       </div>
 
       {/* Sticky bottom bar - only show when not loading */}
-      {!isLoading && (
+      {!isLoading && !error && (
         <div className="perform-analysis-bottom-bar">
           <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleNewMockInterview}>
             New Practice Interview
