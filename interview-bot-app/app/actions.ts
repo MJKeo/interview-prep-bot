@@ -29,6 +29,7 @@ import {
 } from "@/app/saved-responses";
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from '@/utils/constants';
 
 /**
  * Server action to scrape a job listing URL and parse its attributes.
@@ -52,7 +53,7 @@ export async function scrapeJobListingAction(url: string) {
     return { success: true, content: content };
   } catch (error) {
     // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to scrape job listing';
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
     return { success: false, error: message };
   }
 }
@@ -81,7 +82,7 @@ export async function parseJobListingAttributesAction(jobListingScrapeContent: s
     return { success: true, data: data };
   } catch (error) {
     // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to parse job listing attributes';
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
     return { success: false, error: message };
   }
 }

@@ -19,6 +19,7 @@ import {
 import { parseJobListingAttributesAction, scrapeJobListingAction } from "@/app/actions";
 import { isValidURL } from "@/utils/utils";
 import { APP_NAME, HOW_THIS_WORKS_POPUP_CONTENT, MANUAL_ENTRY_INFO_POPUP_CONTENT } from "@/utils/constants";
+import { NON_TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
 
 /**
  * Enum representing the different entry modes for job listing information.
@@ -117,31 +118,30 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
      * Called automatically when the component loads.
      */
     const parseAttributes = async () => {
-      console.log("PARSE ATTRIBUTES START");
       try {
         if (!scrapedJobListingWebsiteContent) {
-          throw new Error("No scraped job listing website content to parse");
+          throw new Error("Unable to read the provided URL. Please verify the URL is correct and try again, or enter information manually.");
         }
 
         setIsParsingAttributes(true);
 
         // Call the server action to parse the job listing attributes
-        console.log(scrapedJobListingWebsiteContent);
         const result = await parseJobListingAttributesAction(scrapedJobListingWebsiteContent);
         // Check if the action was successful
         if (result.success && result.data) {
-          console.log(result.data);
           // We have our data so let's move on to the next page
           completeScrapeAndParse(result.data);
         } else {
           // Handle error from server action
-          throw new Error(result.error || "Failed to parse job listing attributes");
+          throw new Error(result.error);
         }
       } catch (err) {
         // Handle exceptions and display error message
-        const errorMessage = err instanceof Error ? err.message : "Failed to parse job listing attributes";
-        console.log("THIS ERROR NEEDS TO BE HANDLED");
-        setError({ message: "Hey this is a test error", retryAction: parseAttributes });
+        if (err instanceof Error) {
+          setError({ message: err.message, retryAction: parseAttributes });
+        } else {
+          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+        }
       } finally {
         setIsParsingAttributes(false);
         setIsLoading(false);
@@ -185,20 +185,21 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       // Check if the action was successful
       if (result.success && result.content) {
         // Update local state to trigger attribute parsing
-        console.log(result.content);
         setScrapedJobListingWebsiteContent(result.content);
       } else {
         // Handle error from server action
-        throw new Error(result.error || "Failed to scrape job listing");
+        throw new Error(result.error);
       }
     } catch (err) {
       // Handle exceptions and display error message
-      const errorMessage = err instanceof Error ? err.message : "Failed to scrape job listing";
-      console.log("THIS ERROR NEEDS TO BE HANDLED");
-      setError({ message: errorMessage, retryAction: handleScrape });
-      setIsLoading(false);
+      if (err instanceof Error) {
+        setError({ message: err.message, retryAction: handleScrape });
+      } else {
+        setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+      }
     } finally {
       // Always reset loading state when done
+      setIsLoading(false);
       setIsScraping(false);
     }
   };
@@ -226,7 +227,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
    * and immediately calls onScrapeSuccess without any scraping or parsing.
    */
   const handleManualEntry = () => {
-    console.log("MANUAL");
     // Construct the job listing data object with manual inputs
     const manualJobListingData: JobListingResearchResponse = {
       job_title: jobTitle.trim(),

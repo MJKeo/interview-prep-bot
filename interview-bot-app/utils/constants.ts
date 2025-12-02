@@ -4,6 +4,9 @@
  */
 export const APP_NAME = "Interview Pro";
 
+export const TRANSIENT_ERROR_MESSAGE = "An error occurred. Please try again.";
+export const NON_TRANSIENT_ERROR_MESSAGE = "An unknown error occurred.";
+
 export const HOW_THIS_WORKS_POPUP_CONTENT = `## Getting Started
 
 Start by entering the URL for the job listing you're applying to and attaching any documents about your background—think resume, cover letter, LinkedIn profile, or anything else that tells your professional story.

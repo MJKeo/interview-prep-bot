@@ -38,14 +38,13 @@ import {
   candidateContextJudgeSystemPrompt,
   riskJudgeSystemPrompt,
   aggregateEvaluationsByMessagePrompt,
-  aggregatePositiveEvaluationsPromptV1,
-  aggregateNegativeEvaluationsPromptV1,
   USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
 } from "@/prompts";
 import { run, withTrace } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { convertEvaluationsToFeedbackByMessage } from "./utils";
+import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from './constants';
 
 /**
  * Generates a structured response from OpenAI's chat completions API
@@ -80,11 +79,7 @@ export async function parseJobListingAttributes(
     }
     return result;
   } catch (error) {
-    // Re-throw with more context if it's not already an Error
-    if (error instanceof Error) {
-      throw new Error(`Failed to generate LLM response: ${error.message}`);
-    }
-    throw new Error(`Failed to generate LLM response: ${String(error)}`);
+    throw new Error(TRANSIENT_ERROR_MESSAGE);
   }
 }
 
