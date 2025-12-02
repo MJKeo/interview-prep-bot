@@ -22,8 +22,8 @@ Parse through the scraped contents to extract ALL relevant attributes as they ap
 - job_location
   - City, state, and zip code (if available). May be "remote".
 - job_description
-  - A high-level overview of what the job entails.
-  - Summarize. Do not include any information related to work schedule, location, or requirements.
+  - A high-level description of this specific role. What are you expected to do?
+  - Summarize. Do not include any information related to work schedule or location.
   - Remove headers, titles, or any other formatting.
 - work_schedule 
   - Days and hours you are expected to work.
