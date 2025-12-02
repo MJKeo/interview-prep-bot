@@ -1,3 +1,269 @@
+export const savedScrapedListingSiteContent = `Find Jobs
+
+# Digital Marketing Analyst
+
+John M. Corcoran & Company.
+
+100 Grandview Road, Braintree, MA 02184
+
+$36 - $53 an hour \- Full-time
+
+## Profile insights
+
+Find out how your skills align with the job description
+
+### Skills
+
+Do you have experience in **Web development**?
+
+YesNo
+
+### Education
+
+Do you have a **High school diploma or GED**?
+
+YesNo
+
+&nbsp;
+
+## Job details
+
+### Pay
+
+- $36 - $53 an hour
+
+
+### Job type
+
+- Full-time
+
+
+&nbsp;
+
+## Full job description
+
+The Digital Marketing Analyst supports the digital marketing efforts across the portfolio. Responsible for the oversight and troubleshooting of websites and advertising platforms to ensure that the digital presence for 60+ rental properties is accurate and provides top-notch results.
+
+
+**Location:** 100 Grandview Rd, Braintree, MA 02184.
+
+
+**Schedule:** Monday through Friday, 9:00 am - 5:00 pm. Hybrid, 1 day remote per week.
+
+
+**ESSENTIAL DUTIES:**
+
+- Monitor the performance of Internet Listing Services, PPC, Display Ads, social campaigns and websites, identifying and measuring key performance indicators to ascertain conversion rates, click-through rates, bounce rates, and areas for improvement, using platforms such as Google Analytics and custom reports provided by ad agencies.
+- Create and manage PPC, Display and Social ads as needed, either in-house or through a third party.
+- Prepare comprehensive reports to inform stakeholders of web performance and lead generation. Present findings to asset managers to justify advertising spend or to request adjustments to budget.
+- Create websites for new properties using templates provided by the company’s property management software.
+- Manage online listings in platforms such as Google My Business, Bing and Apple Business Connect.
+- Manage web creation performed by third party vendors. Provide progress updates to the marketing team and stakeholders and return timely feedback, suggestions, and edits to the vendors ensuring prompt delivery.
+- Troubleshoot pricing and data feed issues related to online leasing.
+- Audit websites for accuracy of office hours, rent specials, photography etc. Perform edits as needed.
+- Work with IT on domain management and name server pointing.
+- Keep abreast of search engine algorithms, accessibility requirements, and other best practices in website creation and management.
+- Meet with and vet new vendors that can enhance digital marketing efforts.
+- Lead or participate in special projects as needed.
+
+**REQUIRED EDUCATION/EXPERIENCE:**
+
+High school diploma with a minimum of 12 months of experience in leasing or marketing required. Demonstrated knowledge of Microsoft Office suite of products, social media, survey platforms and website design/development. Highly organized with demonstrable prioritization and deadline management capabilities. Attention to detail and strong customer service skills. Collaborative work style and ability to multi-task.
+
+
+Monday through Friday, 9:00 am - 5:00 pm.
+
+&nbsp;
+
+If you require alternative methods of application or screening, you must approach the employer directly to request this as Indeed is not responsible for the employer's application process.
+
+loading
+
+save-icon
+
+&nbsp;
+
+Report job
+
+### Company and salary information
+
+[Salaries for Digital Marketer](https://www.indeed.com/career/digital-marketer/salaries)
+
+[Salaries for Digital Marketer, Braintree, MA](https://www.indeed.com/career/digital-marketer/salaries/Braintree--MA)
+
+&nbsp;
+
+### Jobs with similar titles
+
+[Market Research Analyst jobs](https://www.indeed.com/q-market-research-analyst-l-quincy,-ma-jobs.html)
+
+&nbsp;
+
+### Similar job categories
+
+[Copywriter jobs](https://www.indeed.com/q-copywriter-l-quincy,-ma-jobs.html)
+
+&nbsp;
+
+### Career Guide articles
+
+[16 Computer Information Systems Jobs](https://www.indeed.com/career-advice/finding-a-job/computer-information-system-jobs?from=viewjob)
+
+[17 Archeology Careers To Pursue (Plus Salaries and Duties)](https://www.indeed.com/career-advice/finding-a-job/archeology-careers?from=viewjob)
+
+[25 Jobs for Innovators (With Duties and Average Salaries)](https://www.indeed.com/career-advice/finding-a-job/jobs-for-innovators?from=viewjob)
+
+[FAQ: What Is AACSB Accreditation? Definition and Importance](https://www.indeed.com/career-advice/career-development/what-is-aacsb-accreditation?from=viewjob)
+
+[How To Become an Elevator Mechanic (Plus Duties and Salary)](https://www.indeed.com/career-advice/finding-a-job/how-to-become-elevator-mechanic?from=viewjob)
+
+[How To Make Your Boss Like You](https://www.indeed.com/career-advice/career-development/how-to-make-your-boss-like-you?from=viewjob)
+
+[How To Write an Effective New Nurse Resume in 10 Steps](https://www.indeed.com/career-advice/resumes-cover-letters/new-nurse-resume?from=viewjob)
+
+[Interview Question: "Why Do You Want To Be a Secondary Reading Coach?"](https://www.indeed.com/career-advice/interviewing/why-want-to-be-secondary-reading-coach?from=viewjob)
+
+[Networking vs. Programming: Definitions and Differences](https://www.indeed.com/career-advice/finding-a-job/networking-vs-programming?from=viewjob)
+
+[Veterinary Technician Resume Examples and Template for 2024](https://www.indeed.com/career-advice/resume-samples/veterinary-technician?from=viewjob)
+
+&nbsp;
+
+![ ](https://www.indeed.com/m/rpc/frontendlogging?logType=trackEvent&moduleName=event&application=indeedmobile&pageId=viewjob&data=%7B%22eventName%22%3A%22mobPageLoadInfo%22%2C%22type%22%3A%22mobPageLoadInfo%22%2C%22pageId%22%3A%22viewjob%22%2C%22mobvjtk%22%3A%221jbgaf3sbjn1d800%22%2C%22pageName%22%3A%22vj%22%2C%22pixelRatio%22%3A1%2C%22scrWidth%22%3A1920%2C%22scrHeight%22%3A1080%2C%22scrOrientation%22%3A%22landscape%22%7D)
+enter-job-listing-url-screen.tsx:120 PARSE ATTRIBUTES START
+enter-job-listing-url-screen.tsx:129 WhatWhereFind Jobs
+
+# Digital Marketing Analyst
+
+John M. Corcoran & Company.
+
+100 Grandview Road, Braintree, MA 02184
+
+$36 - $53 an hour \- Full-time
+
+## Profile insights
+
+Find out how your skills align with the job description
+
+### Skills
+
+Do you have experience in **Web development**?
+
+YesNo
+
+### Education
+
+Do you have a **High school diploma or GED**?
+
+YesNo
+
+&nbsp;
+
+## Job details
+
+### Pay
+
+- $36 - $53 an hour
+
+
+### Job type
+
+- Full-time
+
+
+&nbsp;
+
+## Full job description
+
+The Digital Marketing Analyst supports the digital marketing efforts across the portfolio. Responsible for the oversight and troubleshooting of websites and advertising platforms to ensure that the digital presence for 60+ rental properties is accurate and provides top-notch results.
+
+
+**Location:** 100 Grandview Rd, Braintree, MA 02184.
+
+
+**Schedule:** Monday through Friday, 9:00 am - 5:00 pm. Hybrid, 1 day remote per week.
+
+
+**ESSENTIAL DUTIES:**
+
+- Monitor the performance of Internet Listing Services, PPC, Display Ads, social campaigns and websites, identifying and measuring key performance indicators to ascertain conversion rates, click-through rates, bounce rates, and areas for improvement, using platforms such as Google Analytics and custom reports provided by ad agencies.
+- Create and manage PPC, Display and Social ads as needed, either in-house or through a third party.
+- Prepare comprehensive reports to inform stakeholders of web performance and lead generation. Present findings to asset managers to justify advertising spend or to request adjustments to budget.
+- Create websites for new properties using templates provided by the company’s property management software.
+- Manage online listings in platforms such as Google My Business, Bing and Apple Business Connect.
+- Manage web creation performed by third party vendors. Provide progress updates to the marketing team and stakeholders and return timely feedback, suggestions, and edits to the vendors ensuring prompt delivery.
+- Troubleshoot pricing and data feed issues related to online leasing.
+- Audit websites for accuracy of office hours, rent specials, photography etc. Perform edits as needed.
+- Work with IT on domain management and name server pointing.
+- Keep abreast of search engine algorithms, accessibility requirements, and other best practices in website creation and management.
+- Meet with and vet new vendors that can enhance digital marketing efforts.
+- Lead or participate in special projects as needed.
+
+**REQUIRED EDUCATION/EXPERIENCE:**
+
+High school diploma with a minimum of 12 months of experience in leasing or marketing required. Demonstrated knowledge of Microsoft Office suite of products, social media, survey platforms and website design/development. Highly organized with demonstrable prioritization and deadline management capabilities. Attention to detail and strong customer service skills. Collaborative work style and ability to multi-task.
+
+
+Monday through Friday, 9:00 am - 5:00 pm.
+
+&nbsp;
+
+If you require alternative methods of application or screening, you must approach the employer directly to request this as Indeed is not responsible for the employer's application process.
+
+loading
+
+save-icon
+
+&nbsp;
+
+Report job
+
+### Company and salary information
+
+[Salaries for Digital Marketer](https://www.indeed.com/career/digital-marketer/salaries)
+
+[Salaries for Digital Marketer, Braintree, MA](https://www.indeed.com/career/digital-marketer/salaries/Braintree--MA)
+
+&nbsp;
+
+### Jobs with similar titles
+
+[Market Research Analyst jobs](https://www.indeed.com/q-market-research-analyst-l-quincy,-ma-jobs.html)
+
+&nbsp;
+
+### Similar job categories
+
+[Copywriter jobs](https://www.indeed.com/q-copywriter-l-quincy,-ma-jobs.html)
+
+&nbsp;
+
+### Career Guide articles
+
+[16 Computer Information Systems Jobs](https://www.indeed.com/career-advice/finding-a-job/computer-information-system-jobs?from=viewjob)
+
+[17 Archeology Careers To Pursue (Plus Salaries and Duties)](https://www.indeed.com/career-advice/finding-a-job/archeology-careers?from=viewjob)
+
+[25 Jobs for Innovators (With Duties and Average Salaries)](https://www.indeed.com/career-advice/finding-a-job/jobs-for-innovators?from=viewjob)
+
+[FAQ: What Is AACSB Accreditation? Definition and Importance](https://www.indeed.com/career-advice/career-development/what-is-aacsb-accreditation?from=viewjob)
+
+[How To Become an Elevator Mechanic (Plus Duties and Salary)](https://www.indeed.com/career-advice/finding-a-job/how-to-become-elevator-mechanic?from=viewjob)
+
+[How To Make Your Boss Like You](https://www.indeed.com/career-advice/career-development/how-to-make-your-boss-like-you?from=viewjob)
+
+[How To Write an Effective New Nurse Resume in 10 Steps](https://www.indeed.com/career-advice/resumes-cover-letters/new-nurse-resume?from=viewjob)
+
+[Interview Question: "Why Do You Want To Be a Secondary Reading Coach?"](https://www.indeed.com/career-advice/interviewing/why-want-to-be-secondary-reading-coach?from=viewjob)
+
+[Networking vs. Programming: Definitions and Differences](https://www.indeed.com/career-advice/finding-a-job/networking-vs-programming?from=viewjob)
+
+[Veterinary Technician Resume Examples and Template for 2024](https://www.indeed.com/career-advice/resume-samples/veterinary-technician?from=viewjob)
+
+&nbsp;
+
+![ ](https://www.indeed.com/m/rpc/frontendlogging?logType=trackEvent&moduleName=event&application=indeedmobile&pageId=viewjob&data=%7B%22eventName%22%3A%22mobPageLoadInfo%22%2C%22type%22%3A%22mobPageLoadInfo%22%2C%22pageId%22%3A%22viewjob%22%2C%22mobvjtk%22%3A%221jbgaf3sbjn1d800%22%2C%22pageName%22%3A%22vj%22%2C%22pixelRatio%22%3A1%2C%22scrWidth%22%3A1920%2C%22scrHeight%22%3A1080%2C%22scrOrientation%22%3A%22landscape%22%7D)`;
+
 export const savedJobParseResponse = {
     "job_title": "Account Manager",
     "job_location": "Westborough, MA 01581",

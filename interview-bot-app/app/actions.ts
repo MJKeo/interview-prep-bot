@@ -20,6 +20,7 @@ import type {
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import CONFIG from "@/app/config";
 import { 
+  savedScrapedListingSiteContent,
   savedJobParseResponse, 
   savedDeepResearchReports, 
   savedInterviewGuide,
@@ -44,7 +45,7 @@ export async function scrapeJobListingAction(url: string) {
   try {
     if (CONFIG.useCachedScrape) {
       await new Promise(r => setTimeout(r, 1500));
-      return { success: true, content: "Cached data" };
+      return { success: true, content: savedScrapedListingSiteContent };
     }
     // Call the scrape function - this runs on the server where process.env is available
     const content = await scrapeJobListing(url);

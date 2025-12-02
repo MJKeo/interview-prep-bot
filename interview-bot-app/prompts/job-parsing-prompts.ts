@@ -22,7 +22,9 @@ Parse through the scraped contents to extract ALL relevant attributes as they ap
 - job_location
   - City, state, and zip code (if available). May be "remote".
 - job_description
-  - Description from website. Remove headers, titles, or any other formatting.
+  - A high-level overview of what the job entails.
+  - Summarize. Do not include any information related to work schedule, location, or requirements.
+  - Remove headers, titles, or any other formatting.
 - work_schedule 
   - Days and hours you are expected to work.
 - company_name

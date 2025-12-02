@@ -126,9 +126,11 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         setIsParsingAttributes(true);
 
         // Call the server action to parse the job listing attributes
+        console.log(scrapedJobListingWebsiteContent);
         const result = await parseJobListingAttributesAction(scrapedJobListingWebsiteContent);
         // Check if the action was successful
         if (result.success && result.data) {
+          console.log(result.data);
           // We have our data so let's move on to the next page
           completeScrapeAndParse(result.data);
         } else {
@@ -183,6 +185,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       // Check if the action was successful
       if (result.success && result.content) {
         // Update local state to trigger attribute parsing
+        console.log(result.content);
         setScrapedJobListingWebsiteContent(result.content);
       } else {
         // Handle error from server action
@@ -223,6 +226,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
    * and immediately calls onScrapeSuccess without any scraping or parsing.
    */
   const handleManualEntry = () => {
+    console.log("MANUAL");
     // Construct the job listing data object with manual inputs
     const manualJobListingData: JobListingResearchResponse = {
       job_title: jobTitle.trim(),
