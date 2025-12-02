@@ -62,6 +62,7 @@ import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from './constant
 export async function parseJobListingAttributes(
   jobListingScrapeContent: string
 ): Promise<JobListingResearchResponse> {
+  const noResponseErrorMessage = "Unable to extract job listing information from the provided URL. Please verify the URL is correct and try again, or enter information manually.";
   try {
     // Call OpenAI's chat completions API
     const response = await openai.responses.parse({
@@ -75,10 +76,13 @@ export async function parseJobListingAttributes(
     // Parse the response
     const result = response.output_parsed;
     if (!result) {
-        throw new Error("OpenAI Response gave an empty result");
+        throw new Error(noResponseErrorMessage);
     }
     return result;
   } catch (error) {
+    if (error instanceof Error && error.message === noResponseErrorMessage) {
+      throw error;
+    }
     throw new Error(TRANSIENT_ERROR_MESSAGE);
   }
 }
@@ -94,28 +98,27 @@ export async function performDeepResearchAndContextDistillation(
   jobListingResearchResponse: JobListingResearchResponse,
   fileItems: FileItem[] = []
 ): Promise<DeepResearchReports> {
-  // Extract identifiers required to construct each agent's JSON input.
-  const { 
-    company_name: companyName, 
-    job_title: jobTitle,
-    job_location: jobLocation 
-  } = jobListingResearchResponse;
-
   return await withTrace("DeepResearchWorkflow", async () => {
-    // Launch all agent runs immediately so they can execute in parallel.
-    // Each agent receives a JSON string matching the format specified in the prompts.
-    var researchTasks: Promise<any>[] = [
-      run(companyStrategyAgent, companyStrategyInputPrompt(companyName)),
-      run(roleSuccessAgent, roleSuccessInputPrompt(companyName, jobTitle)),
-      run(teamCultureAgent, teamCultureInputPrompt(companyName, jobTitle)),
-      run(domainKnowledgeAgent, domainKnowledgeInputPrompt(companyName, jobTitle)),
-    ];
-
-    if (fileItems.length > 0) {
-      researchTasks.push(performUserContextDistillation(fileItems));
-    }
-
     try {
+      // Extract identifiers required to construct each agent's JSON input.
+      const { 
+        company_name: companyName, 
+        job_title: jobTitle,
+      } = jobListingResearchResponse;
+
+      // Launch all agent runs immediately so they can execute in parallel.
+      // Each agent receives a JSON string matching the format specified in the prompts.
+      var researchTasks: Promise<any>[] = [
+        run(companyStrategyAgent, companyStrategyInputPrompt(companyName)),
+        run(roleSuccessAgent, roleSuccessInputPrompt(companyName, jobTitle)),
+        run(teamCultureAgent, teamCultureInputPrompt(companyName, jobTitle)),
+        run(domainKnowledgeAgent, domainKnowledgeInputPrompt(companyName, jobTitle)),
+      ];
+
+      if (fileItems.length > 0) {
+        researchTasks.push(performUserContextDistillation(fileItems));
+      }
+    
       // Execute all research tasks concurrently and wait for all to complete
       // Promise.all will reject immediately if any task fails
       const[
@@ -134,10 +137,7 @@ export async function performDeepResearchAndContextDistillation(
         userContextReport: userContext,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to perform deep research: ${error.message}`);
-      }
-      throw new Error(`Failed to perform deep research: ${String(error)}`);
+      throw new Error(TRANSIENT_ERROR_MESSAGE);
     }
   });
 }
@@ -187,8 +187,8 @@ export async function createInterviewGuide(
   deepResearchReports: DeepResearchReports,
   interviewQuestions: string
 ): Promise<string> {
+  const noResponseErrorMessage = "An unknown error has occurred. Try again or contact support if the problem persists.";
   try {
-
     // Create the JSON input matching the distillation prompt's expected format
     const input = JSON.stringify({
       job_title: jobListingResearchResponse.job_title,
@@ -212,16 +212,15 @@ export async function createInterviewGuide(
     // Extract the generated interview guide from the response
     const result = response.output_text;
     if (!result) {
-      throw new Error("OpenAI Response gave an empty result");
+      throw new Error(noResponseErrorMessage);
     }
 
     return result;
   } catch (error) {
-    // Re-throw with more context if it's not already an Error
-    if (error instanceof Error) {
-      throw new Error(`Failed to create interview guide: ${error.message}`);
+    if (error instanceof Error && error.message === noResponseErrorMessage) {
+      throw error;
     }
-    throw new Error(`Failed to create interview guide: ${String(error)}`);
+    throw new Error(TRANSIENT_ERROR_MESSAGE);
   }
 }
 
@@ -245,6 +244,7 @@ export async function generateNextInterviewMessage(
   jobListingResearchResponse: JobListingResearchResponse,
   interviewGuide: string
 ): Promise<MockInterviewMessageResponse> {
+  const noResponseErrorMessage = "An unknown error has occurred. Try again or contact support if the problem persists.";
   try {
     // Call OpenAI's responses.parse API to generate the next message
     const response = await openai.responses.parse({
@@ -259,16 +259,15 @@ export async function generateNextInterviewMessage(
     // Extract and validate the parsed response
     const result = response.output_parsed;
     if (!result) {
-      throw new Error("OpenAI Response gave an empty result");
+      throw new Error(noResponseErrorMessage);
     }
 
     return result;
   } catch (error) {
-    // Re-throw with more context if it's not already an Error
-    if (error instanceof Error) {
-      throw new Error(`Failed to generate next interview message: ${error.message}`);
+    if (error instanceof Error && error.message === noResponseErrorMessage) {
+      throw error;
     }
-    throw new Error(`Failed to generate next interview message: ${String(error)}`);
+    throw new Error(TRANSIENT_ERROR_MESSAGE);
   }
 }
 
@@ -293,33 +292,32 @@ export async function performEvaluations(
   deepResearchReports: DeepResearchReports,
   interview_guideline: string
 ): Promise<EvaluationReports> {
-  const combinedDeepResearch = combineDeepResearchReports(deepResearchReports);
-  // Create evaluation agents for each judge type
-  const contentJudgeAgent = createEvaluationAgent(contentJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Content Judge Agent");
-  const structureJudgeAgent = createEvaluationAgent(structureJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Structure Judge Agent");
-  const fitJudgeAgent = createEvaluationAgent(fitJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Fit Judge Agent");
-  const communicationJudgeAgent = createEvaluationAgent(communicationJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Communication Judge Agent");
-  const riskJudgeAgent = createEvaluationAgent(riskJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Risk Judge Agent");
-
-  const input = JSON.stringify(transcript);
-
   return await withTrace("InterviewEvaluationWorkflow", async () => {
-    // Launch all agent runs immediately so they can execute in parallel
-    // Each agent receives the transcript as input
-    var evaluationTasks = [
-      run(contentJudgeAgent, input),
-      run(structureJudgeAgent, input),
-      run(fitJudgeAgent, input),
-      run(communicationJudgeAgent, input),
-      run(riskJudgeAgent, input),
-    ];
-
-    if (deepResearchReports.userContextReport) {
-      const candidateContextJudgeAgent = createEvaluationAgent(candidateContextJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline, deepResearchReports.userContextReport), "Candidate Context Judge Agent");
-      evaluationTasks.push(run(candidateContextJudgeAgent, input));
-    }
-
     try {
+      const combinedDeepResearch = combineDeepResearchReports(deepResearchReports);
+      // Create evaluation agents for each judge type
+      const contentJudgeAgent = createEvaluationAgent(contentJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Content Judge Agent");
+      const structureJudgeAgent = createEvaluationAgent(structureJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Structure Judge Agent");
+      const fitJudgeAgent = createEvaluationAgent(fitJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Fit Judge Agent");
+      const communicationJudgeAgent = createEvaluationAgent(communicationJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Communication Judge Agent");
+      const riskJudgeAgent = createEvaluationAgent(riskJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline), "Risk Judge Agent");
+
+      const input = JSON.stringify(transcript);
+      // Launch all agent runs immediately so they can execute in parallel
+      // Each agent receives the transcript as input
+      var evaluationTasks = [
+        run(contentJudgeAgent, input),
+        run(structureJudgeAgent, input),
+        run(fitJudgeAgent, input),
+        run(communicationJudgeAgent, input),
+        run(riskJudgeAgent, input),
+      ];
+
+      if (deepResearchReports.userContextReport) {
+        const candidateContextJudgeAgent = createEvaluationAgent(candidateContextJudgeSystemPrompt(listing, combinedDeepResearch, interview_guideline, deepResearchReports.userContextReport), "Candidate Context Judge Agent");
+        evaluationTasks.push(run(candidateContextJudgeAgent, input));
+      }
+
       // Execute all evaluation tasks concurrently and wait for all to complete
       // Promise.all will reject immediately if any task fails
       const [
@@ -341,11 +339,7 @@ export async function performEvaluations(
         candidateContextJudgeEvaluation: candidateContextJudge?.finalOutput ?? null,
       };
     } catch (error) {
-      // Re-throw with more context if it's not already an Error
-      if (error instanceof Error) {
-        throw new Error(`Failed to perform evaluations: ${error.message}`);
-      }
-      throw new Error(`Failed to perform evaluations: ${String(error)}`);
+      throw new Error(TRANSIENT_ERROR_MESSAGE);
     }
   });
 }
@@ -422,11 +416,7 @@ export async function performEvaluationAggregation(
       consolidated_feedback_by_message: consolidatedFeedback,
     };
   } catch (error) {
-    // Re-throw with more context if it's not already an Error
-    if (error instanceof Error) {
-      throw new Error(`Failed to perform evaluation aggregation: ${error.message}`);
-    }
-    throw new Error(`Failed to perform evaluation aggregation: ${String(error)}`);
+    throw new Error(TRANSIENT_ERROR_MESSAGE);
   }
 }
 
@@ -435,45 +425,38 @@ async function consolidateEvaluationsByMessage(
   transcript: InterviewTranscript,
   jobListingData: JobListingResearchResponse
 ): Promise<ConsolidatedFeedback[]> {
-  try {
-    // STEP 1 - CREATE METHOD THAT TURNS evaluations INTO FEEDBACK GROUPED BY MESSAGE ID
-    const feedbackByMessage = convertEvaluationsToFeedbackByMessage(evaluations, transcript);
-    const evaluationAggregatorSystemPrompt = aggregateEvaluationsByMessagePrompt(jobListingData);
-    
-    // STEP 2 - Create an agent for each message, saving a reference to the message_id
-    const consolidationTasks = feedbackByMessage.map((feedbackInput) => {
-      const agent = createEvaluationAggregatorAgent(
-        evaluationAggregatorSystemPrompt,
-        `Evaluation Aggregator Agent for Message ${feedbackInput.message_id}`
-      );
-      const input = JSON.stringify({
-        interviewer_question: feedbackInput.interviewer_question,
-        candidate_answer: feedbackInput.candidate_answer,
-        feedback: feedbackInput.feedback,
-      });
-      return {
-        messageId: feedbackInput.message_id,
-        task: run(agent, input),
-      };
-    });
-
-    // STEP 3 - Execute all tasks in parallel and build ConsolidatedFeedback array
-    // Promise.all preserves order: results[index] corresponds to consolidationTasks[index].task
-    // Each task resolves directly to a ConsolidatedFeedback object, pairing messageId with its result
-    return await Promise.all(
-      consolidationTasks.map(item => 
-        item.task.then(result => ({
-          message_id: item.messageId,
-          consolidated_feedback: result.finalOutput as ConsolidatedFeedbackResponse,
-        }))
-      )
+  // STEP 1 - CREATE METHOD THAT TURNS evaluations INTO FEEDBACK GROUPED BY MESSAGE ID
+  const feedbackByMessage = convertEvaluationsToFeedbackByMessage(evaluations, transcript);
+  const evaluationAggregatorSystemPrompt = aggregateEvaluationsByMessagePrompt(jobListingData);
+  
+  // STEP 2 - Create an agent for each message, saving a reference to the message_id
+  const consolidationTasks = feedbackByMessage.map((feedbackInput) => {
+    const agent = createEvaluationAggregatorAgent(
+      evaluationAggregatorSystemPrompt,
+      `Evaluation Aggregator Agent for Message ${feedbackInput.message_id}`
     );
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to consolidate evaluations by message: ${error.message}`);
-    }
-    throw new Error(`Failed to consolidate evaluations by message: ${String(error)}`);
-  }
+    const input = JSON.stringify({
+      interviewer_question: feedbackInput.interviewer_question,
+      candidate_answer: feedbackInput.candidate_answer,
+      feedback: feedbackInput.feedback,
+    });
+    return {
+      messageId: feedbackInput.message_id,
+      task: run(agent, input),
+    };
+  });
+
+  // STEP 3 - Execute all tasks in parallel and build ConsolidatedFeedback array
+  // Promise.all preserves order: results[index] corresponds to consolidationTasks[index].task
+  // Each task resolves directly to a ConsolidatedFeedback object, pairing messageId with its result
+  return await Promise.all(
+    consolidationTasks.map(item => 
+      item.task.then(result => ({
+        message_id: item.messageId,
+        consolidated_feedback: result.finalOutput as ConsolidatedFeedbackResponse,
+      }))
+    )
+  );
 }
 
 /**
@@ -492,42 +475,35 @@ async function consolidateEvaluationsByMessage(
 export async function performUserContextDistillation(
   fileItems: FileItem[]
 ): Promise<string> {
-  try {
-    // Transform FileItem array into the format expected by the distillation prompt
-    // Each file item is converted to an object with file_name and text_content properties
-    // Only include files that have text content available
-    const fileData = fileItems
-      .filter(item => item.text !== undefined)
-      .map(item => ({
-        file_name: item.fileName,
-        text_content: item.text ?? "",
-      }));
+  const noResponseErrorMessage = "An unknown error has occurred. Try again or contact support if the problem persists.";
+  // Transform FileItem array into the format expected by the distillation prompt
+  // Each file item is converted to an object with file_name and text_content properties
+  // Only include files that have text content available
+  const fileData = fileItems
+    .filter(item => item.text !== undefined)
+    .map(item => ({
+      file_name: item.fileName,
+      text_content: item.text ?? "",
+    }));
 
-    // Stringify the file data array to use as input to the LLM
-    const input = JSON.stringify(fileData);
+  // Stringify the file data array to use as input to the LLM
+  const input = JSON.stringify(fileData);
 
-    // Call OpenAI's responses.create API with the user context distillation prompt
-    // The prompt guides the LLM to extract and consolidate candidate information
-    const response = await openai.responses.create({
-      model: "gpt-4o-mini",
-      temperature: 0.4,
-      instructions: USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
-      input: input,
-    });
+  // Call OpenAI's responses.create API with the user context distillation prompt
+  // The prompt guides the LLM to extract and consolidate candidate information
+  const response = await openai.responses.create({
+    model: "gpt-4o-mini",
+    temperature: 0.4,
+    instructions: USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
+    input: input,
+  });
 
-    // Extract the generated candidate profile from the response
-    const result = response.output_text;
-    if (!result) {
-      throw new Error("OpenAI Response gave an empty result");
-    }
-
-    return result;
-  } catch (error) {
-    // Re-throw with more context if it's not already an Error
-    if (error instanceof Error) {
-      throw new Error(`Failed to perform user context distillation: ${error.message}`);
-    }
-    throw new Error(`Failed to perform user context distillation: ${String(error)}`);
+  // Extract the generated candidate profile from the response
+  const result = response.output_text;
+  if (!result) {
+    throw new Error(noResponseErrorMessage);
   }
+
+  return result;
 }
 

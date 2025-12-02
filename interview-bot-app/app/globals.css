@@ -98,6 +98,13 @@ body {
   line-height: 1.2;
 }
 
+.error-message-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 :root {
   /* Global brand palette */
   --color-ink-black:   #011627;

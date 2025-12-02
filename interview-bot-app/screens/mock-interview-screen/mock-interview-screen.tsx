@@ -56,9 +56,7 @@ interface MockInterviewScreenProps {
 export default function MockInterviewScreen({ 
   jobListingResearchResponse, 
   interviewGuide,
-  currentJobListing,
   onPerformFinalReview,
-  onCurrentListingUpdated,
   onReturnToResearch,
 }: MockInterviewScreenProps) {
   // State to store the array of messages in the conversation

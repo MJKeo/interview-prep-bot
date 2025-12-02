@@ -18,7 +18,7 @@ import {
 } from "@/types";
 import { parseJobListingAttributesAction, scrapeJobListingAction } from "@/app/actions";
 import { isValidURL } from "@/utils/utils";
-import { APP_NAME, HOW_THIS_WORKS_POPUP_CONTENT, MANUAL_ENTRY_INFO_POPUP_CONTENT } from "@/utils/constants";
+import { APP_NAME, HOW_THIS_WORKS_POPUP_CONTENT, MANUAL_ENTRY_INFO_POPUP_CONTENT, TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
 import { NON_TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
 
 /**
@@ -133,7 +133,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
           completeScrapeAndParse(result.data);
         } else {
           // Handle error from server action
-          throw new Error(result.error);
+          throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
         }
       } catch (err) {
         // Handle exceptions and display error message
@@ -188,7 +188,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         setScrapedJobListingWebsiteContent(result.content);
       } else {
         // Handle error from server action
-        throw new Error(result.error);
+        throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
       }
     } catch (err) {
       // Handle exceptions and display error message

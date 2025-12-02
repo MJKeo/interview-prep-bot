@@ -115,7 +115,7 @@ export async function performDeepResearchAndContextDistillationAction(
     return { success: true, reports };
   } catch (error) {
     // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to perform deep research';
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
     return { success: false, error: message };
   }
 }
@@ -157,7 +157,7 @@ export async function createInterviewGuideAction(
     return { success: true, guide: guide };
   } catch (error) {
     // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to create interview guide';
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
     return { success: false, error: message };
   }
 }
@@ -192,7 +192,7 @@ export async function generateNextInterviewMessageAction(
     return { success: true, nextMessage: response.message };
   } catch (error) {
     // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to generate next interview message';
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
     return { success: false, error: message };
   }
 }
@@ -232,7 +232,7 @@ export async function performEvaluationsAction(
     return { success: true, evaluations: evaluations };
   } catch (error) {
     // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to perform evaluations';
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
     return { success: false, error: message };
   }
 }
@@ -270,7 +270,7 @@ export async function performEvaluationAggregationAction(
     return { success: true, result: result };
   } catch (error) {
     // Handle errors and return error message
-    const message = error instanceof Error ? error.message : 'Failed to perform evaluation aggregation';
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
     return { success: false, error: message };
   }
 }

@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import "./research-job-screen.css";
-import { parseJobListingAttributesAction, performDeepResearchAndContextDistillationAction, createInterviewGuideAction } from "@/app/actions";
+import { performDeepResearchAndContextDistillationAction, createInterviewGuideAction } from "@/app/actions";
+import CustomErrorComponent from "@/components/custom-error-component";
 import type { JobListingResearchResponse, DeepResearchReports, FileItem, JobListingWithId } from "@/types";
 import Button from "@/components/button";
-import { ButtonType } from "@/types";
+import { ButtonType, type CustomError } from "@/types";
 import LoadingBar from "@/components/loading-bar";
 import ResearchReportSection from "@/components/research-report-section";
+import { NON_TRANSIENT_ERROR_MESSAGE, TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
 
 /**
  * Props for the ResearchJobScreen component.
@@ -56,7 +58,7 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
    // State to track if research has been completed successfully
    const [hasCompletedResearch, setHasCompletedResearch] = useState<boolean>(false);
    // State for error messages
-   const [error, setError] = useState<string | null>(null);
+   const [error, setError] = useState<CustomError | null>(null);
   // State for deep research reports
   const [deepResearchAndContextDistillationReports, setDeepResearchAndContextDistillationReports] = useState<DeepResearchReports | null>(null);
   // State for the interview guide
@@ -83,7 +85,6 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
      * Both operations run in parallel automatically when parsedData is available.
      */
     const runDeepResearch = async () => {
-      console.log("Running deep research...");
       try {
         setIsLoadingDeepResearch(true);
         // Call the server action to perform deep research and user context distillation in parallel
@@ -99,15 +100,15 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
           onCurrentListingUpdated();
         } else {
           // Handle error from deep research action
-          throw new Error(deepResearchResult.error || "Failed to perform deep research");
+          throw new Error(deepResearchResult.error ?? TRANSIENT_ERROR_MESSAGE);
         }
-      } catch (deepResearchErr) {
-        // Handle exceptions from deep research and display error message
-        const deepResearchErrorMessage = deepResearchErr instanceof Error 
-          ? deepResearchErr.message 
-          : "Failed to perform deep research";
-        setError(deepResearchErrorMessage);
-        setDeepResearchAndContextDistillationReports(null);
+      } catch (err) {
+        // Handle exceptions and display error message
+        if (err instanceof Error) {
+          setError({ message: err.message, retryAction: runDeepResearch });
+        } else {
+          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+        }
       } finally {
         setIsLoadingDeepResearch(false);
       }
@@ -134,7 +135,9 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
     const createGuide = async () => {
       try {
         if (!deepResearchAndContextDistillationReports) {
-          throw new Error("No deep research reports to create interview guide from");
+          // This should be impossible since we check if deepResearchAndContextDistillationReports exists prior to calling this function
+          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+          return;
         }
 
         setIsLoadingGuide(true);
@@ -151,15 +154,15 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
           onCurrentListingUpdated();
         } else {
           // Handle error from guide creation action
-          throw new Error(guideResult.error || "Failed to create interview guide");
+          throw new Error(guideResult.error ?? TRANSIENT_ERROR_MESSAGE);
         }
-      } catch (guideErr) {
-        // Handle exceptions from guide creation and display error message
-        const guideErrorMessage = guideErr instanceof Error 
-          ? guideErr.message 
-          : "Failed to create interview guide";
-        setError(guideErrorMessage);
-        setInterviewGuide(null);
+      } catch (err) {
+        // Handle exceptions and display error message
+        if (err instanceof Error) {
+          setError({ message: err.message, retryAction: createGuide });
+        } else {
+          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+        }
       } finally {
         setIsLoadingGuide(false);
       }
@@ -257,9 +260,6 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
           </div>
         )}
 
-        {/* Display error message if parsing failed */}
-        {error && <div className="error-message">{error}</div>}
-
         {/* Deep Research Reports Section */}
         {deepResearchAndContextDistillationReports && (
           <div className="research-job-section reports-section">
@@ -318,6 +318,13 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         {interviewGuide && (
           <p className="loading-progress-text">Interview Guide completed! You can begin your practice interview whenever you're ready.</p>
         )}
+
+        {/* Display error message if something went wrong */}
+        {error && 
+          <div className="error-message-container">
+            <CustomErrorComponent customError={error} />
+          </div>
+        }
       </div>
 
       {/* Sticky Footer Button */}
