@@ -100,10 +100,14 @@ export default function LoadingBar({
     setCurrentIndex(0);
 
     // Start progress animation by triggering CSS transition
-    // Use setTimeout to ensure the initial state is rendered first
-    setTimeout(() => {
-      setProgressStarted(true);
-    }, 10);
+    // Use double requestAnimationFrame to ensure the initial state (0% width) is 
+    // actually painted by the browser before we trigger the transition to 90%.
+    // A simple setTimeout(..., 10) can be skipped during heavy page loads.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setProgressStarted(true);
+      });
+    });
 
     // Set up message rotation interval (every 5 seconds)
     messageIntervalRef.current = setInterval(() => {

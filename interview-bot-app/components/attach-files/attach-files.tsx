@@ -255,21 +255,25 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
     return (
         <div className="attach-file-container">
             <div className="attach-file-header">
-                <p className="attach-file-header-text">Attach career files for better results</p>
-                <InfoButton 
-                    tooltip="Attaching files helps the AI personalize the interview guide." 
-                    onClick={() => setShowInfoPopup(true)}
-                />
-                
-                <label className="skip-checkbox-label">
-                    <input 
-                        type="checkbox" 
-                        className="skip-checkbox"
-                        checked={isSkipped}
-                        onChange={(e) => setIsSkipped(e.target.checked)}
+                <div className="step-2-container">
+                    <p className="step-heading">Step 2 - Attach career files for better results</p>
+                    <InfoButton 
+                        tooltip="Learn more" 
+                        onClick={() => setShowInfoPopup(true)}
                     />
-                    Skip attaching files
-                </label>
+                </div>
+                
+                <div className="skip-checkbox-container">
+                    <label className="skip-checkbox-label">
+                        <input 
+                            type="checkbox" 
+                            className="skip-checkbox"
+                            checked={isSkipped}
+                            onChange={(e) => setIsSkipped(e.target.checked)}
+                        />
+                        Skip this step
+                    </label>
+                </div>
             </div>
 
             {!isSkipped && (

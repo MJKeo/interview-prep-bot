@@ -1,12 +1,12 @@
 const CONFIG = {
-    useCachedScrape: false,
-    useCachedListingAttributes: false,
-    useCachedDeepResearch: false,
-    useCachedInterviewGuide: false,
-    useCachedTranscript: false,
-    useCachedEvaluations: false,
-    useCachedAggregatedEvaluations: false,
-    bypassMockInterview: false,
+    useCachedScrape: true,
+    useCachedListingAttributes: true,
+    useCachedDeepResearch: true,
+    useCachedInterviewGuide: true,
+    useCachedTranscript: true,
+    useCachedEvaluations: true,
+    useCachedAggregatedEvaluations: true,
+    bypassMockInterview: true,
 };
 
 export default CONFIG;

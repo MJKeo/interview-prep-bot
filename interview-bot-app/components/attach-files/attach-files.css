@@ -12,11 +12,42 @@
 .attach-file-header {
   padding: 0 0.5rem; /* Space for scrollbar */
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 0.5rem;
   color: var(--color-text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+/* Container for Step 2 heading and info button - centered horizontally */
+.step-2-container {
+  width: 100%;
+  max-width: 800px;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Container for skip checkbox - centered horizontally */
+.skip-checkbox-container {
+  width: 100%;
+  max-width: 800px;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.step-heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
 }
 
 .attach-file-header-text {
@@ -28,9 +59,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-left: auto;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   user-select: none;
 }
 

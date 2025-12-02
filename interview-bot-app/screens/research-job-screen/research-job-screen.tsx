@@ -49,8 +49,6 @@ interface ResearchJobScreenProps {
  * and displays the results in a textbox.
  */
 export default function ResearchJobScreen({ jobListingParsedData, attachedFiles, currentJobListing, onCurrentListingUpdated, onStartMockInterview }: ResearchJobScreenProps) {
-   // State for the current loading stage message
-   const [loadingStage, setLoadingStage] = useState<string | null>(null);
    //  State for if deep research is running
    const [isLoadingDeepResearch, setIsLoadingDeepResearch] = useState<boolean>(false);
    //  State for if guide creation is running
@@ -85,9 +83,9 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
      * Both operations run in parallel automatically when parsedData is available.
      */
     const runDeepResearch = async () => {
+      console.log("Running deep research...");
       try {
         setIsLoadingDeepResearch(true);
-        setLoadingStage("Performing deep research...");
         // Call the server action to perform deep research and user context distillation in parallel
         const deepResearchResult = await performDeepResearchAndContextDistillationAction(jobListingParsedData, attachedFiles);
         
@@ -99,9 +97,6 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
           // Save this to the db
           currentJobListing.data["deep-research-report"] = deepResearchResult.reports;
           onCurrentListingUpdated();
-          
-          // Update loading stage to reflect next step
-          setLoadingStage("Creating interview guide...");
         } else {
           // Handle error from deep research action
           throw new Error(deepResearchResult.error || "Failed to perform deep research");
@@ -113,7 +108,6 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
           : "Failed to perform deep research";
         setError(deepResearchErrorMessage);
         setDeepResearchAndContextDistillationReports(null);
-        setLoadingStage(null);
       } finally {
         setIsLoadingDeepResearch(false);
       }
@@ -167,7 +161,6 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         setError(guideErrorMessage);
         setInterviewGuide(null);
       } finally {
-        setLoadingStage(null);
         setIsLoadingGuide(false);
       }
     };

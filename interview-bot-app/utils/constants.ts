@@ -24,6 +24,18 @@ After your interview, you'll receive detailed insights on each of your responses
 
 Run additional mock interviews to continue sharpening your skills. With each round, you'll learn and adjust based on the feedback until you feel confident and ready for the real thing.`;
 
+export const MANUAL_ENTRY_INFO_POPUP_CONTENT = `## Entering Job Listing Information
+
+You can choose between the following methods for providing information:
+
+1. **Listing URL**: Copy / paste a link to the job listing itself. Make sure this link isn't just your search results but the individual, isolated job listing page. We'll scrape the site for you and extract all the info we need.
+2. **Manual Entry**: Copy / paste the job title, company name, and job description directly from the listing.
+
+#
+
+**IMPORTANT: Not all website can be scraped. If you get an error saying a website cannot be scraped, please use manual entry instead.**
+`;
+
 export const ATTACH_FILES_INFO_POPUP_CONTENT = `## Attaching Files
 
 The files you attach should be about you: your background, experience, and qualifications. Think resumes, cover letters, LinkedIn profile exports, portfolio summaries, or anything else that tells your professional story. These materials help us personalize both the interview experience and the feedback you'll receive, tailoring everything to your specific experiences.

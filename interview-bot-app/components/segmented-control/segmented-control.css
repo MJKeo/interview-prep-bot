@@ -1,0 +1,62 @@
+/* Segmented control container - pill-shaped background */
+.segmented-control {
+  display: inline-flex;
+  gap: 0.5rem;
+  background-color: #f3f4f6;
+  border-radius: 0.75rem;
+  padding: 0.25rem;
+  width: auto; /* Let it size based on content */
+  position: relative; /* Enable absolute positioning for slider */
+}
+
+/* Sliding indicator that moves between tabs - hidden by default */
+.segmented-control-slider {
+  position: absolute;
+  top: 0.25rem;
+  height: calc(100% - 0.5rem);
+  background-color: var(--color-vintage-grape);
+  border-radius: 0.5rem;
+  transition: left 0.15s ease-out, width 0.15s ease-out;
+  z-index: 0; /* Behind the buttons */
+  opacity: 0; /* Hidden by default */
+  pointer-events: none; /* Don't interfere with clicks when hidden */
+}
+
+/* Show slider when animating */
+.segmented-control-slider--visible {
+  opacity: 1;
+}
+
+/* Individual tab button */
+.segmented-control-tab {
+  padding: 0.375rem 1rem;
+  border: none;
+  background-color: transparent;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500; /* Same weight for all tabs */
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  outline: none;
+  white-space: nowrap; /* Prevent text wrapping */
+  position: relative; /* Ensure tabs are above the slider */
+  z-index: 1;
+}
+
+/* Hover state for inactive tabs */
+.segmented-control-tab:hover:not(.segmented-control-tab--active) {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Active tab styling - white text and background color when not animating */
+.segmented-control-tab--active {
+  color: var(--color-white);
+  background-color: var(--color-vintage-grape);
+}
+
+/* When animating, remove background color from active tab (slider handles the highlight) */
+.segmented-control-tab--animating.segmented-control-tab--active {
+  background-color: transparent;
+}
+
