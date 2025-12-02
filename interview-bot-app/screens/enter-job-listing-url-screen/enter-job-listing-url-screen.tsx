@@ -56,6 +56,11 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   const [jobTitle, setJobTitle] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
+  // State for optional manual entry fields
+  const [expectationsAndResponsibilities, setExpectationsAndResponsibilities] = useState("");
+  const [requirements, setRequirements] = useState("");
+  const [location, setLocation] = useState("");
+  const [workSchedule, setWorkSchedule] = useState("");
   // State for loading status
   const [isLoading, setIsLoading] = useState(false);
   // State for loading status
@@ -223,11 +228,11 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       job_title: jobTitle.trim(),
       company_name: companyName.trim(),
       job_description: jobDescription.trim(),
-      // Set all other fields to "Unknown" since they aren't specified
-      job_location: "Unknown",
-      work_schedule: "Unknown",
-      expectations_and_responsibilities: "Unknown",
-      requirements: "Unknown",
+      // Use optional field values if provided, otherwise default to "Unknown"
+      job_location: location.trim() || "Unknown",
+      work_schedule: workSchedule.trim() || "Unknown",
+      expectations_and_responsibilities: expectationsAndResponsibilities.trim() || "Unknown",
+      requirements: requirements.trim() || "Unknown",
     };
 
     // If "skip attaching files" is checked, pass an empty array
@@ -322,7 +327,9 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         {entryMode === ListingEntryMode.MANUAL && (
           <div className="entry-container">
             <div className="entry-input-group">
-              <label className="entry-label">Job Title</label>
+              <label className="entry-label">
+                Job Title <span className="entry-label-asterisk">*</span>
+              </label>
               <input
                 type="text"
                 placeholder="e.g. Software Engineer"
@@ -333,7 +340,9 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
               />
             </div>
             <div className="entry-input-group">
-              <label className="entry-label">Company Name</label>
+              <label className="entry-label">
+                Company Name <span className="entry-label-asterisk">*</span>
+              </label>
               <input
                 type="text"
                 placeholder="e.g. Acme Corporation"
@@ -344,7 +353,9 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
               />
             </div>
             <div className="entry-input-group">
-              <label className="entry-label">Job Description</label>
+              <label className="entry-label">
+                Job Description <span className="entry-label-asterisk">*</span>
+              </label>
               <textarea
                 placeholder="Enter the job description..."
                 className="entry-textarea"
@@ -354,6 +365,58 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 rows={3}
               />
             </div>
+            <div className="entry-input-group">
+              <label className="entry-label">
+                Expectations & Responsibilities <span className="entry-label-required">{"(optional)"}</span>
+              </label>
+              <textarea
+                placeholder="e.g. Lead development of new features, collaborate with cross-functional teams, mentor junior developers..."
+                className="entry-textarea"
+                value={expectationsAndResponsibilities}
+                onChange={(e) => setExpectationsAndResponsibilities(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={3}
+              />
+            </div>
+            <div className="entry-input-group">
+              <label className="entry-label">
+                Requirements <span className="entry-label-required">{"(optional)"}</span>
+              </label>
+              <textarea
+                placeholder="e.g. 5+ years of experience, Bachelor's degree in Computer Science, proficiency in React and TypeScript..."
+                className="entry-textarea"
+                value={requirements}
+                onChange={(e) => setRequirements(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={3}
+              />
+            </div>
+            <div className="entry-input-group">
+              <label className="entry-label">
+                Location <span className="entry-label-required">{"(optional)"}</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. San Francisco, CA or Remote"
+                className="entry-input"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+            <div className="entry-input-group">
+              <label className="entry-label">
+                Work Schedule <span className="entry-label-required">{"(optional)"}</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Full-time, 9am-5pm EST or Flexible hours"
+                className="entry-input"
+                value={workSchedule}
+                onChange={(e) => setWorkSchedule(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
             <div className="entry-button-container">
               <Button 
                 htmlType="button"
@@ -361,7 +424,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 onClick={handleManualEntry} 
                 disabled={!canProceed || isLoading}
                 className="start-analysis-button"
-                tooltip={canProceed ? undefined : "Fill in all fields and attach files or skip attaching"}
+                tooltip={canProceed ? undefined : "Fill in all required fields and attach files or skip attaching"}
               >
                 Start Analysis
               </Button>

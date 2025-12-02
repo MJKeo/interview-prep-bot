@@ -9,8 +9,8 @@ The guide is a **toolbox**, not a script: it should surface **what to probe and 
 1. **job_title** - title of the role.
 2. **job_description** - full text of the job posting.
 3. **company_name** - name of the company.
-4. **expectations_and_responsibilities** - structured list scraped from the job listing.
-5. **requirements** - structured list of required / preferred skills, experience, and qualifications.
+4. **expectations_and_responsibilities** - structured list scraped from the job listing (if available).
+5. **requirements** - structured list of required / preferred skills, experience, and qualifications (if available).
 6. **deep_research_results** - prior research summarizing company, role, team, market, and tools.
 7. **interview_questions** - distilled taxonomy of interview question types and examples.  
    - Treat this as the **source of truth** for question types and definitions.  

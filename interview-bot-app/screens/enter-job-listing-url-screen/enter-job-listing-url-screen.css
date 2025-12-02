@@ -104,6 +104,18 @@
   margin: 0;
 }
 
+/* Required asterisk styling */
+.entry-label-asterisk {
+  color: var(--color-error);
+}
+
+/* Optional indicator styling */
+.entry-label-required {
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  font-weight: 400;
+}
+
 /* Unified input styling for all text inputs */
 .entry-input {
   width: 100%;

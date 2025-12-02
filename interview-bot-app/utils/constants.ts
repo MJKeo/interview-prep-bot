@@ -29,7 +29,7 @@ export const MANUAL_ENTRY_INFO_POPUP_CONTENT = `## Entering Job Listing Informat
 You can choose between the following methods for providing information:
 
 1. **Listing URL**: Copy / paste a link to the job listing itself. Make sure this link isn't just your search results but the individual, isolated job listing page. We'll scrape the site for you and extract all the info we need.
-2. **Manual Entry**: Copy / paste the job title, company name, and job description directly from the listing.
+2. **Manual Entry**: Copy / paste the necessary job information directly from the listing.
 
 #
 
