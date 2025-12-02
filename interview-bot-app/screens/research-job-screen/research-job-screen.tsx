@@ -87,6 +87,7 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
     const runDeepResearch = async () => {
       try {
         setIsLoadingDeepResearch(true);
+        setError(null);
         // Call the server action to perform deep research and user context distillation in parallel
         const deepResearchResult = await performDeepResearchAndContextDistillationAction(jobListingParsedData, attachedFiles);
         
@@ -141,6 +142,7 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         }
 
         setIsLoadingGuide(true);
+        setError(null);
         // Call the server action to create the interview guide
         const guideResult = await createInterviewGuideAction(jobListingParsedData, deepResearchAndContextDistillationReports);
 

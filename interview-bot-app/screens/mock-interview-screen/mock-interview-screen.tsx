@@ -3,15 +3,17 @@
 import { useState, useRef, useEffect } from "react";
 import "./mock-interview-screen.css";
 import Button from "@/components/button";
+import CustomErrorComponent from "@/components/custom-error-component";
 import { ButtonType } from "@/types";
 import { generateNextInterviewMessageAction } from "@/app/actions";
 import CONFIG from "@/app/config";
-import type { JobListingResearchResponse, InterviewTranscript, JobListingWithId } from "@/types";
+import type { JobListingResearchResponse, InterviewTranscript, JobListingWithId, CustomError } from "@/types";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
 import { convertMessagesToTranscript } from "@/utils/utils";
 import { savedChatTranscript } from "@/app/saved-responses";
 import ScreenPopup from "@/components/screen-popup";
 import { PERFORM_FINAL_REVIEW_WARNING_POPUP_CONTENT } from "@/utils/constants";
+import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
 
 /**
  * Props for the MockInterviewScreen component.
@@ -72,7 +74,8 @@ export default function MockInterviewScreen({
   // State to track if a message is being generated (to prevent multiple simultaneous requests)
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   // State to store error messages to display to the user
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [conversationError, setConversationError] = useState<CustomError | null>(null);
+  const [error, setError] = useState<CustomError | null>(null);
   // Ref to the messages container for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -89,6 +92,8 @@ export default function MockInterviewScreen({
     
     // Set generating state to disable input and show typing indicator
     setIsGenerating(true);
+    setError(null);
+    setConversationError(null);
 
     try {
       // Create the preliminary "Hello" message (not added to display)
@@ -109,13 +114,16 @@ export default function MockInterviewScreen({
         setMessages([assistantMessage]);
       } else {
         // Handle error from server action - show error message to user
-        const errorMsg = result.error || "Failed to generate initial response";
-        setErrorMessage(errorMsg);
+        const errorMsg = result.error || TRANSIENT_ERROR_MESSAGE;
+        throw new Error(errorMsg);
       }
-    } catch (error) {
+    } catch (err) {
       // Handle exceptions and display error message
-      const errorMsg = error instanceof Error ? error.message : "Failed to generate initial response";
-      setErrorMessage(errorMsg);
+      if (err instanceof Error) {
+        setConversationError({ message: err.message, retryAction: sendInitialMessage });
+      } else {
+        setConversationError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+      }
     } finally {
       // Reset generating state to allow new requests
       setIsGenerating(false);
@@ -154,29 +162,28 @@ export default function MockInterviewScreen({
       return;
     }
 
-    console.log("Message length before sending: ", messages.length);
-
-    // Store the user's message content before clearing the input
-    const userMessageContent = inputValue.trim();
-    // Clear the input field immediately for better UX
-    setInputValue("");
-    // Clear any previous error messages when sending a new message
-    setErrorMessage(null);
-
-    // Create the user message object in EasyInputMessage format
-    const userMessage: EasyInputMessage = { role: "user", content: userMessageContent };
-
-    const combinedMessages = [...messages, userMessage];
-    
-    // Add user message to the display immediately
-    setMessages(combinedMessages);
-    
-    // Set generating state to prevent multiple simultaneous requests
-    setIsGenerating(true);
-
     try {
+      // Store the user's message content before clearing the input
+      const userMessageContent = inputValue.trim();
+      // Clear the input field immediately for better UX
+      setInputValue("");
+      // Clear any previous error messages when sending a new message
+      setError(null);
+      setConversationError(null);
+      console.log("Test this case ^ where you send a message after an error has happened")
+
+      // Create the user message object in EasyInputMessage format
+      const userMessage: EasyInputMessage = { role: "user", content: userMessageContent };
+
+      const combinedMessages = [...messages, userMessage];
+      
+      // Add user message to the display immediately
+      setMessages(combinedMessages);
+      
+      // Set generating state to prevent multiple simultaneous requests
+      setIsGenerating(true);
+
       // Call the server action to generate the next interview message
-      console.log("Generating next interview message...");
       const result = await generateNextInterviewMessageAction(
         combinedMessages,
         jobListingResearchResponse,
@@ -190,13 +197,16 @@ export default function MockInterviewScreen({
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
         // Handle error from server action - show error message to user
-        const errorMsg = result.error || "Failed to generate response";
-        setErrorMessage(errorMsg);
+        const errorMsg = result.error || TRANSIENT_ERROR_MESSAGE;
+        throw new Error(errorMsg);
       }
-    } catch (error) {
+    } catch (err) {
       // Handle exceptions and display error message
-      const errorMsg = error instanceof Error ? error.message : "Failed to generate response";
-      setErrorMessage(errorMsg);
+      if (err instanceof Error) {
+        setConversationError({ message: err.message, retryAction: handleSendUserMessage });
+      } else {
+        setConversationError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+      }
     } finally {
       // Reset generating state to allow new requests
       setIsGenerating(false);
@@ -231,8 +241,9 @@ export default function MockInterviewScreen({
     setShowStartOverModal(false);
     // Clear all messages from the conversation
     setMessages([]);
-    // Clear any error messages
-    setErrorMessage(null);
+    // Clear any errors
+    setError(null);
+    setConversationError(null);
     // Send the initial "Hello" message to get the bot's first response
     sendInitialMessage();
   };
@@ -263,12 +274,17 @@ export default function MockInterviewScreen({
     // Close the modal
     setShowWarningModal(false);
     // Navigate to perform analysis screen with conversation history
-    var transcript: InterviewTranscript = convertMessagesToTranscript(messages);
-    if (CONFIG.useCachedTranscript) {
-      transcript = savedChatTranscript as InterviewTranscript;
-    }
+    try {
+      var transcript: InterviewTranscript = convertMessagesToTranscript(messages);
+      if (CONFIG.useCachedTranscript) {
+        transcript = savedChatTranscript as InterviewTranscript;
+      }
 
-    onPerformFinalReview(transcript);
+      onPerformFinalReview(transcript);
+    } catch (error) {
+      // Handle exceptions and display error message
+      setError({ message: "An unknown error has occurred. Try again or contact support if the problem persists.", retryAction: handleConfirmFinalReview });
+    }
   };
 
 
@@ -321,6 +337,7 @@ export default function MockInterviewScreen({
             {String(message.content)}
           </div>
         ))}
+
         {/* Typing indicator bubble - shows while generating assistant response */}
         {isGenerating && (
           <div className="message-bubble message-assistant typing-indicator">
@@ -331,18 +348,25 @@ export default function MockInterviewScreen({
             </div>
           </div>
         )}
+
+        {/* Display error message if something went wrong while generating the next message */}
+        {conversationError && 
+          <CustomErrorComponent customError={conversationError} />
+        }
+
         {/* Invisible element at the bottom for auto-scrolling */}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Fixed input section at the bottom */}
       <div className="mock-interview-input-section">
-        {/* Error message display */}
-        {errorMessage && (
-          <div className="mock-interview-error-message">
-            {errorMessage}
+        {/* Display error message if something went wrong (outside of generating the next message) */}
+        {error && 
+          <div className="error-message-container">
+            <CustomErrorComponent customError={error} />
           </div>
-        )}
+        }
+
         {/* Input and Send button inline */}
         <div className="mock-interview-input-row">
           <input
@@ -359,10 +383,11 @@ export default function MockInterviewScreen({
               }
             }}
           />
-          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleSendUserMessage} disabled={isGenerating}>
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleSendUserMessage} disabled={isGenerating || conversationError !== null}>
             {isGenerating ? "Generating response..." : "Send"}
           </Button>
         </div>
+
         {/* Other buttons centered below */}
         <div className="mock-interview-buttons">
           <Button htmlType="button" type={ButtonType.SECONDARY} onClick={handleReturnToResearch} disabled={isGenerating}>

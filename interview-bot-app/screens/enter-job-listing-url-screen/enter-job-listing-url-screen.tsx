@@ -124,6 +124,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         }
 
         setIsParsingAttributes(true);
+        setError(null);
 
         // Call the server action to parse the job listing attributes
         const result = await parseJobListingAttributesAction(scrapedJobListingWebsiteContent);
