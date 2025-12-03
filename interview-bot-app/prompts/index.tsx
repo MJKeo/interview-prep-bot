@@ -46,4 +46,5 @@ export { USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1 } from "./user-context-disti
 export { 
     MANUAL_JOB_INPUT_GUARDRAIL_PROMPT,
     UPLOADED_FILE_GUARDRAIL_PROMPT,
+    WEBSITE_CONTENT_GUARDRAIL_PROMPT,
 } from "./guardrail-prompts";

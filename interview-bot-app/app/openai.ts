@@ -7,7 +7,8 @@ import {
   DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V2,
   aggregatedEvaluationsSummaryPrompt,
   MANUAL_JOB_INPUT_GUARDRAIL_PROMPT,
-  UPLOADED_FILE_GUARDRAIL_PROMPT
+  UPLOADED_FILE_GUARDRAIL_PROMPT,
+  WEBSITE_CONTENT_GUARDRAIL_PROMPT
 } from "@/prompts";
 import {
   PerformanceEvaluationResponseSchema,
@@ -99,6 +100,9 @@ export const manualJobInputGuardrailAgent = new Agent({
   name: "Manual job input guardrail agent",
   instructions: MANUAL_JOB_INPUT_GUARDRAIL_PROMPT,
   model: "gpt-4o-mini",
+  modelSettings: {
+    temperature: 0.5,
+  },
   outputType: ManualJobInputGuardrailResponseSchema,
 });
 
@@ -106,5 +110,18 @@ export const uploadedFileGuardrailAgent = new Agent({
   name: "Uploaded file guardrail agent",
   instructions: UPLOADED_FILE_GUARDRAIL_PROMPT,
   model: "gpt-4o-mini",
+  modelSettings: {
+    temperature: 0.5,
+  },
+  outputType: GenericMaliciousContentGuardrailResponseSchema,
+});
+
+export const websiteContentGuardrailAgent = new Agent({
+  name: "Website content guardrail agent",
+  instructions: WEBSITE_CONTENT_GUARDRAIL_PROMPT,
+  model: "gpt-4o-mini",
+  modelSettings: {
+    temperature: 0.5,
+  },
   outputType: GenericMaliciousContentGuardrailResponseSchema,
 });

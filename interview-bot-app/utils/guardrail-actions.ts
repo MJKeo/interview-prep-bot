@@ -4,7 +4,7 @@ import type {
     ManualJobInputGuardrailResponse,
 } from "@/types";
 import { run, withTrace } from "@openai/agents";
-import { manualJobInputGuardrailAgent, uploadedFileGuardrailAgent } from "@/app/openai";
+import { manualJobInputGuardrailAgent, uploadedFileGuardrailAgent, websiteContentGuardrailAgent } from "@/app/openai";
 import { TRANSIENT_ERROR_MESSAGE } from "./constants";
 
 export async function performManualJobInputGuardrailCheck(
@@ -27,6 +27,19 @@ export async function performUploadedFileGuardrailCheck(
     return await withTrace("UploadedFileGuardrailCheck", async () => {
         try {
             const result = await run(uploadedFileGuardrailAgent, fileTextData);
+            return result.finalOutput;
+        } catch (error) {
+            throw new Error(TRANSIENT_ERROR_MESSAGE);
+        }
+    });
+}
+
+export async function performWebsiteContentGuardrailCheck(
+    websiteContent: string,
+  ): Promise<GenericMaliciousContentGuardrailResponse> {
+    return await withTrace("WebsiteContentGuardrailCheck", async () => {
+        try {
+            const result = await run(websiteContentGuardrailAgent, websiteContent);
             return result.finalOutput;
         } catch (error) {
             throw new Error(TRANSIENT_ERROR_MESSAGE);

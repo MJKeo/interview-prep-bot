@@ -17,7 +17,12 @@ import {
   type CustomError,
   type ManualJobInputGuardrailResponse,
 } from "@/types";
-import { parseJobListingAttributesAction, scrapeJobListingAction, performManualJobInputGuardrailCheckAction } from "@/app/actions";
+import { 
+  parseJobListingAttributesAction, 
+  scrapeJobListingAction, 
+  performManualJobInputGuardrailCheckAction,
+  performWebsiteContentGuardrailCheckAction, 
+} from "@/app/actions";
 import CONFIG from "@/app/config";
 import { isValidURL } from "@/utils/utils";
 import { APP_NAME, HOW_THIS_WORKS_POPUP_CONTENT, MANUAL_ENTRY_INFO_POPUP_CONTENT, TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
@@ -159,6 +164,36 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
     }
   }, [scrapedJobListingWebsiteContent]);
 
+  const isWebsiteContentSafe = async (websiteContent: string) => {
+    try {
+      setError(null);
+
+      const guardrailResult = await performWebsiteContentGuardrailCheckAction(websiteContent);
+      console.log("Guardrail result", guardrailResult);
+
+      // Check if the action was successful
+      if (guardrailResult.success && guardrailResult.result) {
+        if (guardrailResult.result.contains_any_malicious_content) {
+          // Set error to the reason for rejection if any safety flag is true
+          setError({ message: `Website was flagged by safety guardrails. Please verify the website's contents and contact support if the problem persists.`, retryAction: null });
+          return false;
+        }
+        return true;
+      } else {
+        // Handle error from server action
+        throw new Error(guardrailResult.error ?? TRANSIENT_ERROR_MESSAGE);
+      }
+    } catch (err) {
+      // Handle exceptions and display error message
+      if (err instanceof Error) {
+        setError({ message: err.message, retryAction: () => isWebsiteContentSafe(websiteContent) });
+      } else {
+        setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+      }
+      return false;
+    }
+  }
+
   /**
    * Handles the scraping of the job listing URL.
    * Called when the user clicks the button or presses Enter.
@@ -189,8 +224,13 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       
       // Check if the action was successful
       if (result.success && result.content) {
-        // Update local state to trigger attribute parsing
-        setScrapedJobListingWebsiteContent(result.content);
+         console.log("Starting guardrail check");
+          // First check if the website content is safe
+          const isSafe = await isWebsiteContentSafe(result.content);
+          if (isSafe) {
+            // Update local state to trigger attribute parsing
+            setScrapedJobListingWebsiteContent(result.content);
+          }
       } else {
         // Handle error from server action
         throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
