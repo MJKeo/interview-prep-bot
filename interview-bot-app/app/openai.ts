@@ -6,7 +6,8 @@ import {
   TEAM_CULTURE_SYSTEM_PROMPT_V2, 
   DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V2,
   aggregatedEvaluationsSummaryPrompt,
-  MANUAL_JOB_INPUT_GUARDRAIL_PROMPT
+  MANUAL_JOB_INPUT_GUARDRAIL_PROMPT,
+  UPLOADED_FILE_GUARDRAIL_PROMPT
 } from "@/prompts";
 import {
   PerformanceEvaluationResponseSchema,
@@ -14,6 +15,7 @@ import {
   AggregatedSummaryResponseSchema,
   JobListingResearchResponse,
   ManualJobInputGuardrailResponseSchema,
+  GenericMaliciousContentGuardrailResponseSchema,
 } from "@/types";
 
 export const openai = new OpenAI({
@@ -96,6 +98,13 @@ export function createEvaluationSummaryAgent(jobListingData: JobListingResearchR
 export const manualJobInputGuardrailAgent = new Agent({
   name: "Manual job input guardrail agent",
   instructions: MANUAL_JOB_INPUT_GUARDRAIL_PROMPT,
-  model: "gpt-4.1-nano",
+  model: "gpt-4o-mini",
   outputType: ManualJobInputGuardrailResponseSchema,
+});
+
+export const uploadedFileGuardrailAgent = new Agent({
+  name: "Uploaded file guardrail agent",
+  instructions: UPLOADED_FILE_GUARDRAIL_PROMPT,
+  model: "gpt-4o-mini",
+  outputType: GenericMaliciousContentGuardrailResponseSchema,
 });

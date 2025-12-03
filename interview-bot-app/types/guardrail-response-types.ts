@@ -8,4 +8,10 @@ export const ManualJobInputGuardrailResponseSchema = z.object({
     }),
 });
 
+export const GenericMaliciousContentGuardrailResponseSchema = z.object({
+    reason: z.string(),
+    contains_any_malicious_content: z.boolean(),
+});
+
 export type ManualJobInputGuardrailResponse = z.infer<typeof ManualJobInputGuardrailResponseSchema>;
+export type GenericMaliciousContentGuardrailResponse = z.infer<typeof GenericMaliciousContentGuardrailResponseSchema>;

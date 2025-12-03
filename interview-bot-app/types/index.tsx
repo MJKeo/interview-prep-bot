@@ -32,4 +32,9 @@ export type {
 } from "./job-listing-data";
 export { ButtonType } from "./button-type";
 export type { CustomError } from "./custom-error";
-export { ManualJobInputGuardrailResponseSchema, type ManualJobInputGuardrailResponse } from "./guardrail-response-types";
+export { 
+    ManualJobInputGuardrailResponseSchema,
+    GenericMaliciousContentGuardrailResponseSchema,
+    type ManualJobInputGuardrailResponse,
+    type GenericMaliciousContentGuardrailResponse,
+} from "./guardrail-response-types";

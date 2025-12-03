@@ -253,8 +253,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
 
         // Call the server action to perform guardrail check
         const result = await performManualJobInputGuardrailCheckAction(manualJobListingData);
-
-        console.log("guardrail result", result);
         
         // Check if the action was successful
         if (result.success && result.result) {

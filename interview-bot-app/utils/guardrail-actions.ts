@@ -1,6 +1,10 @@
-import type { JobListingResearchResponse, ManualJobInputGuardrailResponse } from "@/types";
+import type { 
+    GenericMaliciousContentGuardrailResponse, 
+    JobListingResearchResponse, 
+    ManualJobInputGuardrailResponse,
+} from "@/types";
 import { run, withTrace } from "@openai/agents";
-import { manualJobInputGuardrailAgent } from "@/app/openai";
+import { manualJobInputGuardrailAgent, uploadedFileGuardrailAgent } from "@/app/openai";
 import { TRANSIENT_ERROR_MESSAGE } from "./constants";
 
 export async function performManualJobInputGuardrailCheck(
@@ -10,6 +14,19 @@ export async function performManualJobInputGuardrailCheck(
         try {
             const input = JSON.stringify(jobListingData);
             const result = await run(manualJobInputGuardrailAgent, input);
+            return result.finalOutput;
+        } catch (error) {
+            throw new Error(TRANSIENT_ERROR_MESSAGE);
+        }
+    });
+}
+
+export async function performUploadedFileGuardrailCheck(
+    fileTextData: string,
+  ): Promise<GenericMaliciousContentGuardrailResponse> {
+    return await withTrace("UploadedFileGuardrailCheck", async () => {
+        try {
+            const result = await run(uploadedFileGuardrailAgent, fileTextData);
             return result.finalOutput;
         } catch (error) {
             throw new Error(TRANSIENT_ERROR_MESSAGE);

@@ -10,6 +10,7 @@ import InfoButton from "@/components/info-button";
 import ScreenPopup from "@/components/screen-popup";
 import { fetchAllSavedFiles, saveUploadedFile, deleteSavedFileItem } from "@/utils/local-database";
 import { ATTACH_FILES_INFO_POPUP_CONTENT } from "@/utils/constants";
+import { performUploadedFileGuardrailCheckAction } from "@/app/actions";
 
 /**
  * Props for the AttachFiles component.
@@ -91,8 +92,22 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
         uniqueNewFileItems.forEach(async (fileItem) => {
             // Wrap parseFile in try-catch to handle errors
             try {
-                const text = await parseFile(fileItem.originalFile);
                 console.log(`Fetching for ${fileItem.fileName}`);
+                let text = await parseFile(fileItem.originalFile);
+                // Cap text length to 20K characters to prevent excessive processing
+                text = text ? text.substring(0, 20000) : text;
+                console.log(`Checking the following text: ${text}`);
+
+                // Perform guardrail check to ensure text content is safe
+                const guardrailResult = await performUploadedFileGuardrailCheckAction(text!);
+                console.log("Guardrail result:", guardrailResult);
+                if (!guardrailResult.success || !guardrailResult.result) {
+                    throw new Error(guardrailResult.error);
+                }
+                // If we do find malicious content, mark the file as failed to upload
+                if (guardrailResult.result.contains_any_malicious_content) {
+                    throw new Error(`File's contents flagged as potentially malicious`);
+                }
                 
                 // Update status to success if text was extracted
                 setAttachedFileItems((current) => {
@@ -117,9 +132,12 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
                 // Determine error message based on error type
                 console.log("ERROR:", error);
                 let errorMessage: string;
-                if (error instanceof Error && error.message.includes("10MB")) {
-                    // File size error
-                    errorMessage = "File must be 10MB or less";
+                if (error instanceof Error) {
+                    if (error.message.includes("flagged as potentially malicious") || error.message.includes("10MB")) {
+                        errorMessage = error.message;
+                    } else {
+                        errorMessage = "Unable to extract text from the document";
+                    }
                 } else {
                     // General parsing error
                     errorMessage = "Unable to extract text from the document";
