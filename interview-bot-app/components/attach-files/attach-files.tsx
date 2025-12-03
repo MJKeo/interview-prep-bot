@@ -11,6 +11,7 @@ import ScreenPopup from "@/components/screen-popup";
 import { fetchAllSavedFiles, saveUploadedFile, deleteSavedFileItem } from "@/utils/local-database";
 import { ATTACH_FILES_INFO_POPUP_CONTENT } from "@/utils/constants";
 import { performUploadedFileGuardrailCheckAction } from "@/app/actions";
+import CONFIG from "@/app/config";
 
 /**
  * Props for the AttachFiles component.
@@ -99,14 +100,16 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
                 console.log(`Checking the following text: ${text}`);
 
                 // Perform guardrail check to ensure text content is safe
+                if (!CONFIG.bypassUploadedFileGuardrail) {
                 const guardrailResult = await performUploadedFileGuardrailCheckAction(text!);
-                console.log("Guardrail result:", guardrailResult);
-                if (!guardrailResult.success || !guardrailResult.result) {
-                    throw new Error(guardrailResult.error);
-                }
-                // If we do find malicious content, mark the file as failed to upload
-                if (guardrailResult.result.contains_any_malicious_content) {
-                    throw new Error(`File's contents flagged as potentially malicious`);
+                    console.log("Guardrail result:", guardrailResult);
+                    if (!guardrailResult.success || !guardrailResult.result) {
+                        throw new Error(guardrailResult.error);
+                    }
+                    // If we do find malicious content, mark the file as failed to upload
+                    if (guardrailResult.result.contains_any_malicious_content) {
+                        throw new Error(`File's contents flagged as potentially malicious`);
+                    }
                 }
                 
                 // Update status to success if text was extracted

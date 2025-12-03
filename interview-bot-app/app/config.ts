@@ -8,6 +8,8 @@ const CONFIG = {
     useCachedAggregatedEvaluations: true,
     bypassMockInterview: true,
     bypassManualJobInputGuardrail: true,
+    bypassUploadedFileGuardrail: true,
+    bypassWebsiteContentGuardrail: true,
 };
 
 export default CONFIG;

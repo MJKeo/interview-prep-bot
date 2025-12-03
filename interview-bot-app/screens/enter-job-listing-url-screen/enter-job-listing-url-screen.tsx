@@ -165,6 +165,10 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   }, [scrapedJobListingWebsiteContent]);
 
   const isWebsiteContentSafe = async (websiteContent: string) => {
+    if (CONFIG.bypassWebsiteContentGuardrail) {
+      return true;
+    }
+    
     try {
       setError(null);
 
