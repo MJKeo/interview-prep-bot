@@ -388,6 +388,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
                 onKeyDown={handleKeyDown}
+                maxLength={100}
               />
             </div>
             <div className="entry-input-group">
@@ -401,6 +402,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 onKeyDown={handleKeyDown}
+                maxLength={100}
               />
             </div>
             <div className="entry-input-group">
@@ -414,6 +416,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 onChange={(e) => setJobDescription(e.target.value)}
                 onKeyDown={handleKeyDown}
                 rows={3}
+                maxLength={3000}
               />
             </div>
             <div className="entry-input-group">
@@ -427,6 +430,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 onChange={(e) => setExpectationsAndResponsibilities(e.target.value)}
                 onKeyDown={handleKeyDown}
                 rows={3}
+                maxLength={3000}
               />
             </div>
             <div className="entry-input-group">
@@ -440,6 +444,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 onChange={(e) => setRequirements(e.target.value)}
                 onKeyDown={handleKeyDown}
                 rows={3}
+                maxLength={3000}
               />
             </div>
             <div className="entry-input-group">
@@ -453,6 +458,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 onKeyDown={handleKeyDown}
+                maxLength={100}
               />
             </div>
             <div className="entry-input-group">
@@ -466,6 +472,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
                 value={workSchedule}
                 onChange={(e) => setWorkSchedule(e.target.value)}
                 onKeyDown={handleKeyDown}
+                maxLength={100}
               />
             </div>
             <div className="entry-button-container">
