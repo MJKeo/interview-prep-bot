@@ -5,13 +5,15 @@ import {
   ROLE_SUCCESS_SYSTEM_PROMPT_V2, 
   TEAM_CULTURE_SYSTEM_PROMPT_V2, 
   DOMAIN_KNOWLEDGE_SYSTEM_PROMPT_V2,
-  aggregatedEvaluationsSummaryPrompt
+  aggregatedEvaluationsSummaryPrompt,
+  MANUAL_JOB_INPUT_GUARDRAIL_PROMPT
 } from "@/prompts";
 import {
   PerformanceEvaluationResponseSchema,
   ConsolidatedFeedbackResponseSchema,
   AggregatedSummaryResponseSchema,
   JobListingResearchResponse,
+  ManualJobInputGuardrailResponseSchema,
 } from "@/types";
 
 export const openai = new OpenAI({
@@ -89,3 +91,11 @@ export function createEvaluationSummaryAgent(jobListingData: JobListingResearchR
   });
 }
 
+// ============================== GUARDRAIL AGENTS ==============================
+
+export const manualJobInputGuardrailAgent = new Agent({
+  name: "Manual job input guardrail agent",
+  instructions: MANUAL_JOB_INPUT_GUARDRAIL_PROMPT,
+  model: "gpt-4.1-nano",
+  outputType: ManualJobInputGuardrailResponseSchema,
+});

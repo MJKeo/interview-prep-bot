@@ -43,3 +43,4 @@ export {
     aggregatedEvaluationsSummaryPrompt,
 } from "./evaluation-aggregator-prompts";
 export { USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1 } from "./user-context-distillation-prompts";
+export { MANUAL_JOB_INPUT_GUARDRAIL_PROMPT } from "./guardrail-prompts";

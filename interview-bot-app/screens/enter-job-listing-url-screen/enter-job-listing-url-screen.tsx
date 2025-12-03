@@ -15,8 +15,10 @@ import {
   FileStatus,
   type JobListingResearchResponse,
   type CustomError,
+  type ManualJobInputGuardrailResponse,
 } from "@/types";
-import { parseJobListingAttributesAction, scrapeJobListingAction } from "@/app/actions";
+import { parseJobListingAttributesAction, scrapeJobListingAction, performManualJobInputGuardrailCheckAction } from "@/app/actions";
+import CONFIG from "@/app/config";
 import { isValidURL } from "@/utils/utils";
 import { APP_NAME, HOW_THIS_WORKS_POPUP_CONTENT, MANUAL_ENTRY_INFO_POPUP_CONTENT, TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
 import { NON_TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
@@ -70,6 +72,8 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
   const [scrapedJobListingWebsiteContent, setScrapedJobListingWebsiteContent] = useState<string | null>(null);
   // State for parsing job listing attributes
   const [isParsingAttributes, setIsParsingAttributes] = useState(false);
+  // State for if we are running a guardrail check
+  const [isRunningGuardrailCheck, setIsRunningGuardrailCheck] = useState(false);
   // State for error messages
   const [error, setError] = useState<CustomError | null>(null);
   // State for tracking if any attached files are still loading (not success or saved)
@@ -224,10 +228,10 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
 
   /**
    * Handles manual entry submission.
-   * Constructs a JobListingResearchResponse object from manual inputs
-   * and immediately calls onScrapeSuccess without any scraping or parsing.
+   * Constructs a JobListingResearchResponse object from manual inputs,
+   * performs guardrail checks if enabled, and calls onScrapeSuccess if validation passes.
    */
-  const handleManualEntry = () => {
+  const handleManualEntry = async () => {
     // Construct the job listing data object with manual inputs
     const manualJobListingData: JobListingResearchResponse = {
       job_title: jobTitle.trim(),
@@ -240,11 +244,53 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       requirements: requirements.trim() || "Unknown",
     };
 
+    // Skip guardrail check if bypass flag is enabled
+    if (!CONFIG.bypassManualJobInputGuardrail) {
+      try {
+        setIsRunningGuardrailCheck(true);
+        // Reset error state before performing guardrail check
+        setError(null);
+
+        // Call the server action to perform guardrail check
+        const result = await performManualJobInputGuardrailCheckAction(manualJobListingData);
+
+        console.log("guardrail result", result);
+        
+        // Check if the action was successful
+        if (result.success && result.result) {
+          const guardrailResponse: ManualJobInputGuardrailResponse = result.result;
+          
+          // Check if any safety flags are true
+          const hasSafetyFlag = guardrailResponse.safety_flags.contains_any_malicious_content ||
+                                guardrailResponse.safety_flags.contains_significantly_off_topic_content;
+          
+          if (hasSafetyFlag) {
+            // Set error to the reason for rejection if any safety flag is true
+            setError({ message: `Input has triggered safety guardrails: ${guardrailResponse.reason} Please fix the input and try again.`, retryAction: null });
+            return;
+          }
+        } else {
+          // Handle error from server action
+          throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
+        }
+      } catch (err) {
+        // Handle exceptions and display error message
+        if (err instanceof Error) {
+          setError({ message: err.message, retryAction: handleManualEntry });
+        } else {
+          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+        }
+        return;
+      } finally {
+        setIsRunningGuardrailCheck(false);
+      }
+    }
+
     // If "skip attaching files" is checked, pass an empty array
     // Otherwise, filter attached files to only include those with SUCCESS or SAVED status
     const filesToPass = attachedFilesToPass();
 
-    // Immediately navigate to the next page with manual entry data
+    // Navigate to the next page with manual entry data
     onScrapeSuccess(manualJobListingData, filesToPass);
   }
 
@@ -506,6 +552,25 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
             />
           </div>
         }
+
+        {/* Show loading bar for running guardrail check */}
+        {isRunningGuardrailCheck && (
+          <div className="loading-bar-container">
+            <LoadingBar 
+              timeToLoad={6} 
+              initialLoadingMessage="Running guardrail check..."
+              waitingMessages={[
+                "Running guardrail check...",
+                "Running guardrail check...",
+                "Running guardrail check...",
+                "Running guardrail check...",
+                "Running guardrail check...",
+                "Running guardrail check...",
+                "Why are you sweating?..",
+              ]}
+            />
+          </div>
+        )}
 
         <div className="attach-files-wrapper">
           <AttachFiles 

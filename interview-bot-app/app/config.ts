@@ -7,6 +7,7 @@ const CONFIG = {
     useCachedEvaluations: true,
     useCachedAggregatedEvaluations: true,
     bypassMockInterview: true,
+    bypassManualJobInputGuardrail: false,
 };
 
 export default CONFIG;

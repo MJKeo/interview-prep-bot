@@ -30,6 +30,7 @@ import {
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from '@/utils/constants';
+import { performManualJobInputGuardrailCheck } from '@/utils/guardrail-actions';
 
 /**
  * Server action to scrape a job listing URL and parse its attributes.
@@ -265,6 +266,21 @@ export async function performEvaluationAggregationAction(
       jobListingData
     );
     
+    return { success: true, result: result };
+  } catch (error) {
+    // Handle errors and return error message
+    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
+    return { success: false, error: message };
+  }
+}
+
+// ============================== GUARDRAIL ACTIONS ==============================
+
+export async function performManualJobInputGuardrailCheckAction(
+  jobListingData: JobListingResearchResponse,
+) {
+  try {
+    const result = await performManualJobInputGuardrailCheck(jobListingData);
     return { success: true, result: result };
   } catch (error) {
     // Handle errors and return error message
