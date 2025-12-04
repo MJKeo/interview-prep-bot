@@ -75,6 +75,9 @@ export function createNextInterviewMessageAgent(jobListingResearchResponse: JobL
     name: "Next interview message agent",
     instructions: mockInterviewSystemPromptV3(jobListingResearchResponse, interviewGuide),
     model: "gpt-4o-mini",
+    modelSettings: {
+      temperature: 0.5,
+    },
     outputType: MockInterviewMessageResponseSchema,
   });
 }

@@ -10,6 +10,7 @@ import { ButtonType, type CustomError } from "@/types";
 import LoadingBar from "@/components/loading-bar";
 import ResearchReportSection from "@/components/research-report-section";
 import { NON_TRANSIENT_ERROR_MESSAGE, TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
+import { getSavedUserContext, saveUserContext } from "@/utils/local-database";
 
 /**
  * Props for the ResearchJobScreen component.
@@ -88,11 +89,26 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
       try {
         setIsLoadingDeepResearch(true);
         setError(null);
+        // Step 0 - Attempt to retrieve cached user context
+        const cachedUserContext = await getSavedUserContext(attachedFiles);
+        var attachedFilesToUseInResearch = attachedFiles;
+        if (cachedUserContext) {
+          attachedFilesToUseInResearch = [];
+        }
+
         // Call the server action to perform deep research and user context distillation in parallel
-        const deepResearchResult = await performDeepResearchAndContextDistillationAction(jobListingParsedData, attachedFiles);
+        const deepResearchResult = await performDeepResearchAndContextDistillationAction(jobListingParsedData, attachedFilesToUseInResearch);
         
         // Check if the deep research was successful
         if (deepResearchResult.success && deepResearchResult.reports) {
+          // Make sure to provide cached results if we didn't do that yet
+          if (cachedUserContext) {
+            console.log("CACHED USER CONTEXT FOUND, USING IT")
+            deepResearchResult.reports.userContextReport = cachedUserContext;
+          } else if (deepResearchResult.reports.userContextReport) {
+            // SAVE THE NEW CACHED RESULTS
+            await saveUserContext(attachedFilesToUseInResearch, deepResearchResult.reports.userContextReport);
+          }
           // Store the deep research reports
           console.log("User distillation report", deepResearchResult.reports.userContextReport);
           setDeepResearchAndContextDistillationReports(deepResearchResult.reports);

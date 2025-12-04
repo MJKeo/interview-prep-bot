@@ -9,7 +9,7 @@ const DB_NAME = "interview-bot-db";
 /**
  * Database version - increment when schema changes
  */
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 /**
  * Object store name for uploaded files
@@ -20,6 +20,11 @@ const UPLOADED_FILES_STORE_NAME = "uploaded-files";
  * Object store name for job listings
  */
 const JOB_LISTINGS_STORE_NAME = "job-listings";
+
+/**
+ * Object store name for context distillation reports
+ */
+const CONTEXT_DISTILLATION_REPORTS_STORE_NAME = "context-distillation-reports";
 
 /**
  * Opens or creates the IndexedDB database and returns a promise that resolves with the database instance.
@@ -46,6 +51,12 @@ function openDatabase(): Promise<IDBDatabase> {
             if (!db.objectStoreNames.contains(JOB_LISTINGS_STORE_NAME)) {
                 // Use 'id' as the key path for direct access by job listing ID
                 db.createObjectStore(JOB_LISTINGS_STORE_NAME, { keyPath: "id" });
+            }
+
+            // Create object store for context distillation reports if it doesn't exist
+            if (!db.objectStoreNames.contains(CONTEXT_DISTILLATION_REPORTS_STORE_NAME)) {
+                // No keyPath - we'll use custom keys (concatenated file IDs)
+                db.createObjectStore(CONTEXT_DISTILLATION_REPORTS_STORE_NAME);
             }
         };
 
@@ -520,5 +531,180 @@ export async function deleteJobListing(
             );
         };
     });
+}
+
+/**
+ * Saves a user context guide to IndexedDB local storage.
+ * Creates a unique key by sorting all file IDs alphabetically and concatenating them.
+ * The userContextGuide string is stored as the value for this key in the context-distillation-reports store.
+ * If a context guide with the same key already exists, it will be updated/overwritten.
+ *
+ * @param userFiles - Array of FileItem instances whose IDs will be used to generate the key
+ * @param userContextGuide - The context guide string to save
+ * @returns Promise that resolves when the context guide is successfully saved
+ * @throws Error if the save operation fails
+ *
+ * @example
+ * ```typescript
+ * const userFiles: FileItem[] = [
+ *   { id: "file-2", fileName: "resume.pdf", status: FileStatus.SUCCESS },
+ *   { id: "file-1", fileName: "cover-letter.pdf", status: FileStatus.SUCCESS }
+ * ];
+ * const guide = "User has 5 years of experience...";
+ * await saveUserContext(userFiles, guide);
+ * // Saves with key "file-1file-2" (sorted IDs concatenated)
+ * ```
+ */
+export async function saveUserContext(
+    userFiles: FileItem[],
+    userContextGuide: string
+): Promise<void> {
+    try {
+        const db = await openDatabase();
+
+        // Generate key by extracting IDs, sorting alphabetically, and concatenating
+        const key = createUserContextKey(userFiles);
+
+        return new Promise((resolve, reject) => {
+            // Start a readwrite transaction to save the context guide
+            const transaction = db.transaction(
+                [CONTEXT_DISTILLATION_REPORTS_STORE_NAME],
+                "readwrite"
+            );
+            const store = transaction.objectStore(
+                CONTEXT_DISTILLATION_REPORTS_STORE_NAME
+            );
+
+            // Use put() to save or update the context guide with the generated key
+            // put() will insert if the key doesn't exist, or update if it does
+            const saveRequest = store.put(userContextGuide, key);
+
+            // Handle successful save/update
+            saveRequest.onsuccess = () => {
+                console.log(
+                    "User context guide saved/updated successfully with key:",
+                    key
+                );
+                resolve();
+            };
+
+            // Handle save errors
+            saveRequest.onerror = () => {
+                console.error(
+                    "Failed to save/update user context guide:",
+                    saveRequest.error?.message
+                );
+                reject(
+                    new Error(
+                        `Failed to save/update user context guide: ${saveRequest.error?.message}`
+                    )
+                );
+            };
+
+            // Handle transaction errors
+            transaction.onerror = () => {
+                console.error(
+                    "Transaction failed while saving/updating user context guide:",
+                    transaction.error?.message
+                );
+                reject(
+                    new Error(
+                        `Transaction failed: ${transaction.error?.message}`
+                    )
+                );
+            };
+        });
+    } catch (error) {
+        // Handle any errors that occur during the save process
+        console.error("Failed to save/update user context guide:", error);
+        throw error;
+    }
+}
+
+/**
+ * Fetches a user context guide from IndexedDB local storage.
+ * Generates a key from the provided userFiles by sorting their IDs alphabetically and concatenating them.
+ * Returns the context guide string if found, or null if no context guide exists for that key.
+ *
+ * @param userFiles - Array of FileItem instances whose IDs will be used to generate the lookup key
+ * @returns Promise that resolves with the context guide string if found, or null if not found
+ * @throws Error if the fetch operation fails
+ *
+ * @example
+ * ```typescript
+ * const userFiles: FileItem[] = [
+ *   { id: "file-2", fileName: "resume.pdf", status: FileStatus.SUCCESS },
+ *   { id: "file-1", fileName: "cover-letter.pdf", status: FileStatus.SUCCESS }
+ * ];
+ * const guide = await getUserContext(userFiles);
+ * // Returns the saved context guide string or null if not found
+ * ```
+ */
+export async function getSavedUserContext(
+    userFiles: FileItem[]
+): Promise<string | null> {
+    try {
+        const db = await openDatabase();
+
+        // Generate key by extracting IDs, sorting alphabetically, and concatenating
+        const key = createUserContextKey(userFiles);
+
+        return new Promise((resolve, reject) => {
+            // Start a readonly transaction to fetch the context guide
+            const transaction = db.transaction(
+                [CONTEXT_DISTILLATION_REPORTS_STORE_NAME],
+                "readonly"
+            );
+            const store = transaction.objectStore(
+                CONTEXT_DISTILLATION_REPORTS_STORE_NAME
+            );
+
+            // Get the context guide by its key
+            const getRequest = store.get(key);
+
+            // Handle successful fetch
+            getRequest.onsuccess = () => {
+                // If the key doesn't exist, result will be undefined
+                // Convert undefined to null for consistency
+                const result = getRequest.result ?? null;
+                resolve(result);
+            };
+
+            // Handle fetch errors
+            getRequest.onerror = () => {
+                console.error(
+                    "Failed to fetch user context guide:",
+                    getRequest.error?.message
+                );
+                reject(
+                    new Error(
+                        `Failed to fetch user context guide: ${getRequest.error?.message}`
+                    )
+                );
+            };
+
+            // Handle transaction errors
+            transaction.onerror = () => {
+                console.error(
+                    "Transaction failed while fetching user context guide:",
+                    transaction.error?.message
+                );
+                reject(
+                    new Error(
+                        `Transaction failed: ${transaction.error?.message}`
+                    )
+                );
+            };
+        });
+    } catch (error) {
+        // Handle any errors that occur during the fetch process
+        console.error("Failed to fetch user context guide:", error);
+        throw error;
+    }
+}
+
+function createUserContextKey(userFiles: FileItem[]): string {
+    const fileIds = userFiles.map((file) => file.id).sort();
+    return fileIds.join("");
 }
 
