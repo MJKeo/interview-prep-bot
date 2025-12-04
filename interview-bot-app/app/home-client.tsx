@@ -354,6 +354,7 @@ export default function HomeClient() {
       case ScreenName.PerformAnalysis:
         return jobListingParsedData && deepResearchReports && interviewGuide && transcript ? (
           <PerformAnalysisScreen 
+            key={currentJobListing!.id}
             transcript={transcript}
             jobListingResearchResponse={jobListingParsedData}
             deepResearchReports={deepResearchReports}
