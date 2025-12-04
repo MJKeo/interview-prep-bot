@@ -5,6 +5,8 @@ import "./sidebar.css";
 import type { JobListingWithId, SidebarSelection } from "@/types";
 import { deleteJobListing, saveJobListing } from "@/utils/local-database";
 import { APP_NAME } from "@/utils/constants";
+import githubIcon from "@/images/github-mark-white.png";
+import linkedinIcon from "@/images/InBug-White.png";
 
 /**
  * Props for the Sidebar component.
@@ -491,22 +493,23 @@ export default function Sidebar({
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-header" onClick={() => {
-            // Reset selected item to nothing
-            setSelectedItem(null);
-            // Call parent callback to handle navigation and state reset
-            onNewJobListing();
-          }}>
-        <h1 className="sidebar-title">
-          {APP_NAME}
-        </h1>
-      </div>
-      {jobListings.length > 0 && (
-        <h2 className="sidebar-subtitle">
-          My Saved Jobs
-        </h2>
-      )}
-      <nav className="sidebar-nav">
+        <div className="sidebar-content">
+          <div className="sidebar-header" onClick={() => {
+                // Reset selected item to nothing
+                setSelectedItem(null);
+                // Call parent callback to handle navigation and state reset
+                onNewJobListing();
+              }}>
+            <h1 className="sidebar-title">
+              {APP_NAME}
+            </h1>
+          </div>
+        {jobListings.length > 0 && (
+          <h2 className="sidebar-subtitle">
+            My Saved Jobs
+          </h2>
+        )}
+        <nav className="sidebar-nav">
         <ul className="sidebar-list">
           {jobListings.map((jobListing) => {
             const jobListingId = jobListing.id;
@@ -709,6 +712,38 @@ export default function Sidebar({
           <span className="sidebar-new-listing-text">+ New Job</span>
         </button>
       </nav>
+      </div>
+      {/* Footer with social icons - always stuck to bottom */}
+      <div className="sidebar-footer">
+        <button
+          type="button"
+          className="sidebar-social-icon"
+          aria-label="GitHub"
+          onClick={() => {
+            window.open("https://github.com/MJKeo", "_blank", "noopener,noreferrer");
+          }}
+        >
+          <img
+            src={githubIcon.src}
+            alt="GitHub"
+            className="sidebar-icon-img"
+          />
+        </button>
+        <button
+          type="button"
+          className="sidebar-social-icon"
+          aria-label="LinkedIn"
+          onClick={() => {
+            window.open("https://www.linkedin.com/in/michael-keohane", "_blank", "noopener,noreferrer");
+          }}
+        >
+          <img
+            src={linkedinIcon.src}
+            alt="LinkedIn"
+            className="sidebar-icon-img"
+          />
+        </button>
+      </div>
     </aside>
   );
 }

@@ -11,6 +11,16 @@
   left: 0;
   top: 0;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar content wrapper - takes up available space, allows scrolling */
+.sidebar-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 /* Sidebar header container */
@@ -34,7 +44,7 @@
 .sidebar-subtitle {
   color: var(--color-blue-grey);
   margin: 0;
-  margin-top: 2.25rem;
+  margin-top: 1.5rem;
   padding: 0 1.1rem 0.55rem 1.5rem;
   font-size: 1.32rem;
   font-weight: 500;
@@ -401,5 +411,41 @@
   align-items: center;
   background: transparent;
   color: inherit;
+}
+
+/* Footer container - always stuck to bottom */
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+/* Social icon button */
+.sidebar-social-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease-in-out;
+  color: var(--color-white-smoke);
+}
+
+/* Hover state for social icons */
+.sidebar-social-icon:hover {
+  opacity: 0.7;
+}
+
+/* Icon image styling */
+.sidebar-icon-img {
+  width: 35px;
+  height: 33px;
+  display: block;
 }
 
