@@ -69,9 +69,7 @@ export async function parseJobListingAttributes(
   const maliciousContentErrorMessage = "Website flagged as potentially containing malicious content. Please verify the url and try again. If this was a mistake please contact support.";
   try {
     // Define the guardrail check task (exits method early if it fails!)
-    console.log("Starting guardrail check")
     const guardrailCheckTask = performWebsiteContentGuardrailCheck(jobListingScrapeContent).then((guardrailResponse) => {
-      console.log("Guardrail finished")
       if (guardrailResponse?.contains_any_malicious_content) {
         // Exits function early if the guardrail check fails before the other task completes, since its result is discarded
         throw new Error(maliciousContentErrorMessage);
@@ -99,7 +97,6 @@ export async function parseJobListingAttributes(
 
     return result;
   } catch (error) {
-    console.log(error);
     if (error instanceof Error && (error.message === noResponseErrorMessage || error.message === maliciousContentErrorMessage)) {
       throw error;
     }
