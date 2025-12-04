@@ -332,6 +332,7 @@ export default function HomeClient() {
       case ScreenName.ResearchJob:
         return (jobListingParsedData) ? (
           <ResearchJobScreen 
+            key={currentJobListing!.id}
             jobListingParsedData={jobListingParsedData}
             attachedFiles={attachedFiles}
             currentJobListing={currentJobListing!}
