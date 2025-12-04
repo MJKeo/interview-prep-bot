@@ -42,6 +42,7 @@ import {
   aggregateEvaluationsByMessagePrompt,
   USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
 } from "@/prompts";
+import { performWebsiteContentGuardrailCheck } from "./guardrail-actions";
 import { run, withTrace } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
@@ -65,15 +66,26 @@ export async function parseJobListingAttributes(
   jobListingScrapeContent: string
 ): Promise<JobListingResearchResponse> {
   const noResponseErrorMessage = "Unable to extract job listing information from the provided URL. Please verify the URL is correct and try again, or enter information manually.";
+  const maliciousContentErrorMessage = "Website flagged as potentially containing malicious content. Please verify the url and try again. If this was a mistake please contact support.";
   try {
-    // Call OpenAI's chat completions API
-    const response = await openai.responses.parse({
+    // Define the guardrail check task (exits method early if it fails!)
+    const guardrailCheckTask = performWebsiteContentGuardrailCheck(jobListingScrapeContent).then((guardrailResponse) => {
+      if (guardrailResponse?.contains_any_malicious_content) {
+        // Exits function early if the guardrail check fails before the other task completes, since its result is discarded
+        throw new Error(maliciousContentErrorMessage);
+      }
+    });
+    // Define the parse attributes task
+    const parseAttributesTask = openai.responses.parse({
         model: "gpt-4.1-nano",
         instructions: JOB_LISTING_PARSING_PROMPT_V1,
         temperature: 0.3,
         input: jobListingScrapeContent,
         text: { format: zodTextFormat(JobListingResearchResponseSchema, "job_listing_research_response") },
       });
+
+    // Run them both in parallel
+    const [, response] = await Promise.all([guardrailCheckTask, parseAttributesTask]);
 
     // Parse the response
     const result = response.output_parsed;
@@ -82,7 +94,7 @@ export async function parseJobListingAttributes(
     }
     return result;
   } catch (error) {
-    if (error instanceof Error && error.message === noResponseErrorMessage) {
+    if (error instanceof Error && (error.message === noResponseErrorMessage || error.message === maliciousContentErrorMessage)) {
       throw error;
     }
     throw new Error(TRANSIENT_ERROR_MESSAGE);

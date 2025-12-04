@@ -9,7 +9,6 @@ const CONFIG = {
     bypassMockInterview: true,
     bypassManualJobInputGuardrail: true,
     bypassUploadedFileGuardrail: true,
-    bypassWebsiteContentGuardrail: true,
 };
 
 export default CONFIG;

@@ -308,15 +308,19 @@ export async function performUploadedFileGuardrailCheckAction(
   }
 }
 
-export async function performWebsiteContentGuardrailCheckAction(
-  websiteContent: string,
-) {
-  try {
-    const result = await performWebsiteContentGuardrailCheck(websiteContent);
-    return { success: true, result: result };
-  } catch (error) {
-    // Handle errors and return error message
-    const message = error instanceof Error ? error.message : TRANSIENT_ERROR_MESSAGE;
-    return { success: false, error: message };
-  }
+// Fake implementations for illustration:
+function A() {
+  // Promise A: resolves to true/false after ~15 minutes (simulated with timeout)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 5000);
+  });
+}
+
+function B() {
+  // Promise B: 10 seconds
+  return new Promise((resolve) => {
+    setTimeout(resolve, 10000);
+  });
 }
