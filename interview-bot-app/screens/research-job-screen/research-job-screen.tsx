@@ -103,14 +103,12 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         if (deepResearchResult.success && deepResearchResult.reports) {
           // Make sure to provide cached results if we didn't do that yet
           if (cachedUserContext) {
-            console.log("CACHED USER CONTEXT FOUND, USING IT")
             deepResearchResult.reports.userContextReport = cachedUserContext;
           } else if (deepResearchResult.reports.userContextReport) {
             // SAVE THE NEW CACHED RESULTS
             await saveUserContext(attachedFilesToUseInResearch, deepResearchResult.reports.userContextReport);
           }
           // Store the deep research reports
-          console.log("User distillation report", deepResearchResult.reports.userContextReport);
           setDeepResearchAndContextDistillationReports(deepResearchResult.reports);
 
           // Save this to the db
@@ -166,7 +164,6 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         // Check if the guide creation was successful
         if (guideResult.success && guideResult.guide) {
           // Store the interview guide
-          console.log("Interview guide", guideResult.guide);
           setInterviewGuide(guideResult.guide);
 
           // Save this to the db

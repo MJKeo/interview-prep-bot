@@ -138,7 +138,6 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         const result = await parseJobListingAttributesAction(scrapedJobListingWebsiteContent);
         // Check if the action was successful
         if (result.success && result.data) {
-          console.log("Parse results", result.data);
           // We have our data so let's move on to the next page
           completeScrapeAndParse(result.data);
         } else {
@@ -253,44 +252,41 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
       requirements: requirements.trim() || "Unknown",
     };
 
-    // Skip guardrail check if bypass flag is enabled
-    if (!CONFIG.bypassManualJobInputGuardrail) {
-      try {
-        setIsRunningGuardrailCheck(true);
-        // Reset error state before performing guardrail check
-        setError(null);
+    try {
+      setIsRunningGuardrailCheck(true);
+      // Reset error state before performing guardrail check
+      setError(null);
 
-        // Call the server action to perform guardrail check
-        const result = await performManualJobInputGuardrailCheckAction(manualJobListingData);
+      // Call the server action to perform guardrail check
+      const result = await performManualJobInputGuardrailCheckAction(manualJobListingData);
+      
+      // Check if the action was successful
+      if (result.success && result.result) {
+        const guardrailResponse: ManualJobInputGuardrailResponse = result.result;
         
-        // Check if the action was successful
-        if (result.success && result.result) {
-          const guardrailResponse: ManualJobInputGuardrailResponse = result.result;
-          
-          // Check if any safety flags are true
-          const hasSafetyFlag = guardrailResponse.safety_flags.contains_any_malicious_content ||
-                                guardrailResponse.safety_flags.contains_significantly_off_topic_content;
-          
-          if (hasSafetyFlag) {
-            // Set error to the reason for rejection if any safety flag is true
-            setError({ message: `Input has triggered safety guardrails: ${guardrailResponse.reason} Please fix the input and try again.`, retryAction: null });
-            return;
-          }
-        } else {
-          // Handle error from server action
-          throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
+        // Check if any safety flags are true
+        const hasSafetyFlag = guardrailResponse.safety_flags.contains_any_malicious_content ||
+                              guardrailResponse.safety_flags.contains_significantly_off_topic_content;
+        
+        if (hasSafetyFlag) {
+          // Set error to the reason for rejection if any safety flag is true
+          setError({ message: `Input has triggered safety guardrails: ${guardrailResponse.reason} Please fix the input and try again.`, retryAction: null });
+          return;
         }
-      } catch (err) {
-        // Handle exceptions and display error message
-        if (err instanceof Error) {
-          setError({ message: err.message, retryAction: handleManualEntry });
-        } else {
-          setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
-        }
-        return;
-      } finally {
-        setIsRunningGuardrailCheck(false);
+      } else {
+        // Handle error from server action
+        throw new Error(result.error ?? TRANSIENT_ERROR_MESSAGE);
       }
+    } catch (err) {
+      // Handle exceptions and display error message
+      if (err instanceof Error) {
+        setError({ message: err.message, retryAction: handleManualEntry });
+      } else {
+        setError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
+      }
+      return;
+    } finally {
+      setIsRunningGuardrailCheck(false);
     }
 
     // If "skip attaching files" is checked, pass an empty array

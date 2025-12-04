@@ -183,8 +183,6 @@ export default function MockInterviewScreen({
       // Set generating state to prevent multiple simultaneous requests
       setIsGenerating(true);
 
-      console.log("messages", combinedMessages);
-
       // Call the server action to generate the next interview message
       const result = await generateNextInterviewMessageAction(
         userMessageContent,
@@ -192,7 +190,6 @@ export default function MockInterviewScreen({
         jobListingResearchResponse,
         interviewGuide
       );
-      console.log("result", result);
 
       // Check if the action was successful
       if (result.success && result.nextMessage) {

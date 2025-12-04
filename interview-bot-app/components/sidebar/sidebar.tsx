@@ -112,10 +112,6 @@ export default function Sidebar({
   // Ref for the input/textarea element to handle auto-focus and selection
   const editInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
-  useEffect(() => {
-    console.log("selected item: ", selectedItem);
-  }, [selectedItem]);
-
   /**
    * Effect hook that handles auto-focus and cursor positioning when entering edit mode.
    * When an item enters edit mode, focuses the textarea, sets cursor to end, and auto-resizes.

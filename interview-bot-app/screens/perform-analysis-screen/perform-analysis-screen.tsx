@@ -141,7 +141,6 @@ export default function PerformAnalysisScreen({
       setError(null);
 
       try {
-        console.log("Fetching evaluation reports");
         // Fetch evaluation reports from server action
         const result = await performEvaluationsAction(
           transcript,

@@ -93,7 +93,6 @@ function openDatabase(): Promise<IDBDatabase> {
  */
 export async function saveUploadedFile(fileItem: FileItem): Promise<void> {
     const db = await openDatabase();
-    console.log("Opened DB");
 
     return new Promise((resolve, reject) => {
         // Start a readwrite transaction to save the file item
@@ -106,7 +105,6 @@ export async function saveUploadedFile(fileItem: FileItem): Promise<void> {
 
         // Handle successful save
         saveRequest.onsuccess = () => {
-            console.log("File item saved successfully:", fileItem);
             resolve();
         };
 

@@ -97,15 +97,13 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
                 text = text ? text.substring(0, 20000) : text;
 
                 // Perform guardrail check to ensure text content is safe
-                if (!CONFIG.bypassUploadedFileGuardrail) {
-                    const guardrailResult = await performUploadedFileGuardrailCheckAction(text!);
-                    if (!guardrailResult.success || !guardrailResult.result) {
-                        throw new Error(guardrailResult.error);
-                    }
-                    // If we do find malicious content, mark the file as failed to upload
-                    if (guardrailResult.result.contains_any_malicious_content) {
-                        throw new Error(`File's contents flagged as potentially malicious`);
-                    }
+                const guardrailResult = await performUploadedFileGuardrailCheckAction(text!);
+                if (!guardrailResult.success || !guardrailResult.result) {
+                    throw new Error(guardrailResult.error);
+                }
+                // If we do find malicious content, mark the file as failed to upload
+                if (guardrailResult.result.contains_any_malicious_content) {
+                    throw new Error(`File's contents flagged as potentially malicious`);
                 }
                 
                 // Update status to success if text was extracted
