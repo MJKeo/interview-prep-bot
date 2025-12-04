@@ -68,6 +68,8 @@ export const domainKnowledgeAgent = new Agent({
   }
 });
 
+// ============================== MOCK INTERVIEW AGENTS ==============================
+
 export function createNextInterviewMessageAgent(jobListingResearchResponse: JobListingResearchResponse, interviewGuide: string) {
   return new Agent({
     name: "Next interview message agent",
@@ -142,8 +144,5 @@ export const interviewUserMessageGuardrailAgent = new Agent({
   name: "User interview message guardrail agent",
   instructions: INTERVIEW_USER_MESSAGE_GUARDRAIL_PROMPT,
   model: "gpt-4.1-nano",
-  modelSettings: {
-    temperature: 0.5,
-  },
   outputType: GenericMaliciousContentGuardrailResponseSchema,
 });

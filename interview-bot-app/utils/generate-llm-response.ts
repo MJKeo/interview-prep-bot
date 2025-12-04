@@ -69,7 +69,9 @@ export async function parseJobListingAttributes(
   const maliciousContentErrorMessage = "Website flagged as potentially containing malicious content. Please verify the url and try again. If this was a mistake please contact support.";
   try {
     // Define the guardrail check task (exits method early if it fails!)
+    console.log("Starting guardrail check")
     const guardrailCheckTask = performWebsiteContentGuardrailCheck(jobListingScrapeContent).then((guardrailResponse) => {
+      console.log("Guardrail finished")
       if (guardrailResponse?.contains_any_malicious_content) {
         // Exits function early if the guardrail check fails before the other task completes, since its result is discarded
         throw new Error(maliciousContentErrorMessage);
@@ -79,9 +81,11 @@ export async function parseJobListingAttributes(
     const parseAttributesTask = openai.responses.parse({
         model: "gpt-4.1-nano",
         instructions: JOB_LISTING_PARSING_PROMPT_V1,
-        temperature: 0.3,
         input: jobListingScrapeContent,
-        text: { format: zodTextFormat(JobListingResearchResponseSchema, "job_listing_research_response") },
+        temperature: 0.25,
+        text: { 
+          format: zodTextFormat(JobListingResearchResponseSchema, "job_listing_research_response"),
+        },
       });
 
     // Run them both in parallel
@@ -92,8 +96,10 @@ export async function parseJobListingAttributes(
     if (!result) {
         throw new Error(noResponseErrorMessage);
     }
+
     return result;
   } catch (error) {
+    console.log(error);
     if (error instanceof Error && (error.message === noResponseErrorMessage || error.message === maliciousContentErrorMessage)) {
       throw error;
     }
@@ -151,6 +157,7 @@ export async function performDeepResearchAndContextDistillation(
         userContextReport: userContext,
       };
     } catch (error) {
+      console.error(error);
       throw new Error(TRANSIENT_ERROR_MESSAGE);
     }
   });
@@ -206,7 +213,6 @@ export async function createInterviewGuide(
     // Create the JSON input matching the distillation prompt's expected format
     const input = JSON.stringify({
       job_title: jobListingResearchResponse.job_title,
-      job_description: jobListingResearchResponse.job_description,
       company_name: jobListingResearchResponse.company_name,
       expectations_and_responsibilities: jobListingResearchResponse.expectations_and_responsibilities,
       requirements: jobListingResearchResponse.requirements,
@@ -217,10 +223,15 @@ export async function createInterviewGuide(
 
     // Call OpenAI's responses API with the distillation system prompt
     const response = await openai.responses.create({
-      model: "gpt-4o-mini",
-      temperature: 0.6,
+      model: "gpt-5-mini",
       instructions: INTERVIEW_GUIDE_SYSTEM_PROMPT_V3,
       input: input,
+      reasoning: {
+        effort: "minimal",
+      },
+      text: {
+        verbosity: "low",
+      },
     });
 
     // Extract the generated interview guide from the response
@@ -513,10 +524,15 @@ export async function performUserContextDistillation(
   // Call OpenAI's responses.create API with the user context distillation prompt
   // The prompt guides the LLM to extract and consolidate candidate information
   const response = await openai.responses.create({
-    model: "gpt-4o-mini",
-    temperature: 0.4,
+    model: "gpt-5-mini",
     instructions: USER_CONTEXT_DISTILLATION_SYSTEM_PROMPT_V1,
     input: input,
+    reasoning: {
+      effort: "minimal",
+    },
+    text: {
+      verbosity: "low",
+    },
   });
 
   // Extract the generated candidate profile from the response

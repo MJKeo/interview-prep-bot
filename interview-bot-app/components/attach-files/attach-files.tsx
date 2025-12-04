@@ -47,7 +47,6 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
         const fetchSavedFileItems = async () => {
             try {
                 const savedFileItems = await fetchAllSavedFiles();
-                console.log("Saved file items:", savedFileItems);
                 setSavedFileItems(savedFileItems);
             } catch (error) {
                 console.error("Error fetching saved file items:", error);
@@ -93,16 +92,13 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
         uniqueNewFileItems.forEach(async (fileItem) => {
             // Wrap parseFile in try-catch to handle errors
             try {
-                console.log(`Fetching for ${fileItem.fileName}`);
                 let text = await parseFile(fileItem.originalFile);
                 // Cap text length to 20K characters to prevent excessive processing
                 text = text ? text.substring(0, 20000) : text;
-                console.log(`Checking the following text: ${text}`);
 
                 // Perform guardrail check to ensure text content is safe
                 if (!CONFIG.bypassUploadedFileGuardrail) {
-                const guardrailResult = await performUploadedFileGuardrailCheckAction(text!);
-                    console.log("Guardrail result:", guardrailResult);
+                    const guardrailResult = await performUploadedFileGuardrailCheckAction(text!);
                     if (!guardrailResult.success || !guardrailResult.result) {
                         throw new Error(guardrailResult.error);
                     }
@@ -118,13 +114,11 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
                     const fileIndex = updated.findIndex((item) => item.id === fileItem.id);
                     if (fileIndex !== -1) {
                         if (text) {
-                            console.log(`${fileItem.fileName} SUCCESS`);
                             updated[fileIndex].status = FileStatus.SUCCESS;
                             updated[fileIndex].text = text;
                             saveFileItem(updated[fileIndex]);
                         } else {
                             // Null or undefined text is treated as an error
-                            console.log(`${fileItem.fileName} FAIL`);
                             updated[fileIndex].status = FileStatus.ERROR;
                             updated[fileIndex].errorMessage = "Unable to extract text from the document";
                         }
@@ -133,7 +127,7 @@ export default function AttachFiles({ attachedFilesDidChange, skipStatusDidChang
                 });
             } catch (error) {
                 // Determine error message based on error type
-                console.log("ERROR:", error);
+                console.error(error);
                 let errorMessage: string;
                 if (error instanceof Error) {
                     if (error.message.includes("flagged as potentially malicious") || error.message.includes("10MB")) {

@@ -94,6 +94,7 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         // Check if the deep research was successful
         if (deepResearchResult.success && deepResearchResult.reports) {
           // Store the deep research reports
+          console.log("User distillation report", deepResearchResult.reports.userContextReport);
           setDeepResearchAndContextDistillationReports(deepResearchResult.reports);
 
           // Save this to the db
@@ -149,6 +150,7 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         // Check if the guide creation was successful
         if (guideResult.success && guideResult.guide) {
           // Store the interview guide
+          console.log("Interview guide", guideResult.guide);
           setInterviewGuide(guideResult.guide);
 
           // Save this to the db
@@ -310,7 +312,7 @@ export default function ResearchJobScreen({ jobListingParsedData, attachedFiles,
         {isLoadingGuide && (
           <div className="research-job-loading-bar">
             <LoadingBar
-              timeToLoad={17}
+              timeToLoad={37}
               initialLoadingMessage="Creating interview guide..."
               waitingMessages={interviewGuideMessages}
             />

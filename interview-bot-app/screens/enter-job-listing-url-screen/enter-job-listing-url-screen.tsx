@@ -138,6 +138,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         const result = await parseJobListingAttributesAction(scrapedJobListingWebsiteContent);
         // Check if the action was successful
         if (result.success && result.data) {
+          console.log("Parse results", result.data);
           // We have our data so let's move on to the next page
           completeScrapeAndParse(result.data);
         } else {
@@ -551,7 +552,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
           <div className="loading-bar-container">
             <p className="loading-progress-text">Finished fetching website content</p>
             <LoadingBar 
-            timeToLoad={6} 
+            timeToLoad={8} 
             initialLoadingMessage="Extracting job listing details from url content..."
             waitingMessages={[
                 "Extracting job title and location...",
@@ -570,7 +571,7 @@ export default function EnterJobListingUrlScreen({ onScrapeSuccess }: EnterJobLi
         {isRunningGuardrailCheck && (
           <div className="loading-bar-container">
             <LoadingBar 
-              timeToLoad={6} 
+              timeToLoad={8} 
               initialLoadingMessage="Running guardrail check..."
               waitingMessages={[
                 "Running guardrail check...",

@@ -239,7 +239,7 @@ export default function PerformAnalysisScreen({
         {/* Loading states - show loading bar */}
         {isLoadingEvaluations && (
           <LoadingBar
-            timeToLoad={18}
+            timeToLoad={35}
             initialLoadingMessage={"Starting interview performance evaluation..."}
             waitingMessages={evaluationMessages}
           />
@@ -248,7 +248,7 @@ export default function PerformAnalysisScreen({
           <div className="loading-bar-container">
             <p className="loading-progress-text">Finished performing evaluations</p>
             <LoadingBar
-              timeToLoad={35}
+              timeToLoad={10}
               initialLoadingMessage={"Aggregating evaluations into a single report..."}
               waitingMessages={aggregationMessages}
             />

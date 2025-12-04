@@ -13,7 +13,7 @@ Parse through the scraped contents to extract ALL relevant attributes as they ap
 
 # GLOBAL RULES
 - Never fabricate. If a field cannot be found, use "Unknown".
-- NEVER summarize or shorten. Use the exact text from the website.
+- ONLY summarize or shorten for job_description. For all other fields, use the exact text from the website.
 - ALWAYS use bullet points for "expectations_and_responsibilities" and "requirements".
 
 # JOB ATTRIBUTES

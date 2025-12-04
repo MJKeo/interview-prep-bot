@@ -23,10 +23,7 @@ is genuinely nothing useful left to probe.
 
 - 'job_title': ${listingResponse.job_title}
 - 'job_location': ${listingResponse.job_location}
-- 'job_description': ${listingResponse.job_description}
 - 'work_schedule': ${listingResponse.work_schedule}
-- 'job_expectations_and_responsibilities': ${listingResponse.expectations_and_responsibilities}
-- 'job_requirements': ${listingResponse.requirements}
 
 # Using the Interview Guide
 

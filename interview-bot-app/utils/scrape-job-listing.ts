@@ -30,8 +30,6 @@ export async function scrapeJobListing(url: string): Promise<string> {
       formats: ['markdown'],
     });
 
-    console.log(scrapeResponse);
-
     // Extract and return the markdown content
     // The response should have a markdown property based on the Python example
     if (!scrapeResponse.markdown) {

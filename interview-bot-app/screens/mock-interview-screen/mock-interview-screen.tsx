@@ -387,7 +387,7 @@ export default function MockInterviewScreen({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={isGenerating}
-            maxLength={1000}
+            maxLength={1500}
             onKeyDown={(e) => {
               // Allow Enter key to send as user, but only if not already generating
               if (e.key === "Enter" && !e.shiftKey && !isGenerating) {

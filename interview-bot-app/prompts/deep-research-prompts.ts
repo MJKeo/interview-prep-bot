@@ -181,7 +181,7 @@ export function companyStrategyInputPrompt(companyName: string): string {
  * @returns A string prompt guiding the llm to perform role success research.
  */
 export function roleSuccessInputPrompt(companyName: string, jobTitle: string): string {
-    return `Cater your research to the industry associated with ${companyName} and the generic role of ${jobTitle}. Do not search for this exact job, I want \
+    return `Cater your research to the industry associated with ${companyName} and the generic role of ${jobTitle}. Do not search for this exact job, get \
 general industry knowledge for roles in a similar product space. Use web search queries that will best help you fill out the markdown report.`;
 }
 
@@ -193,7 +193,8 @@ general industry knowledge for roles in a similar product space. Use web search 
  * @returns A string prompt guiding the llm to perform team structure research.
  */
 export function teamCultureInputPrompt(companyName: string, jobTitle: string): string {
-    return `Cater your research to the industry associated with ${companyName} and the generic role of ${jobTitle}. Use web search queries that will best help you fill out the markdown report.`;
+    return `Cater your research to the industry associated with ${companyName} and the generic role of ${jobTitle}. Do not search for this exact job, get \
+general industry knowledge for roles in a similar product space. Use web search queries that will best help you fill out the markdown report.`;
 }
 
 /**
@@ -204,7 +205,8 @@ export function teamCultureInputPrompt(companyName: string, jobTitle: string): s
  * @returns A string prompt guiding the llm to perform domain knowledge research.
  */
 export function domainKnowledgeInputPrompt(companyName: string, jobTitle: string): string {
-    return `Perform your research for ${jobTitle} and similar roles in the same industry/domain of ${companyName}. Use web search queries that will best help you fill out the markdown report.`;
+    return `Perform your research for ${jobTitle} and similar roles in the same industry/domain of ${companyName}. Do not search for this exact job, get \
+general industry knowledge for roles in a similar product space. Use web search queries that will best help you fill out the markdown report.`;
 }
 
 
