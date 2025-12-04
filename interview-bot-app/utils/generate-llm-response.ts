@@ -21,7 +21,9 @@ import {
   domainKnowledgeAgent,
   createEvaluationAgent,
   createEvaluationAggregatorAgent,
-  createEvaluationSummaryAgent
+  createEvaluationSummaryAgent,
+  createNextInterviewMessageAgent,
+  interviewUserMessageGuardrailAgent,
 } from "@/app/openai";
 import {
   JOB_LISTING_PARSING_PROMPT_V1,
@@ -43,7 +45,7 @@ import {
 import { run, withTrace } from "@openai/agents";
 import { zodTextFormat } from "openai/helpers/zod";
 import type { EasyInputMessage } from "openai/resources/responses/responses";
-import { convertEvaluationsToFeedbackByMessage } from "./utils";
+import { convertEvaluationsToFeedbackByMessage, easyMessagesToAgentInputs } from "./utils";
 import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from './constants';
 
 /**
@@ -240,31 +242,38 @@ export async function createInterviewGuide(
  * @throws Error if the API call fails or returns invalid data
  */
 export async function generateNextInterviewMessage(
+  currentMessage: string,
   combinedHistory: EasyInputMessage[],
   jobListingResearchResponse: JobListingResearchResponse,
   interviewGuide: string
 ): Promise<MockInterviewMessageResponse> {
   const noResponseErrorMessage = "An unknown error has occurred. Try again or contact support if the problem persists.";
+  const maliciousContentErrorMessage = "Message flagged as potentially malicious. Please modify your message and try again. If this was a mistake please contact support.";
   try {
-    // Call OpenAI's responses.parse API to generate the next message
-    const response = await openai.responses.parse({
-      model: "gpt-4o-mini",
-      instructions: mockInterviewSystemPromptV3(jobListingResearchResponse, interviewGuide),
-      input: combinedHistory,
-      text: { 
-        format: zodTextFormat(MockInterviewMessageResponseSchema, "mock_interview_message_response") 
-      },
-    });
+    // Run guardrail in parallel with generating the next message
+    const tasks = [
+      run(createNextInterviewMessageAgent(jobListingResearchResponse, interviewGuide), easyMessagesToAgentInputs(combinedHistory)),
+      run(interviewUserMessageGuardrailAgent, currentMessage),
+    ]
 
-    // Extract and validate the parsed response
-    const result = response.output_parsed;
+    // Execute both tasks concurrently
+    const [interviewMessageResult, guardrailResult] = await Promise.all(tasks);
+
+    // Check if the guardrail detected malicious content
+    if (guardrailResult.finalOutput?.contains_any_malicious_content === true) {
+      throw new Error(maliciousContentErrorMessage);
+    }
+
+    // Check if the interview message result is empty
+    const result = interviewMessageResult.finalOutput;
     if (!result) {
       throw new Error(noResponseErrorMessage);
     }
 
+    // Return the interview message result
     return result;
   } catch (error) {
-    if (error instanceof Error && error.message === noResponseErrorMessage) {
+    if (error instanceof Error && (error.message === noResponseErrorMessage || error.message === maliciousContentErrorMessage)) {
       throw error;
     }
     throw new Error(TRANSIENT_ERROR_MESSAGE);

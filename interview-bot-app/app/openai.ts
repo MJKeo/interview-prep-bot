@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { Agent, webSearchTool } from "@openai/agents";
+import { GuardrailsOpenAI } from "@openai/guardrails";
 import { 
   COMPANY_STRATEGY_SYSTEM_PROMPT_V2, 
   ROLE_SUCCESS_SYSTEM_PROMPT_V2, 
@@ -8,7 +9,9 @@ import {
   aggregatedEvaluationsSummaryPrompt,
   MANUAL_JOB_INPUT_GUARDRAIL_PROMPT,
   UPLOADED_FILE_GUARDRAIL_PROMPT,
-  WEBSITE_CONTENT_GUARDRAIL_PROMPT
+  WEBSITE_CONTENT_GUARDRAIL_PROMPT,
+  INTERVIEW_USER_MESSAGE_GUARDRAIL_PROMPT,
+  mockInterviewSystemPromptV3,
 } from "@/prompts";
 import {
   PerformanceEvaluationResponseSchema,
@@ -17,6 +20,7 @@ import {
   JobListingResearchResponse,
   ManualJobInputGuardrailResponseSchema,
   GenericMaliciousContentGuardrailResponseSchema,
+  MockInterviewMessageResponseSchema
 } from "@/types";
 
 export const openai = new OpenAI({
@@ -64,6 +68,15 @@ export const domainKnowledgeAgent = new Agent({
     toolChoice: 'required'
   }
 });
+
+export function createNextInterviewMessageAgent(jobListingResearchResponse: JobListingResearchResponse, interviewGuide: string) {
+  return new Agent({
+    name: "Next interview message agent",
+    instructions: mockInterviewSystemPromptV3(jobListingResearchResponse, interviewGuide),
+    model: "gpt-4o-mini",
+    outputType: MockInterviewMessageResponseSchema,
+  });
+}
 
 // ============================== EVALUATION AGENTS ==============================
 
@@ -120,6 +133,16 @@ export const websiteContentGuardrailAgent = new Agent({
   name: "Website content guardrail agent",
   instructions: WEBSITE_CONTENT_GUARDRAIL_PROMPT,
   model: "gpt-4o-mini",
+  modelSettings: {
+    temperature: 0.5,
+  },
+  outputType: GenericMaliciousContentGuardrailResponseSchema,
+});
+
+export const interviewUserMessageGuardrailAgent = new Agent({
+  name: "User interview message guardrail agent",
+  instructions: INTERVIEW_USER_MESSAGE_GUARDRAIL_PROMPT,
+  model: "gpt-4.1-nano",
   modelSettings: {
     temperature: 0.5,
   },

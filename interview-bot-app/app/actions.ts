@@ -30,7 +30,11 @@ import {
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from '@/utils/constants';
-import { performManualJobInputGuardrailCheck, performUploadedFileGuardrailCheck, performWebsiteContentGuardrailCheck } from '@/utils/guardrail-actions';
+import { 
+  performManualJobInputGuardrailCheck, 
+  performUploadedFileGuardrailCheck, 
+  performWebsiteContentGuardrailCheck 
+} from '@/utils/guardrail-actions';
 
 /**
  * Server action to scrape a job listing URL and parse its attributes.
@@ -175,6 +179,7 @@ export async function createInterviewGuideAction(
  * @returns An object with either { success: true, nextMessage: string } or { success: false, error: string }
  */
 export async function generateNextInterviewMessageAction(
+  currentMessage: string,
   combinedHistory: EasyInputMessage[], // includes most recent message
   jobListingResearchResponse: JobListingResearchResponse,
   interviewGuide: string
@@ -182,6 +187,7 @@ export async function generateNextInterviewMessageAction(
   try {
     // Call the generateNextInterviewMessage function - this runs on the server where process.env is available
     const response = await generateNextInterviewMessage(
+      currentMessage,
       combinedHistory,
       jobListingResearchResponse,
       interviewGuide

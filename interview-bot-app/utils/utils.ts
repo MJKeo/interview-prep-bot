@@ -8,6 +8,7 @@ import type {
   JobListingWithId,
   JobListingInterview,
 } from "@/types";
+import { AgentInputItem } from "@openai/agents";
 
 /**
  * Validates if a string is a syntactically valid URL.
@@ -37,6 +38,38 @@ export function isValidURL(urlString: string): boolean {
     // If URL constructor throws an error, the URL is invalid
     return false;
   }
+}
+
+export function easyMessagesToAgentInputs(
+  messages: EasyInputMessage[],
+): AgentInputItem[] {
+  return messages
+    .map<AgentInputItem | null>((msg) => {
+      // Decide how to handle 'developer' messages.
+      // Common pattern: treat them as system messages,
+      // or ignore them if you already put that text in `instructions`.
+      if (msg.role === "developer") {
+        // Drop developer messages (they shouldn't exist anyways)
+        return null;
+      } else if (msg.role === "assistant") {
+        // Assistant messages require array content and status field
+        return {
+          role: "assistant",
+          content: typeof msg.content === "string" 
+            ? [{ type: "output_text", text: msg.content }]
+            : msg.content,
+          status: "completed", // Mark as completed since it's from history
+        };
+      }
+
+      // 'user' | 'assistant' | 'system'
+      return {
+        role: msg.role,
+        content: msg.content,
+      };
+    })
+    // Filter out nulls if you chose to drop 'developer' messages
+    .filter((item): item is AgentInputItem => item !== null);
 }
 
 /**

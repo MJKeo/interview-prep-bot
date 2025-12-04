@@ -41,9 +41,9 @@ interface MockInterviewScreenProps {
    * Callback function to navigate to the perform analysis screen.
    * Called when the user confirms the final review warning.
    * 
-   * @param messages - The conversation history to pass to the analysis screen (in EasyInputMessage format)
+   * @param transcript - The conversation history to pass to the analysis screen (in EasyInputMessage format)
    */
-  onPerformFinalReview: (messages: InterviewTranscript) => void;
+  onPerformFinalReview: (transcript: InterviewTranscript) => void;
   /**
    * Callback function to navigate back to the research job screen.
    * Called when the user confirms the return to research warning.
@@ -73,6 +73,8 @@ export default function MockInterviewScreen({
   const [showStartOverModal, setShowStartOverModal] = useState<boolean>(false);
   // State to track if a message is being generated (to prevent multiple simultaneous requests)
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  // State to track if we're checking if a message is malicious
+  const [isCheckingMessageMalice, setIsCheckingMessageMalice] = useState<boolean>(false);
   // State to store error messages to display to the user
   const [conversationError, setConversationError] = useState<CustomError | null>(null);
   const [error, setError] = useState<CustomError | null>(null);
@@ -102,6 +104,7 @@ export default function MockInterviewScreen({
 
       // Call the server action to generate the first interview message
       const result = await generateNextInterviewMessageAction(
+        "Hello",
         messagesToSend,
         jobListingResearchResponse,
         interviewGuide
@@ -170,7 +173,6 @@ export default function MockInterviewScreen({
       // Clear any previous error messages when sending a new message
       setError(null);
       setConversationError(null);
-      console.log("Test this case ^ where you send a message after an error has happened")
 
       // Create the user message object in EasyInputMessage format
       const userMessage: EasyInputMessage = { role: "user", content: userMessageContent };
@@ -183,12 +185,16 @@ export default function MockInterviewScreen({
       // Set generating state to prevent multiple simultaneous requests
       setIsGenerating(true);
 
+      console.log("messages", combinedMessages);
+
       // Call the server action to generate the next interview message
       const result = await generateNextInterviewMessageAction(
+        userMessageContent,
         combinedMessages,
         jobListingResearchResponse,
         interviewGuide
       );
+      console.log("result", result);
 
       // Check if the action was successful
       if (result.success && result.nextMessage) {
@@ -203,7 +209,13 @@ export default function MockInterviewScreen({
     } catch (err) {
       // Handle exceptions and display error message
       if (err instanceof Error) {
-        setConversationError({ message: err.message, retryAction: handleSendUserMessage });
+        if (err.message.includes("Message flagged as potentially malicious")) {
+          setError({ message: err.message, retryAction: null });
+          // EDGE CASE: Remove the message from the conversation
+          setMessages((prev) => prev.slice(0, -1));
+        } else {
+          setConversationError({ message: err.message, retryAction: handleSendUserMessage });
+        }
       } else {
         setConversationError({ message: NON_TRANSIENT_ERROR_MESSAGE, retryAction: null });
       }
@@ -323,6 +335,8 @@ export default function MockInterviewScreen({
     onReturnToResearch();
   };
 
+  const submitButtonText = (isGenerating ? "Generating response..." : (isCheckingMessageMalice ? "Checking message..." : "Send"));
+
   return (
     <div className="mock-interview-container">
       {/* Scrollable messages area */}
@@ -384,8 +398,8 @@ export default function MockInterviewScreen({
               }
             }}
           />
-          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleSendUserMessage} disabled={isGenerating || conversationError !== null}>
-            {isGenerating ? "Generating response..." : "Send"}
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleSendUserMessage} disabled={isGenerating || isCheckingMessageMalice || conversationError !== null}>
+            {submitButtonText}
           </Button>
         </div>
 

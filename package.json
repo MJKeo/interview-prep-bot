@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@openai/guardrails": "^0.2.0",
 		"@sigma/striprtf": "jsr:^1.0.0",
 		"html-to-text": "^9.0.5",
 		"openai": "^6.8.1",

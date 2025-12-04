@@ -4,7 +4,7 @@ import type {
     ManualJobInputGuardrailResponse,
 } from "@/types";
 import { run, withTrace } from "@openai/agents";
-import { manualJobInputGuardrailAgent, uploadedFileGuardrailAgent, websiteContentGuardrailAgent } from "@/app/openai";
+import { interviewUserMessageGuardrailAgent, manualJobInputGuardrailAgent, uploadedFileGuardrailAgent, websiteContentGuardrailAgent } from "@/app/openai";
 import { TRANSIENT_ERROR_MESSAGE } from "./constants";
 
 export async function performManualJobInputGuardrailCheck(
