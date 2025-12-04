@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import { Agent, webSearchTool } from "@openai/agents";
-import { GuardrailsOpenAI } from "@openai/guardrails";
 import { 
   COMPANY_STRATEGY_SYSTEM_PROMPT_V2, 
   ROLE_SUCCESS_SYSTEM_PROMPT_V2, 

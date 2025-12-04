@@ -73,8 +73,6 @@ export default function MockInterviewScreen({
   const [showStartOverModal, setShowStartOverModal] = useState<boolean>(false);
   // State to track if a message is being generated (to prevent multiple simultaneous requests)
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  // State to track if we're checking if a message is malicious
-  const [isCheckingMessageMalice, setIsCheckingMessageMalice] = useState<boolean>(false);
   // State to store error messages to display to the user
   const [conversationError, setConversationError] = useState<CustomError | null>(null);
   const [error, setError] = useState<CustomError | null>(null);
@@ -335,7 +333,7 @@ export default function MockInterviewScreen({
     onReturnToResearch();
   };
 
-  const submitButtonText = (isGenerating ? "Generating response..." : (isCheckingMessageMalice ? "Checking message..." : "Send"));
+  const submitButtonText = (isGenerating ? "Generating response..." : "Send");
 
   return (
     <div className="mock-interview-container">
@@ -398,7 +396,7 @@ export default function MockInterviewScreen({
               }
             }}
           />
-          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleSendUserMessage} disabled={isGenerating || isCheckingMessageMalice || conversationError !== null}>
+          <Button htmlType="button" type={ButtonType.PRIMARY} onClick={handleSendUserMessage} disabled={isGenerating || conversationError !== null}>
             {submitButtonText}
           </Button>
         </div>
