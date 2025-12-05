@@ -14,6 +14,7 @@ import { savedChatTranscript } from "@/app/saved-responses";
 import ScreenPopup from "@/components/screen-popup";
 import { PERFORM_FINAL_REVIEW_WARNING_POPUP_CONTENT } from "@/utils/constants";
 import { TRANSIENT_ERROR_MESSAGE, NON_TRANSIENT_ERROR_MESSAGE } from "@/utils/constants";
+import SpeechInputButton from "@/components/speech-input-button";
 
 /**
  * Props for the MockInterviewScreen component.
@@ -78,6 +79,8 @@ export default function MockInterviewScreen({
   const [error, setError] = useState<CustomError | null>(null);
   // Ref to the messages container for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Ref to the textarea input for auto-resizing
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   /**
    * Helper function to send a preliminary "Hello" message and generate the bot's first response.
@@ -151,6 +154,20 @@ export default function MockInterviewScreen({
     // Scroll to the bottom when messages change or when generating state changes
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isGenerating]);
+
+  /**
+   * Effect hook that auto-resizes the textarea based on its content.
+   * Resets to minimum height when input is cleared, and expands as content grows.
+   */
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // Reset height to auto to get the correct scrollHeight
+      textarea.style.height = "auto";
+      // Set height based on scrollHeight (content height)
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [inputValue]);
 
   /**
    * Handler function to send a message as the user and generate an assistant response.
@@ -330,6 +347,23 @@ export default function MockInterviewScreen({
     onReturnToResearch();
   };
 
+  /**
+   * Handler function for speech transcription.
+   * Appends the transcribed text to the end of the current input value.
+   * Adds a space before the new text if there's already content in the input.
+   * 
+   * @param transcription - The transcribed text from the speech input button
+   */
+  const handleTranscription = (transcription: string) => {
+    // Append transcription to current input value, adding a space if needed
+    setInputValue((prev) => {
+      if (prev.trim()) {
+        return `${prev} ${transcription}`;
+      }
+      return transcription;
+    });
+  };
+
   const submitButtonText = (isGenerating ? "Generating response..." : "Send");
 
   return (
@@ -378,15 +412,21 @@ export default function MockInterviewScreen({
 
         {/* Input and Send button inline */}
         <div className="mock-interview-input-row">
-          <input
-            type="text"
+          <SpeechInputButton 
+            onTranscription={handleTranscription} 
+            disabled={isGenerating || conversationError !== null} 
+          />
+          <textarea
+            ref={textareaRef}
             className="mock-interview-input"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={isGenerating}
             maxLength={1500}
+            rows={1}
             onKeyDown={(e) => {
               // Allow Enter key to send as user, but only if not already generating
+              // Shift+Enter creates a new line
               if (e.key === "Enter" && !e.shiftKey && !isGenerating) {
                 e.preventDefault();
                 handleSendUserMessage();

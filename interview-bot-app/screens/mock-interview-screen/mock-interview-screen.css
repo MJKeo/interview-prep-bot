@@ -109,18 +109,24 @@
 .mock-interview-input-row {
   display: flex;
   gap: 0.75rem;
-  align-items: center;
+  align-items: flex-end; /* Align to bottom for textarea with multiple lines */
 }
 
-/* Styles for the input field */
+/* Styles for the input field (textarea) */
 .mock-interview-input {
   flex: 1;
   padding: 0.75rem 1rem;
   border: 1px solid rgb(209 213 219); /* border-gray-300 */
   border-radius: 0.375rem; /* rounded-md */
-  font-size: 0.875rem; /* text-sm */
+  font-size: 1rem; /* text-sm */
   background-color: rgb(255 255 255);
   color: rgb(17 24 39); /* text-gray-900 */
+  resize: none; /* Prevent manual resizing */
+  overflow-y: auto; /* Show scrollbar if content exceeds max height */
+  min-height: 2.75rem; /* Minimum height matching padding + line height */
+  max-height: 12rem; /* Maximum height before scrolling (approximately 6-7 lines) */
+  line-height: 1.5;
+  font-family: inherit; /* Match the rest of the UI */
 }
 
 .mock-interview-input:focus {

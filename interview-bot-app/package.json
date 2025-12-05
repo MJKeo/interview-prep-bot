@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
     "@mendable/firecrawl-js": "^4.5.0",
     "@openai/agents": "^0.3.0",
     "@openai/guardrails": "^0.2.0",
