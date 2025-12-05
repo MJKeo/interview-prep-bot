@@ -7,6 +7,7 @@ import { deleteJobListing, saveJobListing } from "@/utils/local-database";
 import { APP_NAME } from "@/utils/constants";
 import githubIcon from "@/images/github-mark-white.png";
 import linkedinIcon from "@/images/InBug-White.png";
+import interviewIcon from "@/images/interview-icon-white.png";
 
 /**
  * Props for the Sidebar component.
@@ -497,6 +498,11 @@ export default function Sidebar({
                 onNewJobListing();
               }}>
             <h1 className="sidebar-title">
+              <img
+                src={interviewIcon.src}
+                alt="Interview Pro"
+                className="sidebar-title-icon"
+              />
               {APP_NAME}
             </h1>
           </div>
