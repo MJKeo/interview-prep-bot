@@ -230,10 +230,20 @@ export default function Sidebar({
     // Do nothing if this is the same thing already clicked
     // (if we clicked on an interview within this job listing, clicking on the listing should cause an action)
     if (jobListing.id === selectedItem?.jobListingId && !selectedItem?.interviewId) {
+      toggleJobListingExpansion(jobListing.id);
       return;
     }
 
     updateSelectedItem(jobListing);
+
+    // Expand the interviews contained within this if it's not open
+    if (!expandedJobListings.has(jobListing.id)) {
+      setExpandedJobListings((prev) => {
+        const next = new Set(prev);
+        next.add(jobListing.id);
+        return next;
+      });
+    }
     
     // Notify parent component of the selection
     onSelectJobListing(jobListing);
