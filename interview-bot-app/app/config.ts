@@ -7,6 +7,6 @@ const CONFIG = {
     useCachedEvaluations: false,
     useCachedAggregatedEvaluations: false,
     bypassMockInterview: false,
-};
+}; 
 
 export default CONFIG;
