@@ -227,7 +227,7 @@ export default function Sidebar({
    * @param jobListingId - The ID of the clicked job listing
    */
   const handleJobListingClick = (jobListing: JobListingWithId) => {
-    // Do nothing if this is the same thing already clicked
+    // Do nothing if this is the same thing already clicked.
     // (if we clicked on an interview within this job listing, clicking on the listing should cause an action)
     if (jobListing.id === selectedItem?.jobListingId && !selectedItem?.interviewId) {
       toggleJobListingExpansion(jobListing.id);
