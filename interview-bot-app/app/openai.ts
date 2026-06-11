@@ -146,6 +146,6 @@ export const websiteContentGuardrailAgent = new Agent({
 export const interviewUserMessageGuardrailAgent = new Agent({
   name: "User interview message guardrail agent",
   instructions: INTERVIEW_USER_MESSAGE_GUARDRAIL_PROMPT,
-  model: "gpt-4.1-nano",
+  model: "gpt-5.4-nano",
   outputType: GenericMaliciousContentGuardrailResponseSchema,
 });
